@@ -17,7 +17,7 @@ export default class PropertyList extends React.Component {
     this.state={
       list: PropertyListStore.getList()
     };
-    console.log(this.state.list);
+
     console.log('asshole');
   }
 
@@ -50,7 +50,7 @@ export default class PropertyList extends React.Component {
 
   render() {
     console.log('i am here loading default');
-
+      console.log(this.state.list);
 
     return (
       <div>
