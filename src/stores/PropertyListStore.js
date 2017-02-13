@@ -18,8 +18,6 @@ class PropertyListStore extends EventEmitter {
 
       case "GET_PROPERTYLIST": {
         this.propertyList = action.data;
-        console.log(this.propertyList);
-        console.log('mother fucker');
         this.emit("change");
         break;
       }
