@@ -32,7 +32,7 @@ export function fetchPropList() {
 
           dispatcher.dispatch({
             type: "GET_PROPERTYLIST",
-            data: response,
+            data: response.data,
           });
 
         })

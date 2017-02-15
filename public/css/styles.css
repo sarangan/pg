@@ -8,3 +8,10 @@
   flex-direction: column;
   height: 100%;
 }*/
+
+
+.fab-btn-container-bottom{
+  position: absolute;
+  bottom: 100px;
+  right: 50px;
+}
