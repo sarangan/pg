@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
 
@@ -69,9 +70,11 @@ export default class PropertyList extends React.Component {
       </div>
 
         <span className="fab-btn-container-bottom">
-          <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-            <i className="material-icons">add</i>
-          </button>
+          <Link to="addnewproperty">
+            <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <i className="material-icons">add</i>
+            </button>
+        </Link>
         </span>
 
       </div>
