@@ -10,6 +10,13 @@ import AddNewProperty from "./pages/AddNewProperty";
 //import Routes from './routes';
 import './index.css';
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
+try {
+    injectTapEventPlugin();
+} catch (e) {
+    // do nothing
+}
+
 const app = document.getElementById('root');
 
 ReactDOM.render(
