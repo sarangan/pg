@@ -40,7 +40,4 @@ export function fetchPropList() {
           console.log(error);
         });
 
-
-
-
 }

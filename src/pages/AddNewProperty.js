@@ -1,4 +1,15 @@
 import React from "react";
+import {Link} from 'react-router';
+import RaisedButton from 'material-ui/RaisedButton';
+import MenuItem from 'material-ui/MenuItem';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import Toggle from 'material-ui/Toggle';
+import DatePicker from 'material-ui/DatePicker';
+import {grey400} from 'material-ui/styles/colors';
+import Divider from 'material-ui/Divider';
+import PageBase from '../components/layout/PageBase';
+
 // import * as PropertyListActions from "../actions/PropertyListActions";
 // import PropertyListStore from "../stores/PropertyListStore";
 
@@ -6,58 +17,82 @@ export default class AddNewProperty extends React.Component {
 
   constructor(){
     super();
+    this.state = {
+       report_type: null,
+     };
   }
+
+
+  handleSelectChange = (event, index, value) => this.setState({report_type: value});
+
 
   render() {
 
-    return (
-      <div>
+    const styles = {
 
-        <div className="mdl-grid demo-content">
-          <h4>Add New Property</h4>
-        </div>
+       buttons: {
+         marginTop: 30,
+         float: 'right'
+       },
+       saveButton: {
+         marginLeft: 5
+       },
+       bottomDivider: {
+          marginTop: '50px'
+       }
+
+     };
+
+
+    return (
+
+        <PageBase title="Add New Property" navigation="Home / Add New Property">
 
           <form>
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input className="mdl-textfield__input" type="text" id="Address_1"/>
-              <label className="mdl-textfield__label" htmlFor="Address_1">Address 1</label>
-            </div>
 
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input className="mdl-textfield__input" type="text" id="Address_2"/>
-              <label className="mdl-textfield__label" htmlFor="Address_2">Address 2</label>
-            </div>
+            <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} id="Address_1" />
+            <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} id="Address_2" />
+            <TextField  hintText="City" floatingLabelText="City" fullWidth={false} id="city" />
+            <TextField  hintText="Postalcode" floatingLabelText="Postalcode" fullWidth={false} id="postalcode" />
 
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input className="mdl-textfield__input" type="text" id="city"/>
-              <label className="mdl-textfield__label" htmlFor="city">City</label>
-            </div>
+            <DatePicker hintText="Created Date" floatingLabelText="Created Date" fullWidth={false} id="created_date"/>
 
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input className="mdl-textfield__input" type="text" id="postalcode"/>
-              <label className="mdl-textfield__label" htmlFor="postalcode">Postalcode</label>
-            </div>
+            <Divider style={styles.bottomDivider}/>
+            <h4>Report Details:</h4>
 
+            <SelectField floatingLabelText="Report type" value={this.state.report_type} onChange={this.handleSelectChange}  id="report_type">
+              <MenuItem value={null} primaryText="" />
+              <MenuItem value={"Check-in Report"}  primaryText="Check-in Report" />
+				      <MenuItem value={"Check-out Report"} primaryText="Check-out Report"/>
+				      <MenuItem value={"Inventory Report"}  primaryText="Inventory Report"/>
+              <MenuItem value={"Inventory and Check-in Report"} primaryText="Inventory and Check-in Report"/>
+				      <MenuItem value={"Midterm Inspection Report"}  primaryText="Midterm Inspection Report"/>
+				      <MenuItem value={"Interim Report"} primaryText="Interim Report"/>
+				      <MenuItem value={"General Overview Report"} primaryText="General Overview Report"/>
+				      <MenuItem value={"Condition Report"} primaryText="Condition Report" />
+            </SelectField>
 
+            <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} id="report_date"/>
 
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+            <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  id="description" fullWidth={true}/>
 
-              <label className="mdl-button mdl-js-button mdl-button--icon" htmlFor="created_date">
-                <i className="material-icons">date_range</i>
-              </label>
+            <div style={styles.buttons}>
 
-              <div className="mdl-textfield__expandable-holder">
-                <input className="mdl-textfield__input" type="date" id="created_date"/>
-                <label className="mdl-textfield__label" htmlFor="created_date"></label>
-              </div>
+              <Link to="/propertylist">
+                <RaisedButton label="Cancel"/>
+              </Link>
 
-            </div>
+              <RaisedButton label="Save"
+                style={styles.saveButton}
+                type="submit"
+                primary={true}/>
 
+          </div>
 
-          </form>
+        </form>
 
+        </PageBase>
 
-      </div>
     );
   }
 }

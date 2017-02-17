@@ -99,10 +99,10 @@ export default class PropertyList extends React.Component {
               },
               city: {
                 column:{
-                  width: '15%',
+                  width: '10%',
                 },
                 header:{
-                  width: '15%',
+                  width: '10%',
                   fontSize: '14px',
                   fontWeight: 600,
                   backgroundColor: '#e1e1e1',
@@ -111,10 +111,10 @@ export default class PropertyList extends React.Component {
               },
               postalcode: {
                 column:{
-                  width: '10%',
+                  width: '15%',
                 },
                 header:{
-                  width: '10%',
+                  width: '15%',
                   fontSize: '14px',
                   fontWeight: 600,
                   backgroundColor: '#e1e1e1',
