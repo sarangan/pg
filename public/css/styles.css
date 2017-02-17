@@ -3,19 +3,14 @@
 *
 */
 
-/*.nav-container, .nav-container > div:first-child{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}*/
-
-
-.fab-btn-container-bottom{
-  position: absolute;
-  bottom: 100px;
-  right: 50px;
+.menu-item{
+  text-decoration: none;
 }
 
-.mdl-textfield{
-    width: 100%;
+.page-title{
+  color: #0D47A1;
+}
+
+.page-title::first-letter{
+  text-decoration: underline;
 }
