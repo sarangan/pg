@@ -6,11 +6,18 @@ class PropertyListStore extends EventEmitter {
   constructor() {
     super()
     this.propertyList = [];
+    this.addProperty = null;
   }
 
   getList() {
     return this.propertyList;
   }
+
+  getAddStatus() {
+    console.log(this.addProperty);
+    return this.addProperty;
+  }
+
 
   handleActions(action) {
 
@@ -20,6 +27,11 @@ class PropertyListStore extends EventEmitter {
         this.propertyList = action.data;
         this.emit("change");
         break;
+      }
+
+      case "ADD_PROPERTY":{
+        this.addProperty = action.data;
+        this.emit('change');
       }
 
     }

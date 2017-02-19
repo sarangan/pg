@@ -9,21 +9,80 @@ import DatePicker from 'material-ui/DatePicker';
 import {grey400} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import PageBase from '../components/layout/PageBase';
+import uitl from '../utils/utils.js'
+import LinearProgress from 'material-ui/LinearProgress';
 
-// import * as PropertyListActions from "../actions/PropertyListActions";
-// import PropertyListStore from "../stores/PropertyListStore";
+import * as PropertyListActions from "../actions/PropertyListActions";
+import PropertyListStore from "../stores/PropertyListStore";
+
 
 export default class AddNewProperty extends React.Component {
 
   constructor(){
     super();
     this.state = {
-       report_type: null,
+       address_1: '',
+       address_2: '',
+       city: '',
+       postalcode: '',
+       report_type: '',
+       report_date: null,
+       description: '',
+       image_url: ''
      };
+
+     this.getStatus = this.getStatus.bind(this);
+
+  }
+
+  componentWillMount() {
+    PropertyListStore.on("change", this.getStatus);
+  }
+
+  componentWillUnmount() {
+    PropertyListStore.removeListener("change", this.getStatus);
+  }
+
+  getStatus() {
+    console.log('property get status');
+
+    this.setState({
+      status: PropertyListStore.getAddStatus()
+    });
+
   }
 
 
   handleSelectChange = (event, index, value) => this.setState({report_type: value});
+
+  handleDateChange = (event, date) => {
+    this.setState({
+      report_date: date,
+    });
+  };
+
+  handleSubmit(){
+    console.log('submit');
+
+    console.log(this.state);
+    PropertyListActions.addProperty(this.state);
+
+    this.setState({
+      startSending: true,
+    });
+
+    event.preventDefault();
+  }
+
+  handleInputChange(event){
+     const target = event.target;
+     const value = target.type === 'checkbox' ? target.checked : target.value;
+     const name = target.name;
+
+     this.setState({
+       [name]: value
+     });
+ }
 
 
   render() {
@@ -39,28 +98,44 @@ export default class AddNewProperty extends React.Component {
        },
        bottomDivider: {
           marginTop: '50px'
+       },
+       tblProgress: {
+         margin: '50px auto',
+         textAlign: 'center'
        }
 
      };
+
+     let isShowSaving = null;
+      if (this.state.startSending &&  this.state.startSending == true  ) {
+        isShowSaving = <div style={styles.tblProgress}><LinearProgress mode="indeterminate" /></div>;
+      }
+      else {
+        isShowSaving = '';
+      }
+
+      if (this.state.status &&  this.state.status == 1  ) {
+        isShowSaving = '';
+      }
 
 
     return (
 
         <PageBase title="Add New Property" navigation="Home / Add New Property">
 
+          {isShowSaving}
+
           <form>
 
-            <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} id="Address_1" />
-            <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} id="Address_2" />
-            <TextField  hintText="City" floatingLabelText="City" fullWidth={false} id="city" />
-            <TextField  hintText="Postalcode" floatingLabelText="Postalcode" fullWidth={false} id="postalcode" />
-
-            <DatePicker hintText="Created Date" floatingLabelText="Created Date" fullWidth={false} id="created_date"/>
+            <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} name="address_1" value={this.state.address_1} onChange={this.handleInputChange.bind(this)}/>
+            <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} name="address_2" value={this.state.address_2} onChange={this.handleInputChange.bind(this)}/>
+            <TextField  hintText="City" floatingLabelText="City" fullWidth={false} name="city" value={this.state.city} onChange={this.handleInputChange.bind(this)} />
+            <TextField  hintText="Postalcode" floatingLabelText="Postalcode" fullWidth={false} name="postalcode" value={this.state.postalcode} onChange={this.handleInputChange.bind(this)}/>
 
             <Divider style={styles.bottomDivider}/>
             <h4>Report Details:</h4>
 
-            <SelectField floatingLabelText="Report type" value={this.state.report_type} onChange={this.handleSelectChange}  id="report_type">
+            <SelectField floatingLabelText="Report type" value={this.state.report_type} onChange={this.handleSelectChange.bind(this)}  name="report_type">
               <MenuItem value={null} primaryText="" />
               <MenuItem value={"Check-in Report"}  primaryText="Check-in Report" />
 				      <MenuItem value={"Check-out Report"} primaryText="Check-out Report"/>
@@ -72,9 +147,9 @@ export default class AddNewProperty extends React.Component {
 				      <MenuItem value={"Condition Report"} primaryText="Condition Report" />
             </SelectField>
 
-            <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} id="report_date"/>
+            <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" value={this.state.report_date} onChange={this.handleDateChange.bind(this)}/>
 
-            <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  id="description" fullWidth={true}/>
+            <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  name="description" fullWidth={true} value={this.state.description} onChange={this.handleInputChange.bind(this)}/>
 
             <div style={styles.buttons}>
 
@@ -84,7 +159,7 @@ export default class AddNewProperty extends React.Component {
 
               <RaisedButton label="Save"
                 style={styles.saveButton}
-                type="submit"
+                onClick={this.handleSubmit.bind(this)}
                 primary={true}/>
 
           </div>
