@@ -14,3 +14,11 @@
 .page-title::first-letter{
   text-decoration: underline;
 }
+
+.warning-cls{
+  color: red;
+  font-weight: 400;
+  margin: 10px;
+  letter-spacing: -0.2px;
+  font-size: 0.8em;
+}

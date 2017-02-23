@@ -11,6 +11,7 @@ import Divider from 'material-ui/Divider';
 import PageBase from '../components/layout/PageBase';
 import uitl from '../utils/utils.js'
 import LinearProgress from 'material-ui/LinearProgress';
+import Snackbar from 'material-ui/Snackbar';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
@@ -28,7 +29,8 @@ export default class AddNewProperty extends React.Component {
        report_type: '',
        report_date: null,
        description: '',
-       image_url: ''
+       image_url: '',
+       open: false
      };
 
      this.getStatus = this.getStatus.bind(this);
@@ -64,12 +66,21 @@ export default class AddNewProperty extends React.Component {
   handleSubmit(){
     console.log('submit');
 
-    console.log(this.state);
-    PropertyListActions.addProperty(this.state);
+    let msg = '';
 
-    this.setState({
-      startSending: true,
-    });
+    if( (this.state.address_1.trim().length == 0 ) || (this.state.postalcode.trim().length == 0) ){
+      this.setState({status: 2, open: true  });
+    }
+    else{
+
+      console.log(this.state);
+      PropertyListActions.addProperty(this.state);
+
+      this.setState({
+        startSending: true,
+      });
+    }
+
 
     event.preventDefault();
   }
@@ -83,6 +94,12 @@ export default class AddNewProperty extends React.Component {
        [name]: value
      });
  }
+
+ handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
 
 
   render() {
@@ -116,6 +133,9 @@ export default class AddNewProperty extends React.Component {
 
       if (this.state.status &&  this.state.status == 1  ) {
         isShowSaving = '';
+      }
+      else if(this.state.status &&  this.state.status == 2){
+        isShowSaving = <div className="warning-cls">Could not save the data, Please verify your data before save</div>;
       }
 
 
@@ -165,6 +185,13 @@ export default class AddNewProperty extends React.Component {
           </div>
 
         </form>
+
+        <Snackbar
+          open={this.state.open}
+          message="Please fill fields..."
+          autoHideDuration={3000}
+          onRequestClose={this.handleRequestClose}
+        />
 
         </PageBase>
 
