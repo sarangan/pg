@@ -5,6 +5,7 @@ import Layout from './pages/Layout';
 import Settings from "./pages/Settings";
 import PropertyList from "./pages/PropertyList";
 import AddNewProperty from "./pages/AddNewProperty";
+import AddPropertyTemplate from "./pages/AddPropertyTemplate";
 
 export default (
   <Route>
@@ -12,6 +13,7 @@ export default (
       <IndexRoute component={Settings}></IndexRoute>
       <Route path="/propertylist" component={PropertyList} />
       <Route path="/addnewproperty" component={AddNewProperty} />
+      <Route path="/addpropertytemplate" component={AddPropertyTemplate} />
     </Route>
   </Route>
 );

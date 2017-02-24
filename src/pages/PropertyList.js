@@ -17,9 +17,9 @@ import PropertyListStore from "../stores/PropertyListStore";
 
 export default class PropertyList extends React.Component {
 
-  constructor(){
-    super();
-
+  constructor(props){
+    super(props);
+      console.log(props);
       this.getList = this.getList.bind(this);
       PropertyListActions.fetchPropList();
 
@@ -247,7 +247,7 @@ export default class PropertyList extends React.Component {
                     </Link>
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.view.column}>
-                    <Link className="button" to="/view">
+                    <Link className="button" to={{ pathname: '/addpropertytemplate', query: { property_id: item.property_id } }} >
                       <FloatingActionButton zDepth={0}
                                             mini={true}
                                             backgroundColor={grey200}
