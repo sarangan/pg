@@ -110,7 +110,8 @@ export default class AddNewProperty extends React.Component {
          float: 'right'
        },
        saveButton: {
-         marginLeft: 5
+         marginLeft: 5,
+         marginRight: 10
        },
        bottomDivider: {
           marginTop: '50px'
