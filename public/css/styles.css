@@ -23,6 +23,14 @@
   font-size: 0.8em;
 }
 
+.saving-cls{
+  color: green;
+  font-weight: 400;
+  margin: 10px;
+  letter-spacing: -0.2px;
+  font-size: 0.8em;
+}
+
 .control-wrapper-container{
   display: -webkit-flex; /* Safari */
   display: flex;

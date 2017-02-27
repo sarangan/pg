@@ -6,11 +6,17 @@ class PropertyTemplateStore extends EventEmitter {
   constructor() {
     super()
     this.propertyTemplate = [];
+    this.saveTemplate = null;
   }
 
 
   getTempalte() {
     return this.propertyTemplate;
+  }
+
+  getSaveTemplate() {
+    console.log(this.saveTemplate);
+    return this.saveTemplate;
   }
 
 
@@ -22,6 +28,10 @@ class PropertyTemplateStore extends EventEmitter {
         this.propertyTemplate = action.data.template;
         this.emit("change");
         break;
+      }
+      case "SAVE_PROPERTYTEMPLATE":{
+        this.saveTemplate = action.data;
+        this.emit('change');
       }
 
     }

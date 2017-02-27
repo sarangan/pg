@@ -60,7 +60,7 @@ export function addProperty(data) {
 
           dispatcher.dispatch({
             type: "ADD_PROPERTY",
-            data: response.data.status
+            data: response.data
           });
 
         })

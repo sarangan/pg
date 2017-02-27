@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Component, PropTypes } from "react";
 import {Link} from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import DatePicker from 'material-ui/DatePicker';
-import {grey400} from 'material-ui/styles/colors';
+// import {grey400} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import PageBase from '../components/layout/PageBase';
 import uitl from '../utils/utils.js'
@@ -62,23 +62,32 @@ export default class AddNewProperty extends React.Component {
     });
   };
 
+    routerWillLeave(nextLocation) {
+      // return false to prevent a transition w/o prompting the user,
+      // or return a string to allow the user to decide:
+      //if (!this.state.isSaved)
+      return 'Your work is not saved! Are you sure you want to leave?'
+    }
+    contextTypes: {
+        router: React.PropTypes.object
+      };
   handleSubmit(){
     console.log('submit');
 
     let msg = '';
 
-    if( (this.state.address_1.trim().length == 0 ) || (this.state.postalcode.trim().length == 0) ){
-      this.setState({status: 2, open: true  });
-    }
-    else{
+      if( (this.state.address_1.trim().length == 0 ) || (this.state.postalcode.trim().length == 0) ){
+        this.setState({status: 2, open: true  });
+      }
+      else{
 
-      console.log(this.state);
-      PropertyListActions.addProperty(this.state);
+        console.log(this.state);
+        PropertyListActions.addProperty(this.state);
 
-      this.setState({
-        startSending: true,
-      });
-    }
+        this.setState({
+          startSending: true,
+        });
+      }
 
 
     event.preventDefault();
@@ -92,9 +101,9 @@ export default class AddNewProperty extends React.Component {
      this.setState({
        [name]: value
      });
- }
+  }
 
- handleRequestClose = () => {
+  handleRequestClose = () => {
     this.setState({
       open: false,
     });
@@ -131,8 +140,9 @@ export default class AddNewProperty extends React.Component {
         isShowSaving = '';
       }
 
-      if (this.state.status &&  this.state.status == 1  ) {
+      if (this.state.status &&  this.state.status['status'] == 1  ) {
         isShowSaving = '';
+        this.context.router.replace('/addpropertytemplate?property_id=' + this.state.status['property_id'] );
       }
       else if(this.state.status &&  this.state.status == 2){
         isShowSaving = <div className="warning-cls">Could not save the data, Please verify your data before save</div>;
@@ -198,3 +208,7 @@ export default class AddNewProperty extends React.Component {
     );
   }
 }
+
+AddNewProperty.contextTypes = {
+  router: PropTypes.object.isRequired
+};

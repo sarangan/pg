@@ -50,7 +50,7 @@ export default class PropertyList extends React.Component {
     this.setState({
       list: PropertyListStore.getList()
     });
-}
+  }
 
 
   //is to get the status icon
@@ -247,7 +247,7 @@ export default class PropertyList extends React.Component {
                     </Link>
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.view.column}>
-                    <Link className="button" to={{ pathname: '/addpropertytemplate', query: { property_id: item.property_id } }} >
+                    <Link className="button" to={{ pathname: '/propertyroomlist', query: { property_id: item.property_id } }} >
                       <FloatingActionButton zDepth={0}
                                             mini={true}
                                             backgroundColor={grey200}

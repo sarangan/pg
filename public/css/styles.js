@@ -14,5 +14,43 @@ export default StyleSheet.create({
     },
     "page-title::first-letter": {
         "textDecoration": "underline"
+    },
+    "warning-cls": {
+        "color": "red",
+        "fontWeight": "400",
+        "marginTop": 10,
+        "marginRight": 10,
+        "marginBottom": 10,
+        "marginLeft": 10,
+        "letterSpacing": -0.2,
+        "fontSize": 0.8
+    },
+    "saving-cls": {
+        "color": "green",
+        "fontWeight": "400",
+        "marginTop": 10,
+        "marginRight": 10,
+        "marginBottom": 10,
+        "marginLeft": 10,
+        "letterSpacing": -0.2,
+        "fontSize": 0.8
+    },
+    "control-wrapper-container": {
+        "display": "flex",
+        "flexDirection": "row",
+        "flexWrap": "wrap",
+        "justifyContent": "flex-start",
+        "alignItems": "flex-start",
+        "alignContent": "flex-start",
+        "width": "100%"
+    },
+    "control-wrapper": {
+        "WebkitFlex": 1,
+        "MsFlex": 1,
+        "flex": 1,
+        "marginLeft": 30
+    },
+    "template-opt": {
+        "minWidth": 280
     }
 });

@@ -6,6 +6,7 @@ import Settings from "./pages/Settings";
 import PropertyList from "./pages/PropertyList";
 import AddNewProperty from "./pages/AddNewProperty";
 import AddPropertyTemplate from "./pages/AddPropertyTemplate";
+import PropertyRoomList from "./pages/PropertyRoomList";
 
 export default (
   <Route>
@@ -14,6 +15,7 @@ export default (
       <Route path="/propertylist" component={PropertyList} />
       <Route path="/addnewproperty" component={AddNewProperty} />
       <Route path="/addpropertytemplate" component={AddPropertyTemplate} />
+      <Route path="/propertyroomlist" component={PropertyRoomList} />
     </Route>
   </Route>
 );
