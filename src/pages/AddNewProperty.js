@@ -12,8 +12,8 @@ import uitl from '../utils/utils.js'
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
 
-import * as PropertyListActions from "../actions/PropertyListActions"; //TODO
-import PropertyListStore from "../stores/PropertyListStore";
+import * as PropertyListActions from "../actions/PropertyActions"; //TODO
+import PropertyListStore from "../stores/PropertyStore";
 
 
 export default class AddNewProperty extends React.Component {
