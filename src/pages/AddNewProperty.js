@@ -12,8 +12,8 @@ import uitl from '../utils/utils.js'
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
 
-import * as PropertyListActions from "../actions/PropertyActions"; //TODO
-import PropertyListStore from "../stores/PropertyStore";
+import * as PropertyActions from "../actions/PropertyActions"; //TODO
+import PropertyStore from "../stores/PropertyStore";
 
 
 export default class AddNewProperty extends React.Component {
@@ -37,18 +37,18 @@ export default class AddNewProperty extends React.Component {
   }
 
   componentWillMount() {
-    PropertyListStore.on("change", this.getStatus);
+    PropertyStore.on("change", this.getStatus);
   }
 
   componentWillUnmount() {
-    PropertyListStore.removeListener("change", this.getStatus);
+    PropertyStore.removeListener("change", this.getStatus);
   }
 
   getStatus() {
     console.log('property get status');
 
     this.setState({
-      status: PropertyListStore.getAddStatus()
+      status: PropertyStore.getAddStatus()
     });
 
   }
@@ -82,7 +82,7 @@ export default class AddNewProperty extends React.Component {
       else{
 
         console.log(this.state);
-        PropertyListActions.addProperty(this.state);
+        PropertyActions.addProperty(this.state);
 
         this.setState({
           startSending: true,
@@ -166,7 +166,7 @@ export default class AddNewProperty extends React.Component {
             <h4>Report Details:</h4>
 
             <SelectField floatingLabelText="Report type" value={this.state.report_type} onChange={this.handleSelectChange.bind(this)}  name="report_type">
-              <MenuItem value={null} primaryText="" />
+              <MenuItem value={null} primaryText=""/>
               <MenuItem value={"Check-in Report"}  primaryText="Check-in Report" />
 				      <MenuItem value={"Check-out Report"} primaryText="Check-out Report"/>
 				      <MenuItem value={"Inventory Report"}  primaryText="Inventory Report"/>
@@ -174,7 +174,7 @@ export default class AddNewProperty extends React.Component {
 				      <MenuItem value={"Midterm Inspection Report"}  primaryText="Midterm Inspection Report"/>
 				      <MenuItem value={"Interim Report"} primaryText="Interim Report"/>
 				      <MenuItem value={"General Overview Report"} primaryText="General Overview Report"/>
-				      <MenuItem value={"Condition Report"} primaryText="Condition Report" />
+				      <MenuItem value={"Condition Report"} primaryText="Condition Report"/>
             </SelectField>
 
             <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" value={this.state.report_date} onChange={this.handleDateChange.bind(this)}/>
