@@ -26,10 +26,18 @@ export default class PropertyRoomList extends React.Component {
     super(props);
     this.state = {
       value: 'a',
+      roomlist: [],
+      property_info: {
+        address_1: '',
+        address_2: '',
+        city: '',
+        postalcode: '',
+        report_type: '',
+        report_date: null,
+        description: '',
+        image_url: ''
+      }
     };
-
-    console.log('props');
-    console.log(props);
 
     const property_id  = props.location.query.property_id;
 
@@ -49,10 +57,8 @@ export default class PropertyRoomList extends React.Component {
   getRoomList(){
 
     this.setState({
-      roomList: PropertyRoomListStore.getRoomList()
+      roomlist: PropertyRoomListStore.getRoomList()
     });
-
-    console.log(this.state.roomList);
 
   }
 
@@ -92,71 +98,50 @@ export default class PropertyRoomList extends React.Component {
       </IconMenu>
     );
 
+    console.log(this.state.roomlist);
+
     return(
       <PageBase title="Room List" navigation="Home / Property / Room list">
 
+        <div className="control-wrapper-container">
 
-        <Tabs value={this.state.value} onChange={this.handleChange}>
-           <Tab label="Tab A" value="a" >
-             <div>
-               <h2 style={styles.headline}>Controllable Tab A</h2>
-               <p>
-                 Tabs are also controllable if you want to programmatically pass them their values.
-                 This allows for more functionality in Tabs such as not
-                 having any Tab selected or assigning them different values.
-               </p>
-             </div>
-           </Tab>
-           <Tab label="Tab B" value="b">
-             <div>
-               <h2 style={styles.headline}>Controllable Tab B</h2>
-               <p>
-                 This is another example of a controllable tab. Remember, if you
-                 use controllable Tabs, you need to give all of your tabs values or else
-                 you wont be able to select them.
-               </p>
-             </div>
-           </Tab>
-        </Tabs>
+          <div className="control-wrapper roomlist-container scroll-style">
 
+            <div className="room-list">
+              <List>
+                <Subheader inset={true}>Room list</Subheader>
 
-        <List>
-          <Subheader inset={true}>Folders</Subheader>
-          <ListItem
-            leftAvatar={<Avatar icon={<FileFolder />} />}
-            rightIcon={<ActionInfo />}
-            primaryText="Photos"
-            secondaryText="Jan 9, 2014"
-          />
-          <ListItem
-            leftAvatar={<Avatar icon={<FileFolder />} />}
-            rightIcon={<ActionInfo />}
-            primaryText="Recipes"
-            secondaryText="Jan 17, 2014"
-          />
-          <ListItem
-            leftAvatar={<Avatar icon={<FileFolder />} />}
-            rightIcon={<ActionInfo />}
-            primaryText="Work"
-            secondaryText="Jan 28, 2014"
-          />
-        </List>
-        <Divider inset={true} />
-        <List>
-          <Subheader inset={true}>Files</Subheader>
-          <ListItem
-            leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-            rightIconButton={rightIconMenu}
-            primaryText="Vacation itinerary"
-            secondaryText="Jan 20, 2014"
-          />
-          <ListItem
-            leftAvatar={<Avatar icon={<EditorInsertChart />} backgroundColor={yellow600} />}
-            rightIcon={<ActionInfo />}
-            primaryText="Kitchen remodel"
-            secondaryText="Jan 10, 2014"
-          />
-        </List>
+                  <ListItem
+                    leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                    primaryText="Property Info"
+                    secondaryText="" />
+
+                  <ListItem
+                    leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                    primaryText="General Condition"
+                    secondaryText="" />
+
+                  {this.state.roomlist.map(item =>
+
+                    <ListItem key={item.prop_master_id}
+                      leftAvatar={<Avatar icon={<FileFolder />} />}
+                      rightIconButton={rightIconMenu}
+                      primaryText={item.name}
+                      secondaryText="" />
+
+                  )}
+
+              </List>
+            </div>
+
+          </div>
+
+          <div className="control-wrapper-flex-2">
+            we are here to help you man
+          </div>
+
+        </div>
+
 
       </PageBase>
     );

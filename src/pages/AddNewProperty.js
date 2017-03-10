@@ -12,6 +12,8 @@ import uitl from '../utils/utils.js'
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
 
+import AddProperty from '../components/addproperty/AddProperty';
+
 import * as PropertyActions from "../actions/PropertyActions"; //TODO
 import PropertyStore from "../stores/PropertyStore";
 
@@ -34,6 +36,10 @@ export default class AddNewProperty extends React.Component {
 
      this.getStatus = this.getStatus.bind(this);
 
+     this.handleSelectChange = this.handleSelectChange.bind(this);
+     this.handleInputChange = this.handleInputChange.bind(this);
+     this.handleDateChange = this.handleDateChange.bind(this);
+     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -60,7 +66,7 @@ export default class AddNewProperty extends React.Component {
     this.setState({
       report_date: date,
     });
-  };
+  }
 
     routerWillLeave(nextLocation) {
       // return false to prevent a transition w/o prompting the user,
@@ -70,7 +76,8 @@ export default class AddNewProperty extends React.Component {
     }
     contextTypes: {
         router: React.PropTypes.object
-      };
+    };
+
   handleSubmit(){
     console.log('submit');
 
@@ -88,7 +95,6 @@ export default class AddNewProperty extends React.Component {
           startSending: true,
         });
       }
-
 
     event.preventDefault();
   }
@@ -155,46 +161,9 @@ export default class AddNewProperty extends React.Component {
 
           {isShowSaving}
 
-          <form>
-
-            <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} name="address_1" value={this.state.address_1} onChange={this.handleInputChange.bind(this)}/>
-            <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} name="address_2" value={this.state.address_2} onChange={this.handleInputChange.bind(this)}/>
-            <TextField  hintText="City" floatingLabelText="City" fullWidth={false} name="city" value={this.state.city} onChange={this.handleInputChange.bind(this)} />
-            <TextField  hintText="Postalcode" floatingLabelText="Postalcode" fullWidth={false} name="postalcode" value={this.state.postalcode} onChange={this.handleInputChange.bind(this)}/>
-
-            <Divider style={styles.bottomDivider}/>
-            <h4>Report Details:</h4>
-
-            <SelectField floatingLabelText="Report type" value={this.state.report_type} onChange={this.handleSelectChange.bind(this)}  name="report_type">
-              <MenuItem value={null} primaryText=""/>
-              <MenuItem value={"Check-in Report"}  primaryText="Check-in Report" />
-				      <MenuItem value={"Check-out Report"} primaryText="Check-out Report"/>
-				      <MenuItem value={"Inventory Report"}  primaryText="Inventory Report"/>
-              <MenuItem value={"Inventory and Check-in Report"} primaryText="Inventory and Check-in Report"/>
-				      <MenuItem value={"Midterm Inspection Report"}  primaryText="Midterm Inspection Report"/>
-				      <MenuItem value={"Interim Report"} primaryText="Interim Report"/>
-				      <MenuItem value={"General Overview Report"} primaryText="General Overview Report"/>
-				      <MenuItem value={"Condition Report"} primaryText="Condition Report"/>
-            </SelectField>
-
-            <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" value={this.state.report_date} onChange={this.handleDateChange.bind(this)}/>
-
-            <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  name="description" fullWidth={true} value={this.state.description} onChange={this.handleInputChange.bind(this)}/>
-
-            <div style={styles.buttons}>
-
-              <Link to="/propertylist">
-                <RaisedButton label="Cancel"/>
-              </Link>
-
-              <RaisedButton label="Save"
-                style={styles.saveButton}
-                onClick={this.handleSubmit.bind(this)}
-                primary={true}/>
-
-          </div>
-
-        </form>
+          <AddProperty address_1={this.state.address_1} address_2={this.state.address_2} handleInputChange={this.handleInputChange} city={this.state.city} postalcode={this.state.postalcode}
+            report_type={this.state.report_type} handleSelectChange={this.handleSelectChange} report_date={this.state.report_date} description={this.state.description}
+            handleDateChange = {this.handleDateChange} handleSubmit={this.handleSubmit}  />
 
         <Snackbar
           open={this.state.open}

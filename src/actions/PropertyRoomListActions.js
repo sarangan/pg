@@ -15,8 +15,7 @@ export function fetchRoomList(property_id) {
           }
         })
         .then(function (response) {
-          console.log(response);
-
+          
           dispatcher.dispatch({
             type: "GET_ROOMLIST",
             data: response.data,

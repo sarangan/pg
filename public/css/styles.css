@@ -49,6 +49,47 @@
   margin-left: 30px;
 }
 
+.control-wrapper-flex-2{
+  -webkit-flex: 2;  /* Safari 6.1+ */
+  -ms-flex: 2;  /* IE 10 */
+  flex: 2;
+}
+
 .template-opt{
   min-width: 280px;
+}
+
+.room-list{
+  height: auto;
+}
+
+.roomlist-container{
+  max-height: 600px;
+  overflow: auto;
+  margin-left: 0;
+  margin-top: 30px;
+}
+
+.scroll-style::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.scroll-style::-webkit-scrollbar{
+	width: 7px;
+	background-color: #F5F5F5;
+}
+
+.scroll-style::-webkit-scrollbar-thumb{
+	background-color: rgb(33, 150, 243);
+	border: 1px solid rgb(33, 150, 243);
+}
+
+@media (max-width: 480px) {
+  .control-wrapper-container{
+    display: block;
+  }
+  .control-wrapper , .control-wrapper-flex-2{
+    width: 100%;
+  }
 }

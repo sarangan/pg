@@ -50,7 +50,33 @@ export default StyleSheet.create({
         "flex": 1,
         "marginLeft": 30
     },
+    "control-wrapper-flex-2": {
+        "WebkitFlex": 2,
+        "MsFlex": 2,
+        "flex": 2
+    },
     "template-opt": {
         "minWidth": 280
+    },
+    "room-list": {
+        "height": "auto"
+    },
+    "roomlist-container": {
+        "maxHeight": 600,
+        "overflow": "auto",
+        "marginLeft": 0,
+        "marginTop": 30
+    },
+    "scroll-style::-webkit-scrollbar-track": {
+        "WebkitBoxShadow": "inset 0 0 6px rgba(0,0,0,0.3)",
+        "backgroundColor": "#F5F5F5"
+    },
+    "scroll-style::-webkit-scrollbar": {
+        "width": 7,
+        "backgroundColor": "#F5F5F5"
+    },
+    "scroll-style::-webkit-scrollbar-thumb": {
+        "backgroundColor": "rgb(33, 150, 243)",
+        "border": "1px solid rgb(33, 150, 243)"
     }
 });
