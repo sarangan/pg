@@ -43,9 +43,12 @@ export default class AddProperty extends React.Component {
     };
 
 
+
+
     return(
 
       <form>
+        <h3>{this.props.title}</h3>
 
         <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} name="address_1" value={this.props.address_1} onChange={this.props.handleInputChange}/>
         <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} name="address_2" value={this.props.address_2} onChange={this.props.handleInputChange}/>
@@ -67,15 +70,16 @@ export default class AddProperty extends React.Component {
           <MenuItem value={"Condition Report"} primaryText="Condition Report"/>
         </SelectField>
 
-        <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" value={this.props.report_date} onChange={this.props.handleDateChange}/>
+        <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" defaultDate={this.props.report_date} value={this.props.report_date} onChange={this.props.handleDateChange}/>
 
         <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  name="description" fullWidth={true} value={this.props.description} onChange={this.props.handleInputChange}/>
 
         <div style={styles.buttons}>
-
-          <Link to="/propertylist">
-            <RaisedButton label="Cancel"/>
-          </Link>
+          { this.props.show_cancel == true &&
+            <Link to="/propertylist">
+              <RaisedButton label="Cancel"/>
+            </Link>
+          }
 
           <RaisedButton label="Save"
             style={styles.saveButton}

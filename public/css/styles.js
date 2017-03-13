@@ -55,6 +55,12 @@ export default StyleSheet.create({
         "MsFlex": 2,
         "flex": 2
     },
+    "roomlist-right-div": {
+        "paddingTop": 20,
+        "paddingRight": 20,
+        "paddingBottom": 20,
+        "paddingLeft": 20
+    },
     "template-opt": {
         "minWidth": 280
     },
@@ -65,7 +71,8 @@ export default StyleSheet.create({
         "maxHeight": 600,
         "overflow": "auto",
         "marginLeft": 0,
-        "marginTop": 30
+        "marginTop": 30,
+        "maxWidth": 275
     },
     "scroll-style::-webkit-scrollbar-track": {
         "WebkitBoxShadow": "inset 0 0 6px rgba(0,0,0,0.3)",

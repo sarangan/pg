@@ -138,7 +138,7 @@ export default class AddNewProperty extends React.Component {
 
      };
 
-     let isShowSaving = null;
+      let isShowSaving = null;
       if (this.state.startSending &&  this.state.startSending == true  ) {
         isShowSaving = <div style={styles.tblProgress}><LinearProgress mode="indeterminate" /></div>;
       }
@@ -163,7 +163,7 @@ export default class AddNewProperty extends React.Component {
 
           <AddProperty address_1={this.state.address_1} address_2={this.state.address_2} handleInputChange={this.handleInputChange} city={this.state.city} postalcode={this.state.postalcode}
             report_type={this.state.report_type} handleSelectChange={this.handleSelectChange} report_date={this.state.report_date} description={this.state.description}
-            handleDateChange = {this.handleDateChange} handleSubmit={this.handleSubmit}  />
+            handleDateChange = {this.handleDateChange} handleSubmit={this.handleSubmit}  show_cancel={true}/>
 
         <Snackbar
           open={this.state.open}

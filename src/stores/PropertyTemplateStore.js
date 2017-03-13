@@ -32,6 +32,7 @@ class PropertyTemplateStore extends EventEmitter {
       case "SAVE_PROPERTYTEMPLATE":{
         this.saveTemplate = action.data;
         this.emit('change');
+        break;
       }
 
     }
