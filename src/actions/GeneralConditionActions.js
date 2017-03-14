@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export function fetchGeneralConditions(property_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getGeneralConditionList';
+  var url = 'http://52.39.72.94:3000/Property/getgeneralconditionlist';
   axios({
           method: 'post',
           url: url,
@@ -20,6 +20,32 @@ export function fetchGeneralConditions(property_id) {
           dispatcher.dispatch({
             type: "GET_GENERALCONDITIONLIST",
             data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}
+
+export function saveTemplate(data){
+
+  var url = 'http://52.39.72.94:3000/Property/saveTemplate';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+           },
+          data: data
+        })
+        .then(function (response) {
+          console.log(response);
+
+          dispatcher.dispatch({
+            type: "SAVE_PROPERTYTEMPLATE",
+            data: response.data.status
           });
 
         })

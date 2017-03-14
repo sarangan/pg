@@ -29,6 +29,7 @@ import PropertyStore from "../stores/PropertyStore";
 
 
 //General Conditions
+import Generalconditionlist from '../components/generalconditions/Generalconditionlist';
 import * as GeneralConditionActions from "../actions/GeneralConditionActions";
 import GeneralConditionStore from "../stores/GeneralConditionStore";
 
@@ -52,8 +53,11 @@ export default class PropertyRoomList extends React.Component {
         description: '',
         image_url: '',
       },
+      general_conditions:{
+        gen_list: []
+      },
       sidebarState: 'property_info',
-      startSending: false,
+      startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false
     };
@@ -74,6 +78,11 @@ export default class PropertyRoomList extends React.Component {
 
     //general condition
     this.getGeneralConditions = this.getGeneralConditions.bind(this);
+
+    this.propinfo_handleSelectChange = this.propinfo_handleSelectChange.bind(this);
+    this.generalconditions_handleInputChange = this.generalconditions_handleInputChange.bind(this);
+    this.generalconditions_handleSubmit = this.generalconditions_handleSubmit.bind(this);
+
   }
 
   componentWillMount(){
@@ -225,8 +234,78 @@ export default class PropertyRoomList extends React.Component {
 
   //get proeprty info from api
   getGeneralConditions(){
+
       let gen_list = GeneralConditionStore.getList();
       console.log(gen_list);
+      let generals = this.state.general_conditions;
+      generals['gen_list'] = gen_list;
+      this.setState({
+        general_conditions: generals,
+        startSending: false
+      });
+
+  }
+
+  generalconditions_handleSelectChange = (event, index, value) =>{
+
+    let [_value, _gen_id] = value.split(';');
+
+    let generals = this.state.general_conditions;
+    let gen_list = generals['gen_list'];
+    for(let i=0, l= gen_list.length; i < l ; i++ ){
+      if( gen_list[i]['prop_general_id'] == _gen_id){
+        gen_list[i]['user_input'] =  _value;
+      }
+    }
+    generals['gen_list'] = gen_list;
+    this.setState({
+        general_conditions: generals
+    });
+
+  }
+
+  //for saving general conditions
+  generalconditions_handleSubmit(){
+
+    let generals = this.state.general_conditions;
+    let gen_list = generals['gen_list'];
+
+    if( (property_info.address_1.trim().length == 0 ) || (property_info.postalcode.trim().length == 0) ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+
+      PropertyActions.updateProperty(this.state.property_id, this.state.property_info);
+
+      this.setState({
+        startSending: true
+      });
+
+    }
+
+    event.preventDefault();
+
+  }
+
+  //input change
+  generalconditions_handleInputChange(event){
+
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+    let generals = this.state.general_conditions;
+    let gen_list = generals['gen_list'];
+    for(let i=0, l= gen_list.length; i < l ; i++ ){
+      if( gen_list[i]['prop_general_id'] == name){
+        //we found the id so set it
+        gen_list[i]['comment'] =  value;
+      }
+    }
+    generals['gen_list'] = gen_list;
+    this.setState({
+        general_conditions: generals
+    });
+
   }
   /*
   * GENERAL CONDITION LIST--------------------------------------------END----------------------------------------------------------------
@@ -243,9 +322,15 @@ export default class PropertyRoomList extends React.Component {
 
     if (id == 'property_info') {
       PropertyActions.getProperty(this.state.property_id);
+      this.setState({
+        startSending: true
+      });
     }
     else if(id == 'general_condition'){
       GeneralConditionActions.fetchGeneralConditions(this.state.property_id);
+      this.setState({
+        startSending: true
+      });
     }
 
   }
@@ -289,13 +374,17 @@ export default class PropertyRoomList extends React.Component {
     //this is where right side div get rendered
     let right_div = null;
 
-    if (this.state.sidebarState == 'property_info') {
+    if(this.state.sidebarState == 'property_info') {
 
       right_div = <AddProperty address_1={this.state.property_info.address_1} address_2={this.state.property_info.address_2}
         city={this.state.property_info.city} postalcode={this.state.property_info.postalcode}
         report_type={this.state.property_info.report_type} report_date={this.state.property_info.report_date} description={this.state.property_info.description}
         handleInputChange={this.propinfo_handleInputChange} handleDateChange = {this.propinfo_handleDateChange} handleSubmit={this.propinfo_handleSubmit}  handleSelectChange={this.propinfo_handleSelectChange}
         title="Update Property info" show_cancel={false} />
+    }
+    else if(this.state.sidebarState == 'general_condition'){
+      right_div = <Generalconditionlist list={this.state.general_conditions.gen_list} title="General conditions"
+        handleGeneralSubmit={this.generalconditions_handleSubmit} handleInputChange={this.generalconditions_handleInputChange} handleSelectChange={this.generalconditions_handleSelectChange}/>
     }
 
 
@@ -335,9 +424,12 @@ export default class PropertyRoomList extends React.Component {
 
           </div>
 
-          <div className="control-wrapper-flex-2 roomlist-right-div">
-            {isShowSaving}
-            {right_div}
+          <div className="control-wrapper-flex-2 roomlist-right-div scroll-style">
+            <div className="roomlist-right-wrapper">
+              {isShowSaving}
+              {right_div}
+            </div>
+
           </div>
 
         </div>

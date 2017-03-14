@@ -16,7 +16,7 @@ class GeneralConditionStore extends EventEmitter {
     switch(action.type) {
 
       case "GET_GENERALCONDITIONLIST": {
-        this.gen_list = action.data;
+        this.gen_list = action.data.gen_list;
         this.emit("change");
         break;
       }

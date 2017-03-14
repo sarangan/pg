@@ -57,6 +57,12 @@
 
 .roomlist-right-div{
   padding: 20px;
+  max-height: 650px;
+  overflow: auto;
+}
+
+.roomlist-right-wrapper{
+    height: auto;
 }
 
 .template-opt{
@@ -73,6 +79,16 @@
   margin-left: 0;
   margin-top: 30px;
   max-width: 275px;
+}
+
+.gen-condition-title{
+  float: left;
+}
+
+.gen-condition-title:after{
+  content: '';
+  display: table;
+  clear: both;
 }
 
 .scroll-style::-webkit-scrollbar-track{

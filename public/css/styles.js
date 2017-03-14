@@ -59,7 +59,12 @@ export default StyleSheet.create({
         "paddingTop": 20,
         "paddingRight": 20,
         "paddingBottom": 20,
-        "paddingLeft": 20
+        "paddingLeft": 20,
+        "maxHeight": 650,
+        "overflow": "auto"
+    },
+    "roomlist-right-wrapper": {
+        "height": "auto"
     },
     "template-opt": {
         "minWidth": 280
@@ -73,6 +78,14 @@ export default StyleSheet.create({
         "marginLeft": 0,
         "marginTop": 30,
         "maxWidth": 275
+    },
+    "gen-condition-title": {
+        "float": "left"
+    },
+    "gen-condition-title:after": {
+        "content": "''",
+        "display": "table",
+        "clear": "both"
     },
     "scroll-style::-webkit-scrollbar-track": {
         "WebkitBoxShadow": "inset 0 0 6px rgba(0,0,0,0.3)",
