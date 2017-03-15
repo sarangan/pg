@@ -69,8 +69,7 @@ export function updateProperty(property_id, data) {
           data: data
         })
         .then(function (response) {
-          console.log(response);
-
+          
           dispatcher.dispatch({
             type: "UPDATE_PROPERTY",
             data: response.data

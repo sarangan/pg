@@ -15,8 +15,7 @@ export function fetchGeneralConditions(property_id) {
           }
         })
         .then(function (response) {
-          console.log(response);
-
+          
           dispatcher.dispatch({
             type: "GET_GENERALCONDITIONLIST",
             data: response.data,
@@ -29,23 +28,25 @@ export function fetchGeneralConditions(property_id) {
 
 }
 
-export function saveTemplate(data){
+export function updateGeneralCondition(property_id, data){
 
-  var url = 'http://52.39.72.94:3000/Property/saveTemplate';
+  var url = 'http://52.39.72.94:3000/Property/updategeneralcondition';
   axios({
           method: 'post',
           url: url,
           headers: {
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
            },
-          data: data
+          data: {
+            property_id,
+            gen_list: data
+          }
         })
         .then(function (response) {
-          console.log(response);
 
           dispatcher.dispatch({
-            type: "SAVE_PROPERTYTEMPLATE",
-            data: response.data.status
+            type: "UPDATE_GENERALCONDITIONLIST",
+            data: response.data
           });
 
         })

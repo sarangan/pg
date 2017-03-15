@@ -81,8 +81,6 @@ export default class AddNewProperty extends React.Component {
   handleSubmit(){
     console.log('submit');
 
-    let msg = '';
-
       if( (this.state.address_1.trim().length == 0 ) || (this.state.postalcode.trim().length == 0) ){
         this.setState({status: 2, open: true  });
       }

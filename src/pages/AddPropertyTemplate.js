@@ -16,22 +16,19 @@ export default class AddPropertyTemplate extends React.Component {
 
       constructor(props){
         super(props);
-
-        console.log(props);
-        const property_id  = props.location.query.property_id;
-
-        this.getTemplate = this.getTemplate.bind(this);
-        this.getStatus = this.getStatus.bind(this);
-
-        PropertyTemplateActions.fetchTempalte(property_id);
+        this.props = props;
+        const property_id  = this.props.location.query.property_id;
 
         this.state={
             property_id: property_id,
-            template: PropertyTemplateStore.getTempalte(),
+            template: [],
             nums: [],
             options: []
         };
 
+        this.getTemplate = this.getTemplate.bind(this);
+        this.getStatus = this.getStatus.bind(this);
+        PropertyTemplateActions.fetchTempalte(property_id);
       }
 
       handleInputChange(event){
@@ -75,6 +72,9 @@ export default class AddPropertyTemplate extends React.Component {
       componentWillMount() {
         PropertyTemplateStore.on("change", this.getTemplate);
         PropertyTemplateStore.on("change", this.getStatus);
+
+
+
       }
 
       componentWillUnmount() {

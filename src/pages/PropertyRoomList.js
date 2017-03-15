@@ -33,6 +33,12 @@ import Generalconditionlist from '../components/generalconditions/Generalconditi
 import * as GeneralConditionActions from "../actions/GeneralConditionActions";
 import GeneralConditionStore from "../stores/GeneralConditionStore";
 
+//sub items list
+import SubItemsList from '../components/subitems/SubItemsList';
+import * as SubItemsActions from "../actions/SubItemsActions";
+import SubItemsStore from "../stores/SubItemsStore";
+
+
 export default class PropertyRoomList extends React.Component {
 
   constructor(props){
@@ -78,6 +84,7 @@ export default class PropertyRoomList extends React.Component {
 
     //general condition
     this.getGeneralConditions = this.getGeneralConditions.bind(this);
+    this.getGeneralConditionUpdateStatus = this.getGeneralConditionUpdateStatus.bind(this);
 
     this.propinfo_handleSelectChange = this.propinfo_handleSelectChange.bind(this);
     this.generalconditions_handleInputChange = this.generalconditions_handleInputChange.bind(this);
@@ -92,6 +99,7 @@ export default class PropertyRoomList extends React.Component {
     PropertyStore.on("change", this.getPropUpdateStatus);
 
     GeneralConditionStore.on("change", this.getGeneralConditions);
+    GeneralConditionStore.on("change", this.getGeneralConditionUpdateStatus);
   }
 
   componentWillUnmount(){
@@ -101,6 +109,7 @@ export default class PropertyRoomList extends React.Component {
     PropertyStore.removeListener("change", this.getPropUpdateStatus);
 
     GeneralConditionStore.removeListener("change", this.getGeneralConditions);
+    GeneralConditionStore.removeListener("change", this.getGeneralConditionUpdateStatus);
   }
 
   getRoomList(){
@@ -156,6 +165,7 @@ export default class PropertyRoomList extends React.Component {
 
   }
 
+  //get status after updating the property records
   getPropUpdateStatus() {
     console.log('property update status');
     let status =  PropertyStore.getUpdateStatus();
@@ -228,7 +238,7 @@ export default class PropertyRoomList extends React.Component {
 
 
   /*
-  * GENERAL CONDITION LIST--------------------------------------------START----------------------------------------------------------------
+  * GENERAL CONDITION LIST--------------------------------------------START-------------------------------------------------------
   *
   */
 
@@ -270,12 +280,12 @@ export default class PropertyRoomList extends React.Component {
     let generals = this.state.general_conditions;
     let gen_list = generals['gen_list'];
 
-    if( (property_info.address_1.trim().length == 0 ) || (property_info.postalcode.trim().length == 0) ){
+    if( gen_list.length == 0 ){
       this.setState({showErrorSnack: true  });
     }
     else{
 
-      PropertyActions.updateProperty(this.state.property_id, this.state.property_info);
+      GeneralConditionActions.updateGeneralCondition(this.state.property_id, gen_list);
 
       this.setState({
         startSending: true
@@ -307,8 +317,36 @@ export default class PropertyRoomList extends React.Component {
     });
 
   }
+
+  //get the general condition update status
+  getGeneralConditionUpdateStatus() {
+
+    let status =  GeneralConditionStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
   /*
   * GENERAL CONDITION LIST--------------------------------------------END----------------------------------------------------------------
+  *
+  */
+
+
+  /*
+  * SUB ITEMS LIST--------------------------------------------START-------------------------------------------------------
+  *
+  */
+
+
+
+  /*
+  * SUB ITEMS LIST--------------------------------------------END-------------------------------------------------------
   *
   */
 

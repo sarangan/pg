@@ -5,10 +5,15 @@ class GeneralConditionStore extends EventEmitter {
   constructor() {
     super();
     this.gen_list = [];
+    this.updateStatusGenList = null;
   }
 
   getList(){
     return this.gen_list;
+  }
+
+  getUpdateStatus() {
+    return this.updateStatusGenList;
   }
 
   handleActions(action) {
@@ -18,6 +23,12 @@ class GeneralConditionStore extends EventEmitter {
       case "GET_GENERALCONDITIONLIST": {
         this.gen_list = action.data.gen_list;
         this.emit("change");
+        break;
+      }
+
+      case "UPDATE_GENERALCONDITIONLIST": {
+        this.updateStatusGenList = action.data.status == 1? true: false;
+        this.emit('change');
         break;
       }
 

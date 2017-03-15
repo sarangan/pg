@@ -38,7 +38,7 @@ export default class Generalconditionlist extends React.Component {
          textAlign: 'center'
        },
        subheader: {
-         margin: '30px 20px 0 0',
+         margin: '20px 20px 0 0',
          minWidth: '170px'
        },
        commentbox: {
