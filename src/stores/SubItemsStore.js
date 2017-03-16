@@ -27,7 +27,7 @@ class SubItemsStore extends EventEmitter {
 
 }
 
-const generalConditionStore = new GeneralConditionStore;
-dispatcher.register(generalConditionStore.handleActions.bind(generalConditionStore));
+const subItemsStore = new SubItemsStore;
+dispatcher.register(subItemsStore.handleActions.bind(subItemsStore));
 
-export default generalConditionStore;
+export default subItemsStore;

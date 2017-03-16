@@ -74,7 +74,7 @@
 }
 
 .roomlist-container{
-  max-height: 600px;
+  max-height: 800px;
   overflow: auto;
   margin-left: 0;
   margin-top: 30px;
@@ -85,7 +85,21 @@
   float: left;
 }
 
-.gen-condition-title:after{
+.gen-condition-title::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.float-left{
+  float: left;
+}
+.float-left::after{
+  content: '';
+  display: table;
+  clear: both;
+}
+.clear-float{
   content: '';
   display: table;
   clear: both;

@@ -38,6 +38,11 @@ import SubItemsList from '../components/subitems/SubItemsList';
 import * as SubItemsActions from "../actions/SubItemsActions";
 import SubItemsStore from "../stores/SubItemsStore";
 
+//single item
+import SingleItem from '../components/singleitem/SingleItem';
+import * as SingleItemActions from "../actions/SingleItemActions";
+import SingleItemStore from "../stores/SingleItemStore";
+
 
 export default class PropertyRoomList extends React.Component {
 
@@ -62,10 +67,11 @@ export default class PropertyRoomList extends React.Component {
       general_conditions:{
         gen_list: []
       },
-      sidebarState: 'property_info',
+      sidebarState: 'PROP',
       startSending: true,
       showErrorSnack: false,
-      showSuccessSnack: false
+      showSuccessSnack: false,
+      formTitle: 'Update Property info'
     };
 
     this.getRoomList = this.getRoomList.bind(this);
@@ -90,6 +96,8 @@ export default class PropertyRoomList extends React.Component {
     this.generalconditions_handleInputChange = this.generalconditions_handleInputChange.bind(this);
     this.generalconditions_handleSubmit = this.generalconditions_handleSubmit.bind(this);
 
+    //single item
+    this.getSingleItem = this.getSingleItem.bind(this);
   }
 
   componentWillMount(){
@@ -100,6 +108,8 @@ export default class PropertyRoomList extends React.Component {
 
     GeneralConditionStore.on("change", this.getGeneralConditions);
     GeneralConditionStore.on("change", this.getGeneralConditionUpdateStatus);
+
+    SingleItemStore.on("change", this.getSingleItem);
   }
 
   componentWillUnmount(){
@@ -110,6 +120,8 @@ export default class PropertyRoomList extends React.Component {
 
     GeneralConditionStore.removeListener("change", this.getGeneralConditions);
     GeneralConditionStore.removeListener("change", this.getGeneralConditionUpdateStatus);
+
+    SingleItemStore.removeListener("change", this.getSingleItem);
   }
 
   getRoomList(){
@@ -350,28 +362,86 @@ export default class PropertyRoomList extends React.Component {
   *
   */
 
+  /*
+  * SINGLE ITEM--------------------------------------------START-------------------------------------------------------
+  *
+  */
+  //get single item from api
+  getSingleItem(){
+
+      let single_item = SingleItemStore.getItem();
+      console.log(single_item);
+      // let generals = this.state.general_conditions;
+      // generals['gen_list'] = gen_list;
+      // this.setState({
+      //   general_conditions: generals,
+      //   startSending: false
+      // });
+
+  }
+
+
+  /*
+  * SINGLE ITEM--------------------------------------------END-------------------------------------------------------
+  *
+  */
+
 
   //handles sidebar items click
-  sidebarClick = (id) => {
-    console.log(id);
+  sidebarClick = (id, title, item_id) => {
+
     this.setState({
-      sidebarState: id
+      sidebarState: id,
+      formTitle: title
     });
 
-    if (id == 'property_info') {
+    if (id == 'PROP') {
+      this.setState({
+        startSending: true
+      });
+
       PropertyActions.getProperty(this.state.property_id);
-      this.setState({
-        startSending: true
-      });
+
     }
-    else if(id == 'general_condition'){
-      GeneralConditionActions.fetchGeneralConditions(this.state.property_id);
+    else if(id == 'GEN'){
       this.setState({
         startSending: true
       });
+
+      GeneralConditionActions.fetchGeneralConditions(this.state.property_id);
+
+    }
+    else if(id == 'SUB'){
+
+    }
+    else if(id == 'METER'){
+
+    }
+    else if(id == 'ITEM'){
+      SingleItemActions.fetchSingleItem(this.state.property_id, item_id, 'ITEM');
     }
 
   }
+
+  getTemplateType =(template) =>{
+    let template_type ='';
+    switch(template){
+      case 'SUB':
+        template_type =  'sub_items';
+        break;
+
+      case 'METER':
+        template_type =  'meter_items';
+        break;
+
+      case 'ITEM':
+        template_type =  'single_item';
+        break;
+    }
+
+    return template_type;
+  }
+
 
   render() {
 
@@ -409,20 +479,44 @@ export default class PropertyRoomList extends React.Component {
       isShowSaving = '';
     }
 
+
     //this is where right side div get rendered
     let right_div = null;
 
-    if(this.state.sidebarState == 'property_info') {
+    if(this.state.sidebarState == 'PROP') {
 
       right_div = <AddProperty address_1={this.state.property_info.address_1} address_2={this.state.property_info.address_2}
         city={this.state.property_info.city} postalcode={this.state.property_info.postalcode}
         report_type={this.state.property_info.report_type} report_date={this.state.property_info.report_date} description={this.state.property_info.description}
         handleInputChange={this.propinfo_handleInputChange} handleDateChange = {this.propinfo_handleDateChange} handleSubmit={this.propinfo_handleSubmit}  handleSelectChange={this.propinfo_handleSelectChange}
-        title="Update Property info" show_cancel={false} />
+        title={this.state.formTitle} show_cancel={false} />
     }
-    else if(this.state.sidebarState == 'general_condition'){
-      right_div = <Generalconditionlist list={this.state.general_conditions.gen_list} title="General conditions"
+    else if(this.state.sidebarState == 'GEN'){
+      right_div = <Generalconditionlist list={this.state.general_conditions.gen_list} title={this.state.formTitle}
         handleGeneralSubmit={this.generalconditions_handleSubmit} handleInputChange={this.generalconditions_handleInputChange} handleSelectChange={this.generalconditions_handleSelectChange}/>
+    }
+    else if(this.state.sidebarState == 'SUB'){
+      right_div = <SubItemsList />
+    }
+    else if(this.state.sidebarState == 'ITEM'){
+      right_div = <SingleItem  type="ITEM" title={this.state.formTitle}/>
+    }
+
+    let sidebaritems = [];
+    for(let i=0, l = this.state.roomlist.length; i < l; i++){
+      let item = this.state.roomlist[i];
+      let temp_type = this.getTemplateType(item.template_type);
+
+      sidebaritems.push(
+        <ListItem key={item.prop_master_id}
+          leftAvatar={<Avatar icon={<FileFolder />} />}
+          rightIconButton={rightIconMenu}
+          primaryText={item.name}
+          secondaryText=""
+           onClick={this.sidebarClick.bind(this, item.template_type, item.name , item.prop_master_id)}
+          />
+      );
+
     }
 
 
@@ -440,22 +534,14 @@ export default class PropertyRoomList extends React.Component {
                   <ListItem
                     leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
                     primaryText="Property Info"
-                    secondaryText="" onClick={this.sidebarClick.bind(this, 'property_info')}/>
+                    secondaryText="" onClick={this.sidebarClick.bind(this, 'PROP', 'Update Property info', '')}/>
 
                   <ListItem
                     leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
                     primaryText="General Condition"
-                    secondaryText="" onClick={this.sidebarClick.bind(this, 'general_condition')}/>
+                    secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')}/>
 
-                  {this.state.roomlist.map(item =>
-
-                    <ListItem key={item.prop_master_id}
-                      leftAvatar={<Avatar icon={<FileFolder />} />}
-                      rightIconButton={rightIconMenu}
-                      primaryText={item.name}
-                      secondaryText="" />
-
-                  )}
+                  {sidebaritems}
 
               </List>
             </div>

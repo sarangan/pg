@@ -73,7 +73,7 @@ export default StyleSheet.create({
         "height": "auto"
     },
     "roomlist-container": {
-        "maxHeight": 600,
+        "maxHeight": 800,
         "overflow": "auto",
         "marginLeft": 0,
         "marginTop": 30,
@@ -82,7 +82,20 @@ export default StyleSheet.create({
     "gen-condition-title": {
         "float": "left"
     },
-    "gen-condition-title:after": {
+    "gen-condition-title::after": {
+        "content": "''",
+        "display": "table",
+        "clear": "both"
+    },
+    "float-left": {
+        "float": "left"
+    },
+    "float-left::after": {
+        "content": "''",
+        "display": "table",
+        "clear": "both"
+    },
+    "clear-float": {
         "content": "''",
         "display": "table",
         "clear": "both"
