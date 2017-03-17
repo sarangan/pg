@@ -43,6 +43,10 @@ import SingleItem from '../components/singleitem/SingleItem';
 import * as SingleItemActions from "../actions/SingleItemActions";
 import SingleItemStore from "../stores/SingleItemStore";
 
+//meter item
+import MeterItems from '../components/meteritems/MeterItems';
+import * as MeterItemActions from "../actions/MeterItemActions";
+import MeterItemsStore from "../stores/MeterItemsStore";
 
 export default class PropertyRoomList extends React.Component {
 
@@ -66,6 +70,13 @@ export default class PropertyRoomList extends React.Component {
       },
       general_conditions:{
         gen_list: []
+      },
+      single_item: {
+        reading_value: '',
+        option: '',
+        description: '',
+        comment: '',
+        prop_feedback_id: ''
       },
       sidebarState: 'PROP',
       startSending: true,
@@ -98,6 +109,10 @@ export default class PropertyRoomList extends React.Component {
 
     //single item
     this.getSingleItem = this.getSingleItem.bind(this);
+    this.getSingleItemUpdateStatus = this.getSingleItemUpdateStatus.bind(this);
+
+    this.singleItem_handleInputChange = this.singleItem_handleInputChange.bind(this);
+    this.singleItem_handleSubmit = this.singleItem_handleSubmit.bind(this);
   }
 
   componentWillMount(){
@@ -110,6 +125,7 @@ export default class PropertyRoomList extends React.Component {
     GeneralConditionStore.on("change", this.getGeneralConditionUpdateStatus);
 
     SingleItemStore.on("change", this.getSingleItem);
+    SingleItemStore.on("change", this.getSingleItemUpdateStatus);
   }
 
   componentWillUnmount(){
@@ -122,6 +138,7 @@ export default class PropertyRoomList extends React.Component {
     GeneralConditionStore.removeListener("change", this.getGeneralConditionUpdateStatus);
 
     SingleItemStore.removeListener("change", this.getSingleItem);
+    SingleItemStore.removeListener("change", this.getSingleItemUpdateStatus);
   }
 
   getRoomList(){
@@ -370,16 +387,62 @@ export default class PropertyRoomList extends React.Component {
   getSingleItem(){
 
       let single_item = SingleItemStore.getItem();
-      console.log(single_item);
-      // let generals = this.state.general_conditions;
-      // generals['gen_list'] = gen_list;
-      // this.setState({
-      //   general_conditions: generals,
-      //   startSending: false
-      // });
+      let temp = {
+        reading_value: '',
+        option: single_item.option,
+        description: single_item.description,
+        comment: single_item.comment,
+        prop_feedback_id: single_item.prop_feedback_id
+      };
+
+      this.setState({
+         single_item: temp,
+         startSending: false
+      });
+      this.forceUpdate();
 
   }
 
+  singleItem_handleInputChange(event){
+     const target = event.target;
+     const value = target.type === 'checkbox' ? target.checked : target.value;
+     const name = target.name;
+
+     let single_item = this.state.single_item;
+     single_item[name] = value;
+     this.setState({
+         single_item: single_item
+     });
+
+  }
+
+
+  //for saving single item
+  singleItem_handleSubmit(){
+
+    let single_item = this.state.single_item;
+    this.setState({
+      startSending: true
+    });
+
+    SingleItemActions.updateSingleItem(this.state.property_id, single_item);
+
+    event.preventDefault();
+
+  }
+
+  getSingleItemUpdateStatus(){
+
+    let status =  SingleItemStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
 
   /*
   * SINGLE ITEM--------------------------------------------END-------------------------------------------------------
@@ -418,28 +481,12 @@ export default class PropertyRoomList extends React.Component {
 
     }
     else if(id == 'ITEM'){
+      this.setState({
+        startSending: true
+      });
       SingleItemActions.fetchSingleItem(this.state.property_id, item_id, 'ITEM');
     }
 
-  }
-
-  getTemplateType =(template) =>{
-    let template_type ='';
-    switch(template){
-      case 'SUB':
-        template_type =  'sub_items';
-        break;
-
-      case 'METER':
-        template_type =  'meter_items';
-        break;
-
-      case 'ITEM':
-        template_type =  'single_item';
-        break;
-    }
-
-    return template_type;
   }
 
 
@@ -499,13 +546,15 @@ export default class PropertyRoomList extends React.Component {
       right_div = <SubItemsList />
     }
     else if(this.state.sidebarState == 'ITEM'){
-      right_div = <SingleItem  type="ITEM" title={this.state.formTitle}/>
+      right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>
+    }
+    else if(this.state.sidebarState == 'METER'){
+      right_div = <SingleItem title={this.state.formTitle} />
     }
 
     let sidebaritems = [];
     for(let i=0, l = this.state.roomlist.length; i < l; i++){
       let item = this.state.roomlist[i];
-      let temp_type = this.getTemplateType(item.template_type);
 
       sidebaritems.push(
         <ListItem key={item.prop_master_id}
@@ -513,8 +562,8 @@ export default class PropertyRoomList extends React.Component {
           rightIconButton={rightIconMenu}
           primaryText={item.name}
           secondaryText=""
-           onClick={this.sidebarClick.bind(this, item.template_type, item.name , item.prop_master_id)}
-          />
+          onClick={this.sidebarClick.bind(this, item.template_type, item.name , item.prop_master_id)}
+        />
       );
 
     }

@@ -1,8 +1,8 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
 
-export function fetchSingleItem(property_id, prop_master_id, type) {
-  var url = 'http://52.39.72.94:3000/Property/getSingleItem';
+export function fetchMeterItems(property_id, prop_master_id, type) {
+  var url = 'http://52.39.72.94:3000/Property/getMeterItems';
   axios({
           method: 'post',
           url: url,
@@ -29,7 +29,7 @@ export function fetchSingleItem(property_id, prop_master_id, type) {
 }
 
 
-export function updateSingleItem(property_id, data){
+export function updateMeterItems(property_id, data){
 
 
   var url = 'http://52.39.72.94:3000/Property/updateSingleItem';

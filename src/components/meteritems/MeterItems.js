@@ -1,24 +1,15 @@
 import React, { Component, PropTypes } from "react";
 import RaisedButton from 'material-ui/RaisedButton';
 
-import SingleItemElement from './SingleItemElement';
+import SingleItemElement from '../singleitem/SingleItemElement';
 
-export default class SingleItem extends React.Component {
+export default class MeterItems extends React.Component {
 
   constructor(props){
     super(props);
     this.props = props;
 
-    this.state ={
-      optlist: [
-                  {value: 'N/A', text: 'N/A'},
-                  {value: 'USED', text: 'Used'},
-                  {value: 'NEW', text: 'New'},
-                  {value: 'POOR', text: 'Poor'},
-                  {value: 'DAMAGE', text: 'Damage'}
-                ]
-
-    };
+    this.state ={};
   }
 
   componentWillMount(){
@@ -42,7 +33,7 @@ export default class SingleItem extends React.Component {
     return(
       <form>
 
-        <SingleItemElement optlist={this.state.optlist} type="ITEM" title={this.props.title} data={this.props.data} handleInputChange={this.props.handleInputChange}/>
+        <SingleItemElement type="METER" title={this.props.title} data={this.props.data} handleInputChange={this.props.handleInputChange}/>
 
         <div style={styles.buttons}>
 

@@ -12,14 +12,26 @@ export default class SingleItemElement extends React.Component {
   constructor(props){
     super(props);
     this.props = props;
+    this.state = {
+      opt: 'N/A'
+    };
 
-    this.state = {};
   }
 
   componentWillMount(){
+
+  //  console.log( this.props.opt);
   }
 
   componentWillUnmount(){
+  }
+
+  componentWillReceiveProps(){
+    let myopt = this.props.data.option;
+    myopt = String(myopt).toUpperCase();
+    this.setState({
+        opt: myopt
+    });
   }
 
   render() {
@@ -47,42 +59,44 @@ export default class SingleItemElement extends React.Component {
       }
     };
 
+    let meterorItem = null;
+    if(this.props.type == 'METER' ){
+      meterorItem = <div>
+        <h4>Meter Reading:</h4>
+        <TextField  hintText="Meter Reading" floatingLabelText="Meter Reading" fullWidth={true} name="reading_value" value={this.props.reading_value} onChange={this.props.handleInputChange}/>
+      </div>
+    }
+    else if( this.props.type == 'ITEM' ){
+      meterorItem= <div>
+                      <h4>Condition:</h4>
+                      <RadioButtonGroup name="condition" defaultSelected={this.props.data.option} valueSelected={this.state.opt} className="clear-float" onChange={this.props.handleInputChange} name="option">
+                        {this.props.optlist.map( (item, index) =>
+                          <RadioButton key={index}
+                            value={item.value}
+                            label={item.text}
+                            style={styles.radioButton} className="float-left"
+                          />
+                        )}
+                      </RadioButtonGroup>
+                    </div>;
+    }
+
 
     return(
       <div>
         <h3>{this.props.title}</h3>
 
-        {this.props.type == 'ITEM' &&
-          <div>
-            <h4>Condition:</h4>
-            <RadioButtonGroup name="shipSpeed" defaultSelected="light" className="clear-float">
-              {this.props.optlist.map( (item, index) =>
-                <RadioButton key={index}
-                  value={item.value}
-                  label={item.text}
-                  style={styles.radioButton} className="float-left"
-                />
-              )}
-            </RadioButtonGroup>
-          </div>
-        }
-
-        {this.props.type == 'METER' &&
-          <div>
-            <h4>Meter Reading:</h4>
-            <TextField  hintText="Meter Reading" floatingLabelText="Meter Reading" fullWidth={true} name="reading_value" value={this.props.reading_value} onChange={this.props.singleItemhandleInputChange}/>
-          </div>
-        }
+        {meterorItem}
 
         <Divider style={styles.bottomDivider}/>
 
         <h4>Description:</h4>
-        <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name="description" value={this.props.description} onChange={this.props.singleItemhandleInputChange}/>
+        <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name="description" value={this.props.data.description} onChange={this.props.handleInputChange}/>
 
         <Divider style={styles.bottomDivider}/>
 
         <h4>Comment:</h4>
-        <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name="description" fullWidth={true} value={this.props.comment} onChange={this.props.singleItemhandleInputChange}/>
+        <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name="comment" fullWidth={true} value={this.props.data.comment} onChange={this.props.handleInputChange}/>
 
 
         <Divider style={styles.bottomDivider}/>
