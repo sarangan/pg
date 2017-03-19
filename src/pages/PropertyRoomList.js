@@ -78,6 +78,9 @@ export default class PropertyRoomList extends React.Component {
         comment: '',
         prop_feedback_id: ''
       },
+      meter_items:{
+        meter_list: []
+      },
       sidebarState: 'PROP',
       startSending: true,
       showErrorSnack: false,
@@ -113,6 +116,13 @@ export default class PropertyRoomList extends React.Component {
 
     this.singleItem_handleInputChange = this.singleItem_handleInputChange.bind(this);
     this.singleItem_handleSubmit = this.singleItem_handleSubmit.bind(this);
+
+    //mater items
+    this.getMeterItems = this.getMeterItems.bind(this);
+
+    this.meterItems_handleInputChange = this.meterItems_handleInputChange.bind(this);
+    this.meterItems_handleSubmit = this.meterItems_handleSubmit.bind(this);
+
   }
 
   componentWillMount(){
@@ -126,6 +136,9 @@ export default class PropertyRoomList extends React.Component {
 
     SingleItemStore.on("change", this.getSingleItem);
     SingleItemStore.on("change", this.getSingleItemUpdateStatus);
+
+    MeterItemsStore.on("change", this.getMeterItems);
+    MeterItemsStore.on("change", this.getMeterItemsUpdateStatus);
   }
 
   componentWillUnmount(){
@@ -139,6 +152,9 @@ export default class PropertyRoomList extends React.Component {
 
     SingleItemStore.removeListener("change", this.getSingleItem);
     SingleItemStore.removeListener("change", this.getSingleItemUpdateStatus);
+
+    MeterItemsStore.removeListener("change", this.getMeterItems);
+    MeterItemsStore.removeListener("change", this.getMeterItemsUpdateStatus);
   }
 
   getRoomList(){
@@ -449,6 +465,92 @@ export default class PropertyRoomList extends React.Component {
   *
   */
 
+  /*
+  * METER LIST--------------------------------------------START-------------------------------------------------------
+  *
+  */
+
+  //get meter items
+  getMeterItems(){
+
+    let meter_items_list = MeterItemsStore.getItems();
+    console.log(meter_items);
+
+    let meter_items = this.state.meter_items;
+    meter_items['meter_list'] = meter_items_list;
+    this.setState({
+      meter_items: meter_items,
+      startSending: false
+    });
+
+  }
+
+  //input change
+  meterItems_handleInputChange(event){
+
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+    let [meter_id , field ] = target.name.split(';');
+
+    let meter_items = this.state.meter_items;
+    let meter_list = meter_items['meter_list'];
+
+    for(let i=0, l= meter_list.length; i < l ; i++ ){
+      if( meter_list[i]['prop_meter_id'] == meter_id){
+        //we found the id so set it
+        meter_list[i][field] =  value;
+      }
+    }
+    meter_items['meter_list'] = meter_list;
+    this.setState({
+        meter_items: meter_items
+    });
+
+  }
+
+  //save meter item
+  meterItems_handleSubmit(){
+
+    let meter_items = this.state.meter_items;
+    let meter_list = meter_items['meter_list'];
+
+    if( meter_list.length == 0 ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+      console.log(meter_list);
+      //MeterItemActions.updateMeterItems(this.state.property_id, meter_list);
+
+      this.setState({
+        startSending: true
+      });
+
+    }
+
+    event.preventDefault();
+
+  }
+
+  getMeterItemsUpdateStatus(){
+
+    let status =  MeterItemsStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+
+  /*
+  * METER LIST--------------------------------------------END-------------------------------------------------------
+  *
+  */
+
 
   //handles sidebar items click
   sidebarClick = (id, title, item_id) => {
@@ -478,7 +580,10 @@ export default class PropertyRoomList extends React.Component {
 
     }
     else if(id == 'METER'){
-
+      this.setState({
+        startSending: true
+      });
+      MeterItemActions.fetchMeterItems(this.state.property_id);
     }
     else if(id == 'ITEM'){
       this.setState({
@@ -549,7 +654,7 @@ export default class PropertyRoomList extends React.Component {
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>
     }
     else if(this.state.sidebarState == 'METER'){
-      right_div = <SingleItem title={this.state.formTitle} />
+      right_div = <MeterItems list={this.state.meter_items.meter_list} handleInputChange={this.meterItems_handleInputChange} handleSubmit={this.meterItems_handleSubmit}/>
     }
 
     let sidebaritems = [];

@@ -30,10 +30,27 @@ export default class MeterItems extends React.Component {
       }
     };
 
+    let singleItem = [];
+    for(let i =0, l = this.props.list.length; i < l; i++){
+      let item = this.props.list[i];
+      let data = {
+        reading_value: item.reading_value?item.reading_value:'',
+        option: item.option?item.option:'',
+        description: item.description?item.description:'',
+        comment: item.comment?item.comment:'',
+        prop_feedback_id: item.prop_feedback_id,
+        prop_meter_id: item.prop_meter_id
+      };
+      singleItem.push(
+        <SingleItemElement optlist="" type="METER" title={item.meter_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_meter_id}/>
+      );
+    }
+
     return(
       <form>
 
-        <SingleItemElement type="METER" title={this.props.title} data={this.props.data} handleInputChange={this.props.handleInputChange}/>
+        {singleItem}
+
 
         <div style={styles.buttons}>
 

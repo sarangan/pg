@@ -8,7 +8,7 @@ class MeterItemsStore extends EventEmitter {
     this.updateStatus = null;
   }
 
-  getItem(){
+  getItems(){
     return this.meter_items;
   }
 
@@ -20,7 +20,8 @@ class MeterItemsStore extends EventEmitter {
     switch(action.type) {
 
       case "GET_METERITEMS": {
-        this.item = action.data.meter_items;
+        this.meter_items = action.data.meter_items;
+        console.log(this.meter_items);
         this.emit("change");
         break;
       }

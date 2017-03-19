@@ -1,8 +1,8 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
 
-export function fetchMeterItems(property_id, prop_master_id, type) {
-  var url = 'http://52.39.72.94:3000/Property/getMeterItems';
+export function fetchMeterItems(property_id) {
+  var url = 'http://52.39.72.94:3000/Property/getMeterList';
   axios({
           method: 'post',
           url: url,
@@ -10,14 +10,13 @@ export function fetchMeterItems(property_id, prop_master_id, type) {
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
            },
           data: {
-            property_id,
-            prop_master_id,
-            type
+            property_id
           }
         })
         .then(function (response) {
+          console.log(response);
           dispatcher.dispatch({
-            type: "GET_ITEMSDEAILS",
+            type: "GET_METERITEMS",
             data: response.data
           });
 
@@ -32,7 +31,7 @@ export function fetchMeterItems(property_id, prop_master_id, type) {
 export function updateMeterItems(property_id, data){
 
 
-  var url = 'http://52.39.72.94:3000/Property/updateSingleItem';
+  var url = 'http://52.39.72.94:3000/Property/updatemeterlist';
   axios({
           method: 'post',
           url: url,
@@ -47,7 +46,7 @@ export function updateMeterItems(property_id, data){
         .then(function (response) {
 
           dispatcher.dispatch({
-            type: "UPDATE_SINGLEITEM",
+            type: "UPDATE_METERITEMS",
             data: response.data
           });
 
