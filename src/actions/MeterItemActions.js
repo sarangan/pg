@@ -14,7 +14,7 @@ export function fetchMeterItems(property_id) {
           }
         })
         .then(function (response) {
-          console.log(response);
+
           dispatcher.dispatch({
             type: "GET_METERITEMS",
             data: response.data

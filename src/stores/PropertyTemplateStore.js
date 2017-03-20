@@ -26,6 +26,8 @@ class PropertyTemplateStore extends EventEmitter {
 
       case "GET_PROPERTYTEMPLATE": {
         this.propertyTemplate = action.data.template;
+        this.addProperty = null;
+        this.updateProperty = null;
         this.emit("change");
         break;
       }

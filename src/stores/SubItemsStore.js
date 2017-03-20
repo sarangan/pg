@@ -5,6 +5,7 @@ class SubItemsStore extends EventEmitter {
   constructor() {
     super();
     this.sub_items = [];
+    this.updateStatus = null;
   }
 
   getSubItems(){
@@ -17,6 +18,7 @@ class SubItemsStore extends EventEmitter {
 
       case "GET_SUBITEMSLIST": {
         this.sub_items = action.data.sub_items;
+        this.updateStatus = null;
         this.emit("change");
         break;
       }

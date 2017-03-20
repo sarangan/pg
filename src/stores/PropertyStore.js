@@ -35,14 +35,15 @@ class PropertyStore extends EventEmitter {
       }
 
       case "GET_PROPERTY":{
-        
+
         if(action.data.property && action.data.property.constructor === Array ){
           this.property_info = action.data.property[0];
         }
         else{
           this.property_info = action.data.property;
         }
-
+        this.addProperty = null;
+        this.updateProperty = null;
         this.emit('change');
         break;
       }

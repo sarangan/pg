@@ -4,7 +4,7 @@ import dispatcher from "../dispatcher";
 class SingleItemStore extends EventEmitter {
   constructor() {
     super();
-    this.item = [];
+    this.item = {};
     this.updateStatus = null;
   }
 
@@ -26,12 +26,14 @@ class SingleItemStore extends EventEmitter {
         else{
           this.item = action.data.single_item;
         }
+        this.updateStatus = null;
         this.emit("change");
         break;
       }
 
       case "UPDATE_SINGLEITEM":{
         this.updateStatus = action.data.status == 1? true: false;
+        this.item = action.temp;
         this.emit("change");
         break;
       }

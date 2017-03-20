@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export function fetchSubitemslist(property_id, prop_master_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getgeneralconditionlist';
+  var url = 'http://52.39.72.94:3000/Property/getSubItemsList';
   axios({
           method: 'post',
           url: url,

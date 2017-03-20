@@ -48,6 +48,7 @@ import MeterItems from '../components/meteritems/MeterItems';
 import * as MeterItemActions from "../actions/MeterItemActions";
 import MeterItemsStore from "../stores/MeterItemsStore";
 
+
 export default class PropertyRoomList extends React.Component {
 
   constructor(props){
@@ -72,14 +73,13 @@ export default class PropertyRoomList extends React.Component {
         gen_list: []
       },
       single_item: {
-        reading_value: '',
-        option: '',
-        description: '',
-        comment: '',
-        prop_feedback_id: ''
       },
       meter_items:{
         meter_list: []
+      },
+      sub_items: {
+        master_id: '',
+        sub_list: []
       },
       sidebarState: 'PROP',
       startSending: true,
@@ -119,9 +119,13 @@ export default class PropertyRoomList extends React.Component {
 
     //mater items
     this.getMeterItems = this.getMeterItems.bind(this);
+    this.getMeterItemsUpdateStatus = this.getMeterItemsUpdateStatus.bind(this);
 
     this.meterItems_handleInputChange = this.meterItems_handleInputChange.bind(this);
     this.meterItems_handleSubmit = this.meterItems_handleSubmit.bind(this);
+
+    //sub items
+    this.getSubItems = this.getSubItems.bind(this);
 
   }
 
@@ -139,6 +143,8 @@ export default class PropertyRoomList extends React.Component {
 
     MeterItemsStore.on("change", this.getMeterItems);
     MeterItemsStore.on("change", this.getMeterItemsUpdateStatus);
+
+    SubItemsStore.on("change", this.getSubItems);
   }
 
   componentWillUnmount(){
@@ -155,6 +161,8 @@ export default class PropertyRoomList extends React.Component {
 
     MeterItemsStore.removeListener("change", this.getMeterItems);
     MeterItemsStore.removeListener("change", this.getMeterItemsUpdateStatus);
+
+    SubItemsStore.removeListener("change", this.getSubItems);
   }
 
   getRoomList(){
@@ -212,7 +220,6 @@ export default class PropertyRoomList extends React.Component {
 
   //get status after updating the property records
   getPropUpdateStatus() {
-    console.log('property update status');
     let status =  PropertyStore.getUpdateStatus();
 
     if(status){
@@ -255,7 +262,7 @@ export default class PropertyRoomList extends React.Component {
   }
 
   propinfo_handleSubmit(){
-    console.log('submit');
+
     let property_info = this.state.property_info;
     let msg = '';
 
@@ -291,7 +298,6 @@ export default class PropertyRoomList extends React.Component {
   getGeneralConditions(){
 
       let gen_list = GeneralConditionStore.getList();
-      console.log(gen_list);
       let generals = this.state.general_conditions;
       generals['gen_list'] = gen_list;
       this.setState({
@@ -388,6 +394,19 @@ export default class PropertyRoomList extends React.Component {
   *
   */
 
+  getSubItems(){
+
+    let sub_list = SubItemsStore.getSubItems();
+    console.log(sub_list);
+    let sub_items = this.state.sub_items;
+    sub_items['sub_list'] = sub_list;
+    this.setState({
+      sub_items: sub_items,
+      startSending: false
+    });
+
+  }
+
 
 
   /*
@@ -401,7 +420,6 @@ export default class PropertyRoomList extends React.Component {
   */
   //get single item from api
   getSingleItem(){
-
       let single_item = SingleItemStore.getItem();
       let temp = {
         reading_value: '',
@@ -427,7 +445,7 @@ export default class PropertyRoomList extends React.Component {
      let single_item = this.state.single_item;
      single_item[name] = value;
      this.setState({
-         single_item: single_item
+         single_item
      });
 
   }
@@ -435,10 +453,10 @@ export default class PropertyRoomList extends React.Component {
 
   //for saving single item
   singleItem_handleSubmit(){
-
     let single_item = this.state.single_item;
     this.setState({
-      startSending: true
+      startSending: true,
+      single_item,
     });
 
     SingleItemActions.updateSingleItem(this.state.property_id, single_item);
@@ -450,12 +468,12 @@ export default class PropertyRoomList extends React.Component {
   getSingleItemUpdateStatus(){
 
     let status =  SingleItemStore.getUpdateStatus();
-
     if(status){
       this.setState({
         showSuccessSnack: true,
         startSending: false
       });
+
     }
 
   }
@@ -474,7 +492,6 @@ export default class PropertyRoomList extends React.Component {
   getMeterItems(){
 
     let meter_items_list = MeterItemsStore.getItems();
-    console.log(meter_items);
 
     let meter_items = this.state.meter_items;
     meter_items['meter_list'] = meter_items_list;
@@ -519,15 +536,13 @@ export default class PropertyRoomList extends React.Component {
       this.setState({showErrorSnack: true  });
     }
     else{
-      console.log(meter_list);
-      //MeterItemActions.updateMeterItems(this.state.property_id, meter_list);
+      MeterItemActions.updateMeterItems(this.state.property_id, meter_list);
 
       this.setState({
         startSending: true
       });
 
     }
-
     event.preventDefault();
 
   }
@@ -578,6 +593,14 @@ export default class PropertyRoomList extends React.Component {
     }
     else if(id == 'SUB'){
 
+      let sub_items = this.state.sub_items;
+      sub_items['master_id'] = item_id;
+      this.setState({
+        sub_items: sub_items,
+        startSending: true
+      });
+
+      SubItemsActions.fetchSubitemslist(this.state.property_id, item_id);
     }
     else if(id == 'METER'){
       this.setState({
@@ -716,13 +739,13 @@ export default class PropertyRoomList extends React.Component {
           open={this.state.showErrorSnack}
           message="Please fill fields..."
           autoHideDuration={3000}
-          onRequestClose={this.errhandleRequestClose} />
+          onRequestClose={this.errhandleRequestClose.bind(this)} />
 
         <Snackbar
           open={this.state.showSuccessSnack}
           message="Successfully updated..."
           autoHideDuration={3000}
-          onRequestClose={this.successhandleRequestClose} />
+          onRequestClose={this.successhandleRequestClose.bind(this)} />
 
       </PageBase>
     );

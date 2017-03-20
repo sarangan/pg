@@ -31,7 +31,6 @@ export function fetchSingleItem(property_id, prop_master_id, type) {
 
 export function updateSingleItem(property_id, data){
 
-
   var url = 'http://52.39.72.94:3000/Property/updateSingleItem';
   axios({
           method: 'post',
@@ -48,7 +47,8 @@ export function updateSingleItem(property_id, data){
 
           dispatcher.dispatch({
             type: "UPDATE_SINGLEITEM",
-            data: response.data
+            data: response.data,
+            temp: data
           });
 
         })

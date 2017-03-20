@@ -22,9 +22,15 @@ export default class SingleItem extends React.Component {
   }
 
   componentWillMount(){
+
   }
 
   componentWillUnmount(){
+  }
+
+  componentWillReceiveProps(){
+    // console.log('single item will receive');
+    // console.log(this.props.data);
   }
 
   render() {
@@ -39,10 +45,19 @@ export default class SingleItem extends React.Component {
       }
     };
 
+    let data ={
+      reading_value: this.props.data.reading_value? this.props.data.reading_value: '',
+      option: this.props.data.option? this.props.data.option: '',
+      description: this.props.data.description?this.props.data.description:'',
+      comment: this.props.data.comment?this.props.data.comment:'',
+      prop_feedback_id: this.props.data.prop_feedback_id?this.props.data.prop_feedback_id:''
+    }
+
+
     return(
       <form>
 
-        <SingleItemElement optlist={this.state.optlist} type="ITEM" title={this.props.title} data={this.props.data} handleInputChange={this.props.handleInputChange}/>
+        <SingleItemElement optlist={this.state.optlist} type="ITEM" title={this.props.title} data={data} handleInputChange={this.props.handleInputChange}/>
 
         <div style={styles.buttons}>
 

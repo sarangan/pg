@@ -18,7 +18,7 @@ export default class SubItemsList extends React.Component {
 
     return(
       <div>
-      hi
+      sub items 
       </div>
     );
 

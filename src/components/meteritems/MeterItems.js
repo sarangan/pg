@@ -34,7 +34,7 @@ export default class MeterItems extends React.Component {
     for(let i =0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
       let data = {
-        reading_value: item.reading_value?item.reading_value:'',
+        reading_value: (item.reading_value?item.reading_value:''),
         option: item.option?item.option:'',
         description: item.description?item.description:'',
         comment: item.comment?item.comment:'',

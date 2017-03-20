@@ -63,7 +63,7 @@ export default class SingleItemElement extends React.Component {
     if(this.props.type == 'METER' ){
       meterorItem = <div>
         <h4>Meter Reading:</h4>
-        <TextField  hintText="Meter Reading" floatingLabelText="Meter Reading" fullWidth={true} name={this.props.data.prop_meter_id +';'+ 'reading_value'} value={this.props.reading_value} onChange={this.props.handleInputChange}/>
+        <TextField  fullWidth={true} name={this.props.data.prop_meter_id +';'+ 'reading_value'} value={this.props.data.reading_value} onChange={this.props.handleInputChange}/>
       </div>
     }
     else if( this.props.type == 'ITEM' ){

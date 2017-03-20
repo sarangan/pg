@@ -22,6 +22,7 @@ class GeneralConditionStore extends EventEmitter {
 
       case "GET_GENERALCONDITIONLIST": {
         this.gen_list = action.data.gen_list;
+        this.updateStatusGenList = null;
         this.emit("change");
         break;
       }

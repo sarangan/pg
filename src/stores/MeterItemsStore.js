@@ -21,13 +21,14 @@ class MeterItemsStore extends EventEmitter {
 
       case "GET_METERITEMS": {
         this.meter_items = action.data.meter_items;
-        console.log(this.meter_items);
+        this.updateStatus = null;
         this.emit("change");
         break;
       }
 
       case "UPDATE_METERITEMS":{
         this.updateStatus = action.data.status == 1? true: false;
+        console.log(action.data);
         this.emit("change");
         break;
       }
