@@ -63,13 +63,13 @@ export default class SingleItemElement extends React.Component {
     if(this.props.type == 'METER' ){
       meterorItem = <div>
         <h4>Meter Reading:</h4>
-        <TextField  fullWidth={true} name={this.props.data.prop_meter_id +';'+ 'reading_value'} value={this.props.data.reading_value} onChange={this.props.handleInputChange}/>
+        <TextField  fullWidth={true} name={this.props.data.item_id +';'+ 'reading_value'} value={this.props.data.reading_value? this.props.data.reading_value : ''} onChange={this.props.handleInputChange}/>
       </div>
     }
-    else if( this.props.type == 'ITEM' ){
+    else if( (this.props.type == 'ITEM')  ||  (this.props.type == 'SUB') ){
       meterorItem= <div>
                       <h4>Condition:</h4>
-                      <RadioButtonGroup name="condition" defaultSelected={this.props.data.option} valueSelected={this.state.opt} className="clear-float" onChange={this.props.handleInputChange} name="option">
+                      <RadioButtonGroup name={ this.props.type == 'ITEM'? 'option' : this.props.data.item_id +';'+ 'option'} defaultSelected={this.props.data.option} valueSelected={this.state.opt} className="clear-float" onChange={this.props.handleInputChange}>
                         {this.props.optlist.map( (item, index) =>
                           <RadioButton key={index}
                             value={item.value}
@@ -93,14 +93,14 @@ export default class SingleItemElement extends React.Component {
         }
 
         <h4>Description:</h4>
-        <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.prop_meter_id +';'+ 'description' } value={this.props.data.description} onChange={this.props.handleInputChange}/>
+        <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' } value={this.props.data.description?this.props.data.description: '' } onChange={this.props.handleInputChange}/>
 
         { this.props.type == 'ITEM' &&
         <Divider style={styles.bottomDivider}/>
         }
 
         <h4>Comment:</h4>
-        <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.type == 'ITEM'?'comment':this.props.data.prop_meter_id +';'+ 'comment'} fullWidth={true} value={this.props.data.comment} onChange={this.props.handleInputChange}/>
+        <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.type == 'ITEM'?'comment':this.props.data.item_id +';'+ 'comment'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
 
 
         { this.props.type == 'ITEM' &&

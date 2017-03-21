@@ -39,7 +39,7 @@ export default class MeterItems extends React.Component {
         description: item.description?item.description:'',
         comment: item.comment?item.comment:'',
         prop_feedback_id: item.prop_feedback_id,
-        prop_meter_id: item.prop_meter_id
+        item_id: item.prop_meter_id
       };
       singleItem.push(
         <SingleItemElement optlist="" type="METER" title={item.meter_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_meter_id}/>

@@ -79,7 +79,8 @@ export default class PropertyRoomList extends React.Component {
       },
       sub_items: {
         master_id: '',
-        sub_list: []
+        list: [],
+        gen_comment: ''
       },
       sidebarState: 'PROP',
       startSending: true,
@@ -127,6 +128,8 @@ export default class PropertyRoomList extends React.Component {
     //sub items
     this.getSubItems = this.getSubItems.bind(this);
 
+    this.subItems_handleInputChange = this.subItems_handleInputChange.bind(this);
+    this.subItems_handleSubmit = this.subItems_handleSubmit.bind(this);
   }
 
   componentWillMount(){
@@ -394,19 +397,50 @@ export default class PropertyRoomList extends React.Component {
   *
   */
 
+  //get sub items
   getSubItems(){
 
-    let sub_list = SubItemsStore.getSubItems();
-    console.log(sub_list);
+    let store_sub_items = SubItemsStore.getSubItems();
+    console.log(store_sub_items);
     let sub_items = this.state.sub_items;
-    sub_items['sub_list'] = sub_list;
+    sub_items['list'] = store_sub_items['list'];
+    sub_items['gen_comment'] = store_sub_items['gen_comment'];
+
     this.setState({
       sub_items: sub_items,
       startSending: false
     });
 
+    this.forceUpdate();
   }
 
+  subItems_handleInputChange = (event) =>{
+
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+    let [subItem_id , field ] = target.name.split(';');
+
+    let sub_items = this.state.sub_items;
+    let sub_list = sub_items['list'];
+
+    for(let i=0, l= sub_list.length; i < l ; i++ ){
+      if( sub_list[i]['prop_subitem_id'] == subItem_id){
+        //we found the id so set it
+        sub_list[i][field] =  value;
+      }
+    }
+    sub_items['list'] = sub_list;
+    this.setState({
+        sub_items: sub_items
+    });
+
+  }
+
+  //saving the sub items
+  subItems_handleSubmit(){
+    console.log(this.state.sub_items);
+  }
 
 
   /*
@@ -442,12 +476,14 @@ export default class PropertyRoomList extends React.Component {
      const value = target.type === 'checkbox' ? target.checked : target.value;
      const name = target.name;
 
+
      let single_item = this.state.single_item;
      single_item[name] = value;
      this.setState({
          single_item
      });
 
+     //this.forceUpdate();
   }
 
 
@@ -671,7 +707,8 @@ export default class PropertyRoomList extends React.Component {
         handleGeneralSubmit={this.generalconditions_handleSubmit} handleInputChange={this.generalconditions_handleInputChange} handleSelectChange={this.generalconditions_handleSelectChange}/>
     }
     else if(this.state.sidebarState == 'SUB'){
-      right_div = <SubItemsList />
+      right_div = <SubItemsList comment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
+        handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit}/>
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>
