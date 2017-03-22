@@ -69,7 +69,7 @@ export default class SingleItemElement extends React.Component {
     else if( (this.props.type == 'ITEM')  ||  (this.props.type == 'SUB') ){
       meterorItem= <div>
                       <h4>Condition:</h4>
-                      <RadioButtonGroup name={ this.props.type == 'ITEM'? 'option' : this.props.data.item_id +';'+ 'option'} defaultSelected={this.props.data.option} valueSelected={this.state.opt} className="clear-float" onChange={this.props.handleInputChange}>
+                      <RadioButtonGroup name={ this.props.type == 'ITEM'? 'option' : this.props.data.item_id +';'+ 'option'} defaultSelected={this.props.data.option} valueSelected={String(this.props.data.option).toUpperCase()} className="clear-float" onChange={this.props.handleInputChange}>
                         {this.props.optlist.map( (item, index) =>
                           <RadioButton key={index}
                             value={item.value}

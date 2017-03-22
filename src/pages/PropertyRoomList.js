@@ -80,7 +80,7 @@ export default class PropertyRoomList extends React.Component {
       sub_items: {
         master_id: '',
         list: [],
-        gen_comment: ''
+        gen_comment: {}
       },
       sidebarState: 'PROP',
       startSending: true,
@@ -127,6 +127,7 @@ export default class PropertyRoomList extends React.Component {
 
     //sub items
     this.getSubItems = this.getSubItems.bind(this);
+    this.getSubItemsUpdateStatus = this.getSubItemsUpdateStatus.bind(this);
 
     this.subItems_handleInputChange = this.subItems_handleInputChange.bind(this);
     this.subItems_handleSubmit = this.subItems_handleSubmit.bind(this);
@@ -148,6 +149,7 @@ export default class PropertyRoomList extends React.Component {
     MeterItemsStore.on("change", this.getMeterItemsUpdateStatus);
 
     SubItemsStore.on("change", this.getSubItems);
+    SubItemsStore.on("change", this.getSubItemsUpdateStatus);
   }
 
   componentWillUnmount(){
@@ -166,6 +168,7 @@ export default class PropertyRoomList extends React.Component {
     MeterItemsStore.removeListener("change", this.getMeterItemsUpdateStatus);
 
     SubItemsStore.removeListener("change", this.getSubItems);
+    SubItemsStore.removeListener("change", this.getSubItemsUpdateStatus);
   }
 
   getRoomList(){
@@ -419,37 +422,82 @@ export default class PropertyRoomList extends React.Component {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
-    let [subItem_id , field ] = target.name.split(';');
+    let [subItem_id , field, subItemType ] = target.name.split(';');
 
     let sub_items = this.state.sub_items;
-    let sub_list = sub_items['list'];
+    if(subItemType){
+      let gen_item = sub_items['gen_comment'];
+      gen_item['comment'] = value;
+      sub_items['gen_comment'] = gen_item;
 
-    for(let i=0, l= sub_list.length; i < l ; i++ ){
-      if( sub_list[i]['prop_subitem_id'] == subItem_id){
-        //we found the id so set it
-        sub_list[i][field] =  value;
-      }
+      this.setState({
+          sub_items: sub_items
+      });
+
     }
-    sub_items['list'] = sub_list;
-    this.setState({
-        sub_items: sub_items
-    });
+    else{
+
+      let sub_list = sub_items['list'];
+
+      for(let i=0, l= sub_list.length; i < l ; i++ ){
+        if( sub_list[i]['prop_subitem_id'] == subItem_id){
+          //we found the id so set it
+          sub_list[i][field] =  value;
+        }
+      }
+      sub_items['list'] = sub_list;
+      this.setState({
+          sub_items: sub_items
+      });
+    }
+
 
   }
 
   //saving the sub items
   subItems_handleSubmit(){
-    console.log(this.state.sub_items);
+
+    let sub_items = this.state.sub_items;
+    let sub_list = sub_items['list'];
+
+    if( sub_list.length == 0 ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+
+      SubItemsActions.updateSubItems(this.state.property_id, sub_items['master_id'], sub_list, sub_items['gen_comment'] );
+
+      this.setState({
+        startSending: true
+      });
+
+    }
+    event.preventDefault();
+
+  }
+
+  //get the general condition update status
+  getSubItemsUpdateStatus() {
+
+    let status =  SubItemsStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
   }
 
 
   /*
-  * SUB ITEMS LIST--------------------------------------------END-------------------------------------------------------
+  * SUB ITEMS LIST-----------------------------------------END-------------------------------------------------------
   *
   */
 
   /*
-  * SINGLE ITEM--------------------------------------------START-------------------------------------------------------
+  * SINGLE ITEM--------------------------------------------START-----------------------------------------------------
   *
   */
   //get single item from api
@@ -662,7 +710,7 @@ export default class PropertyRoomList extends React.Component {
         paddingTop: 16,
         marginBottom: 12,
         fontWeight: 400,
-      },
+      }
     };
 
     const iconButtonElement = (
@@ -707,8 +755,8 @@ export default class PropertyRoomList extends React.Component {
         handleGeneralSubmit={this.generalconditions_handleSubmit} handleInputChange={this.generalconditions_handleInputChange} handleSelectChange={this.generalconditions_handleSelectChange}/>
     }
     else if(this.state.sidebarState == 'SUB'){
-      right_div = <SubItemsList comment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
-        handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit}/>
+      right_div = <SubItemsList generalcomment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
+        handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit} />
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>
@@ -732,6 +780,17 @@ export default class PropertyRoomList extends React.Component {
       );
 
     }
+
+
+    let roomlist_right_wrapper = 'roomlist-right-wrapper';
+
+    let roomlist_right_div_cls = '';
+    if(this.state.sidebarState != 'SUB'){
+      roomlist_right_div_cls = 'roomlist-right-div';
+      roomlist_right_wrapper = '';
+    }
+
+    let roomlist_right_div = `control-wrapper-flex-2 ${roomlist_right_div_cls} scroll-style`;
 
 
     return(
@@ -762,12 +821,11 @@ export default class PropertyRoomList extends React.Component {
 
           </div>
 
-          <div className="control-wrapper-flex-2 roomlist-right-div scroll-style">
-            <div className="roomlist-right-wrapper">
+          <div className={roomlist_right_div}>
+            <div className={roomlist_right_wrapper}>
               {isShowSaving}
               {right_div}
             </div>
-
           </div>
 
         </div>

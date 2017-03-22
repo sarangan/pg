@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from "react";
-import SingleItemElement from '../singleitem/SingleItemElement';
 import RaisedButton from 'material-ui/RaisedButton';
+import SingleItemElement from '../singleitem/SingleItemElement';
+import GeneralItemElement from '../singleitem/GeneralItemElement';
 
 export default class SubItemsList extends React.Component {
 
@@ -15,7 +16,10 @@ export default class SubItemsList extends React.Component {
                   {value: 'NEW', text: 'New'},
                   {value: 'POOR', text: 'Poor'},
                   {value: 'DAMAGE', text: 'Damage'}
-                ]
+                ],
+      list: {
+
+      }
 
     };
 
@@ -28,8 +32,7 @@ export default class SubItemsList extends React.Component {
   }
 
   componentWillReceiveProps(){
-    console.log(this.props.list);
-
+    //console.log(this.props.list);
   }
 
   render() {
@@ -51,6 +54,9 @@ export default class SubItemsList extends React.Component {
     };
 
     let singleItem = [];
+    let gotGeneralCondition = false;
+    let generalItem = null;
+
     for(let i =0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
       let data = {
@@ -62,25 +68,56 @@ export default class SubItemsList extends React.Component {
         item_id: item.prop_subitem_id
       };
 
-      singleItem.push(
-        <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id}/>
-      );
+      gotGeneralCondition = ( (item.type == 'GENERAL')? true : false);
+      if(!gotGeneralCondition){
+        singleItem.push(
+          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id}/>
+        );
+      }
+      else{
+        let gen_data = {
+          comment : this.props.generalcomment.comment,
+          item_id : item.prop_subitem_id
+        };
+
+        generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} />
+      }
+
 
     }
 
 
     return(
       <form>
-        <h2 style={styles.header}>{this.props.title}</h2>
 
-        {singleItem}
+        <div>
 
-        <div style={styles.buttons}>
+            <div>
+              <h2 style={styles.header}>{this.props.title}</h2>
+              {generalItem}
+            </div>
 
-          <RaisedButton label="Save"
-            style={styles.saveButton}
-            onClick={this.props.handleSubmit}
-            primary={true}/>
+            <div className="control-wrapper-flex-2 roomlist-right-wrapper scroll-style">
+
+                <div className='roomlist-right-div scroll-style'>
+
+
+                  {singleItem}
+
+                  <div style={styles.buttons}>
+
+                    <RaisedButton label="Save"
+                      style={styles.saveButton}
+                      onClick={this.props.handleSubmit}
+                      primary={true}/>
+                  </div>
+
+                </div>
+
+            </div>
+
+
+
         </div>
 
       </form>

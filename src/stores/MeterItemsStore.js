@@ -28,7 +28,6 @@ class MeterItemsStore extends EventEmitter {
 
       case "UPDATE_METERITEMS":{
         this.updateStatus = action.data.status == 1? true: false;
-        console.log(action.data);
         this.emit("change");
         break;
       }

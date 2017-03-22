@@ -56,10 +56,10 @@ export default StyleSheet.create({
         "flex": 2
     },
     "roomlist-right-div": {
-        "paddingTop": 20,
-        "paddingRight": 20,
-        "paddingBottom": 20,
-        "paddingLeft": 20,
+        "paddingTop": 10,
+        "paddingRight": 10,
+        "paddingBottom": 10,
+        "paddingLeft": 10,
         "maxHeight": 650,
         "overflow": "auto"
     },
@@ -76,7 +76,7 @@ export default StyleSheet.create({
         "maxHeight": 800,
         "overflow": "auto",
         "marginLeft": 0,
-        "marginTop": 30,
+        "marginTop": 10,
         "maxWidth": 275
     },
     "gen-condition-title": {
