@@ -8,6 +8,8 @@ import AddNewProperty from "./pages/AddNewProperty";
 import AddPropertyTemplate from "./pages/AddPropertyTemplate";
 import PropertyRoomList from "./pages/PropertyRoomList";
 
+import Template from "./pages/template/Template";
+
 export default (
   <Route>
     <Route path="/" component={Layout}>
@@ -16,6 +18,8 @@ export default (
       <Route path="/addnewproperty" component={AddNewProperty} />
       <Route path="/addpropertytemplate" component={AddPropertyTemplate} />
       <Route path="/propertyroomlist" component={PropertyRoomList} />
+
+      <Route path="/template" component={Template} />
     </Route>
   </Route>
 );

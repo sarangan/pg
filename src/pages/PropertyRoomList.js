@@ -1,9 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 import PageBase from '../components/layout/PageBase';
-import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionInfo from 'material-ui/svg-icons/action/info';
@@ -710,6 +708,10 @@ export default class PropertyRoomList extends React.Component {
         paddingTop: 16,
         marginBottom: 12,
         fontWeight: 400,
+      },
+      tblProgress: {
+        margin: '20px auto',
+        textAlign: 'center'
       }
     };
 
