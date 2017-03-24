@@ -39,12 +39,14 @@ export default class Template extends React.Component {
       general_conditions:{
         gen_list: []
       },
-      sidebarState: '',
+      sidebarState: 'GEN',
       startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
       formTitle: ''
     };
+
+    GeneralconditionTemplateActions.getGeneralConditionsTemplate();
 
     this.getTemplateList = this.getTemplateList.bind(this);
     TemplateListActions.fetchTemplateList();
@@ -171,6 +173,8 @@ export default class Template extends React.Component {
      let generals = this.state.general_conditions;
      let gen_list = generals['gen_list'];
 
+     let chk = false;
+
      for(let i =0, l = gen_list.length; i < l ; i++ ){
        let item = gen_list[i];
        if( item.com_general_id == com_general_id ){
@@ -178,7 +182,7 @@ export default class Template extends React.Component {
          let opts_arr = opts.split(';');
          opts_arr.splice(index, 1);
          item.options = opts_arr.join(';');
-
+         chk = true;
          break;
        }
 
@@ -187,6 +191,11 @@ export default class Template extends React.Component {
      this.setState({
        general_conditions : generals
      });
+
+     if(chk){
+       this.generalconditions_handleSubmit()
+     }
+
 
   }
 
@@ -197,6 +206,7 @@ export default class Template extends React.Component {
 
       let generals = this.state.general_conditions;
       let gen_list = generals['gen_list'];
+      let chk = false;
 
       for(let i =0, l = gen_list.length; i < l ; i++ ){
         let item = gen_list[i];
@@ -206,6 +216,7 @@ export default class Template extends React.Component {
           opts_arr.push(newOpt.replace(';' , '') );
           opts = opts_arr.join(';');
           item.options = opts;
+          chk = true;
           break;
         }
       }
@@ -213,6 +224,10 @@ export default class Template extends React.Component {
       this.setState({
         general_conditions : generals
       });
+
+      if(chk){
+        this.generalconditions_handleSubmit()
+      }
 
     }
 
@@ -314,6 +329,10 @@ export default class Template extends React.Component {
       tblProgress: {
         margin: '20px auto',
         textAlign: 'center'
+      },
+      progressbar:{
+        width: 'auto',
+        height: 20
       }
     };
 
@@ -398,11 +417,21 @@ export default class Template extends React.Component {
 
           </div>
 
-          <div className="control-wrapper-flex-2 roomlist-right-div scroll-style">
-            <div className="roomlist-right-wrapper">
+
+
+          <div className="control-wrapper-flex-2">
+            <div>
               {isShowSaving}
-              {right_div}
             </div>
+
+            <div className="roomlist-right-wrapper scroll-style">
+
+                <div className='roomlist-right-div scroll-style'>
+                  {right_div}
+                </div>
+
+            </div>
+
           </div>
 
         </div>
