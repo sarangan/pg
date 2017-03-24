@@ -27,7 +27,7 @@ export function getGeneralConditionsTemplate() {
 
 export function updateGeneralConditionTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/updategeneralcondition';
+  var url = 'http://52.39.72.94:3000/Property/updategeneralconditiontemplate';
   axios({
           method: 'post',
           url: url,
@@ -41,7 +41,61 @@ export function updateGeneralConditionTemplate(data){
         .then(function (response) {
 
           dispatcher.dispatch({
-            type: "UPDATE_GENERALCONDITIONLIST",
+            type: "UPDATE_GENERALCONDITIONTEMPLATE",
+            data: response.data
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}
+
+export function insertGeneralConditionTemplate(data){
+
+  var url = 'http://52.39.72.94:3000/Property/insertgeneralconditiontemplate';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+           },
+          data: {
+            gen_item: data
+          }
+        })
+        .then(function (response) {
+
+          dispatcher.dispatch({
+            type: "INSERT_GENERALCONDITIONTEMPLATE",
+            data: response.data
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}
+
+export function deleteGeneralConditionTemplate(gen_id){
+
+  var url = 'http://52.39.72.94:3000/Property/deletegeneralconditiontemplate';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+           },
+          data: {
+            general_id: gen_id
+          }
+        })
+        .then(function (response) {
+
+          dispatcher.dispatch({
+            type: "DELETE_GENERALCONDITIONTEMPLATE_ITEM",
             data: response.data
           });
 

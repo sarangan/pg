@@ -1,19 +1,37 @@
 import React, { Component, PropTypes } from "react";
 import Chip from 'material-ui/Chip';
-import {blue100} from 'material-ui/styles/colors';
+import {blue100, lightGreen500, blue500, pink400} from 'material-ui/styles/colors';
 import TextField from 'material-ui/TextField';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 export default class GeneralChipElement extends React.Component {
 
   constructor(props){
     super(props);
     this.props = props;
+    this.state ={
+      newOpt: ''
+    }
   }
 
   componentWillMount(){
   }
 
   componentWillUnmount(){
+  }
+
+  handleInputChange(event){
+    const target = event.target;
+    this.setState({
+      newOpt : target.value
+    });
+  }
+
+  handleKeyPress = (event) => {
+    if(event.key == 'Enter'){
+      this.props.addNewOpt(this.state.newOpt, this.props.genid);
+    }
   }
 
   render(){
@@ -35,7 +53,20 @@ export default class GeneralChipElement extends React.Component {
       chipwrapper: {
         marginTop: 30,
         marginBottom: 30,
-      }
+      },
+      addTextContainer: {
+        width: '100%',
+        textAlign: 'right'
+      },
+      floatingLabelStyle: {
+       color: lightGreen500,
+      },
+     floatingLabelFocusStyle: {
+       color: blue500,
+     },
+     addButton:{
+        marginRight: 20
+     }
     };
 
     return(
@@ -51,7 +82,13 @@ export default class GeneralChipElement extends React.Component {
 
             )}
           </div>
-          <TextField hintText="Add option" floatingLabelText="Add Option" name="generalchip"/>
+          <div style={styles.addTextContainer}>
+            <TextField hintText="Add new option" floatingLabelText="Add new option" name="generalchip" onChange={this.handleInputChange.bind(this)} onKeyPress={this.handleKeyPress.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+            <FloatingActionButton mini={true} style={styles.addButton} onClick={()=>this.props.addNewOpt(this.state.newOpt, this.props.genid)} backgroundColor={pink400}>
+              <ContentAdd />
+            </FloatingActionButton>
+          </div>
+
       </div>
     );
 

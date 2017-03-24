@@ -52,11 +52,13 @@ export default class Template extends React.Component {
 
     //general condition
     this.getGeneralConditionsTempalte = this.getGeneralConditionsTempalte.bind(this);
-    // this.getGeneralConditionUpdateStatus = this.getGeneralConditionUpdateStatus.bind(this);
+    this.getGenConTemplateUpdateStatus = this.getGenConTemplateUpdateStatus.bind(this);
+    this.getGenConTemplateInsertStatus = this.getGenConTemplateInsertStatus.bind(this);
+    this.getGenConTemplateDeleteStatus = this.getGenConTemplateDeleteStatus.bind(this);
     //
     // this.propinfo_handleSelectChange = this.propinfo_handleSelectChange.bind(this);
     // this.generalconditions_handleInputChange = this.generalconditions_handleInputChange.bind(this);
-    // this.generalconditions_handleSubmit = this.generalconditions_handleSubmit.bind(this);
+    this.generalconditions_handleSubmit = this.generalconditions_handleSubmit.bind(this);
 
   }
 
@@ -65,12 +67,20 @@ export default class Template extends React.Component {
     TemplateListStore.on("change", this.getTemplateList);
 
     GeneralConditionTemplateStore.on("change", this.getGeneralConditionsTempalte);
+    GeneralConditionTemplateStore.on("change", this.getGenConTemplateUpdateStatus);
+    GeneralConditionTemplateStore.on("change", this.getGenConTemplateInsertStatus);
+    GeneralConditionTemplateStore.on("change", this.getGenConTemplateDeleteStatus);
+
+
   }
 
   componentWillUnmount() {
     TemplateListStore.removeListener("change", this.getTemplateList);
 
     GeneralConditionTemplateStore.removeListener("change", this.getGeneralConditionsTempalte);
+    GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateUpdateStatus);
+    GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateInsertStatus);
+    GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateDeleteStatus);
   }
 
   //error snack close
@@ -98,7 +108,6 @@ export default class Template extends React.Component {
 
   }
 
-
   /*
   * GENERAL CONDITION LIST--------------------------------------------START-------------------------------------------------------
   *
@@ -108,9 +117,6 @@ export default class Template extends React.Component {
   getGeneralConditionsTempalte(){
 
       let gen_list = GeneralConditionTemplateStore.getTemplateList();
-
-      console.log(gen_list);
-
       let generals = this.state.general_conditions;
       generals['gen_list'] = gen_list;
       this.setState({
@@ -118,12 +124,156 @@ export default class Template extends React.Component {
         startSending: false
       });
 
+      this.forceUpdate();
+      console.log(this.state.general_conditions);
   }
 
-  handleGeneralChipDelete(com_general_id, index){
-     console.log(com_general_id);
-     console.log(index);
+  //get the general condition template update status
+  getGenConTemplateUpdateStatus(){
+    let status =  GeneralConditionTemplateStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
   }
+
+  //get the general condition template insert status
+  getGenConTemplateInsertStatus(){
+    let status =  GeneralConditionTemplateStore.getInsertStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+  }
+
+  //get the general condition delete status
+  getGenConTemplateDeleteStatus(){
+    let status =  GeneralConditionTemplateStore.getDeleteStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+  //Delete chips data
+  handleGeneralChipDelete(com_general_id, index){
+
+     let generals = this.state.general_conditions;
+     let gen_list = generals['gen_list'];
+
+     for(let i =0, l = gen_list.length; i < l ; i++ ){
+       let item = gen_list[i];
+       if( item.com_general_id == com_general_id ){
+         let opts = item.options;
+         let opts_arr = opts.split(';');
+         opts_arr.splice(index, 1);
+         item.options = opts_arr.join(';');
+
+         break;
+       }
+
+     }
+
+     this.setState({
+       general_conditions : generals
+     });
+
+  }
+
+  //add new chipData
+  handleAddNewOpt(newOpt, com_general_id){
+
+    if(newOpt.trim().length > 0){
+
+      let generals = this.state.general_conditions;
+      let gen_list = generals['gen_list'];
+
+      for(let i =0, l = gen_list.length; i < l ; i++ ){
+        let item = gen_list[i];
+        if( item.com_general_id == com_general_id ){
+          let opts = item.options;
+          let opts_arr = opts.split(';');
+          opts_arr.push(newOpt.replace(';' , '') );
+          opts = opts_arr.join(';');
+          item.options = opts;
+          break;
+        }
+      }
+
+      this.setState({
+        general_conditions : generals
+      });
+
+    }
+
+  }
+
+  //add new general comment
+  handleAddGeneralComment(comment){
+
+    if(comment.trim().length > 0){
+      let insert_data = {
+        item_name : comment.trim(),
+        options : '',
+        priority :  1,
+        type : 'COMMENT'
+      };
+      GeneralconditionTemplateActions.insertGeneralConditionTemplate(insert_data);
+      this.setState({
+        startSending: true
+      });
+
+      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
+
+    }
+
+    event.preventDefault();
+
+  }
+
+  handleDeleteGeneralComment(gen_id){
+
+    if(gen_id){
+      GeneralconditionTemplateActions.deleteGeneralConditionTemplate(gen_id);
+      this.setState({
+        startSending: true
+      });
+
+      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
+
+    }
+
+    event.preventDefault();
+  }
+
+  //submit data
+  generalconditions_handleSubmit(){
+
+    let generals = this.state.general_conditions;
+    let gen_list = generals['gen_list'];
+
+    if( gen_list.length == 0 ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+      GeneralconditionTemplateActions.updateGeneralConditionTemplate(gen_list);
+      this.setState({
+        startSending: true
+      });
+    }
+    event.preventDefault();
+  }
+
 
   /*
   * GENERAL CONDITION LIST--------------------------------------------END-------------------------------------------------------
@@ -195,7 +345,12 @@ export default class Template extends React.Component {
     //this is where right side div get rendered
     let right_div = null;
     if(this.state.sidebarState == 'GEN'){
-      right_div = <GeneralconditionTemplate list={this.state.general_conditions.gen_list} title={this.state.formTitle} handleGeneralChipDelete={this.handleGeneralChipDelete}/>
+      right_div = <GeneralconditionTemplate list={this.state.general_conditions.gen_list} title={this.state.formTitle}
+        handleGeneralSubmit={this.generalconditions_handleSubmit}
+        handleGeneralChipDelete={this.handleGeneralChipDelete.bind(this)}
+        addNewOpt={this.handleAddNewOpt.bind(this)}
+        addNewComment={this.handleAddGeneralComment.bind(this)}
+        deleteComment ={this.handleDeleteGeneralComment.bind(this) }/>
     }
 
 
