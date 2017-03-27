@@ -43,6 +43,7 @@ export default class GeneralChipElement extends React.Component {
       wrapper: {
         display: 'flex',
         flexWrap: 'wrap',
+        paddingTop: 40
       },
       subheader: {
         margin: '20px 20px 0 0',
@@ -51,7 +52,7 @@ export default class GeneralChipElement extends React.Component {
 
       },
       chipwrapper: {
-        marginTop: 30,
+        marginTop: 5,
         marginBottom: 30,
       },
       addTextContainer: {
@@ -69,18 +70,26 @@ export default class GeneralChipElement extends React.Component {
      }
     };
 
+    let chipItem = [];
+
+    for(let i =0, l = this.props.chipData.length; i < l ; i++ ){
+      if(this.props.chipData[i])
+      {
+        chipItem.push(
+        <Chip key={i} style={styles.chip} backgroundColor={blue100} onRequestDelete={() => this.props.handleGeneralChipDelete(this.props.genid, i)}>
+          {this.props.chipData[i]}
+        </Chip>
+        );
+      }
+    }
+
+
     return(
 
       <div style={styles.chipwrapper}>
           <h4 style={styles.subheader} className="gen-condition-title">{this.props.title}:</h4>
           <div style={styles.wrapper}>
-            {this.props.chipData.map( (item, index) =>
-
-                <Chip key={index} style={styles.chip} backgroundColor={blue100} onRequestDelete={() => this.props.handleGeneralChipDelete(this.props.genid, index)}>
-                  {item}
-                </Chip>
-
-            )}
+            { chipItem }
           </div>
           <div style={styles.addTextContainer}>
             <TextField hintText="Add new option" floatingLabelText="Add new option" name="generalchip" onChange={this.handleInputChange.bind(this)} onKeyPress={this.handleKeyPress.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>

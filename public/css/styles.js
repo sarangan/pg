@@ -111,5 +111,21 @@ export default StyleSheet.create({
     "scroll-style::-webkit-scrollbar-thumb": {
         "backgroundColor": "rgb(33, 150, 243)",
         "border": "1px solid rgb(33, 150, 243)"
+    },
+    "gen-list": {
+        "position": "relative"
+    },
+    "vertbtn": {
+        "position": "absolute !important",
+        "right": 0,
+        "top": 0
+    },
+    "addButtonWrapper": {
+        "float": "right"
+    },
+    "addButtonWrapper::after": {
+        "content": "''",
+        "display": "table",
+        "clear": "both"
     }
 });

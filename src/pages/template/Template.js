@@ -256,7 +256,7 @@ export default class Template extends React.Component {
 
   }
 
-  handleDeleteGeneralComment(gen_id){
+  handleDeleteGeneral(gen_id){
 
     if(gen_id){
       GeneralconditionTemplateActions.deleteGeneralConditionTemplate(gen_id);
@@ -287,6 +287,58 @@ export default class Template extends React.Component {
       });
     }
     event.preventDefault();
+  }
+
+
+  //add new option for general CONDITION
+  handleAddNewOptItemGeneral(optItem){
+
+    if(optItem.trim().length > 0){
+      let insert_data = {
+        item_name : optItem.trim(),
+        options : '',
+        priority :  1,
+        type : 'ITEM'
+      };
+      GeneralconditionTemplateActions.insertGeneralConditionTemplate(insert_data);
+      this.setState({
+        startSending: true
+      });
+
+      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
+
+    }
+
+    event.preventDefault();
+  }
+
+  handleEditOptionItem(edit_com_gen_id, edit_opt){
+
+    if(edit_opt.trim().length > 0){
+
+      let generals = this.state.general_conditions;
+      let gen_list = generals['gen_list'];
+      let chk = false;
+
+      for(let i =0, l = gen_list.length; i < l ; i++ ){
+        let item = gen_list[i];
+        if( item.com_general_id == edit_com_gen_id ){
+          item.item_name = edit_opt;
+          chk = true;
+          break;
+        }
+      }
+
+      this.setState({
+        general_conditions : generals
+      });
+
+      if(chk){
+        this.generalconditions_handleSubmit()
+      }
+
+    }
+
   }
 
 
@@ -369,7 +421,9 @@ export default class Template extends React.Component {
         handleGeneralChipDelete={this.handleGeneralChipDelete.bind(this)}
         addNewOpt={this.handleAddNewOpt.bind(this)}
         addNewComment={this.handleAddGeneralComment.bind(this)}
-        deleteComment ={this.handleDeleteGeneralComment.bind(this) }/>
+        deleteItem ={this.handleDeleteGeneral.bind(this) }
+        addNewOptionItem = {this.handleAddNewOptItemGeneral.bind(this)}
+        editOptionItem = {this.handleEditOptionItem.bind(this)} />
     }
 
 
