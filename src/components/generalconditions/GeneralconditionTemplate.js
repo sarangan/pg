@@ -213,7 +213,7 @@ export default class GeneralconditionTemplate extends React.Component {
     ];
 
     let item_list = [];
-    let comment_list = []
+    let comment_list = [];
     for(let i=0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
 

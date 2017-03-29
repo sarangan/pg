@@ -29,6 +29,11 @@ import * as GeneralconditionTemplateActions from "../../actions/template/General
 import GeneralConditionTemplateStore from "../../stores/template/GeneralConditionTemplateStore";
 
 
+//sub items
+import SubItemsTemplate from '../../components/subitems/SubItemsTemplate';
+import * as SubItemsTemplateActions from "../../actions/template/SubItemsTemplateActions";
+import SubItemsTemplateStore from "../../stores/template/SubItemsTemplateStore";
+
 export default class Template extends React.Component {
 
   constructor(props){
@@ -38,6 +43,9 @@ export default class Template extends React.Component {
       templatelist: [],
       general_conditions:{
         gen_list: []
+      },
+      sub_items: {
+        list: []
       },
       sidebarState: 'GEN',
       startSending: true,
@@ -57,32 +65,34 @@ export default class Template extends React.Component {
     this.getGenConTemplateUpdateStatus = this.getGenConTemplateUpdateStatus.bind(this);
     this.getGenConTemplateInsertStatus = this.getGenConTemplateInsertStatus.bind(this);
     this.getGenConTemplateDeleteStatus = this.getGenConTemplateDeleteStatus.bind(this);
-    //
-    // this.propinfo_handleSelectChange = this.propinfo_handleSelectChange.bind(this);
-    // this.generalconditions_handleInputChange = this.generalconditions_handleInputChange.bind(this);
+
     this.generalconditions_handleSubmit = this.generalconditions_handleSubmit.bind(this);
 
+    //sub items
+    this.getSubItemsTempalte = this.getSubItemsTempalte.bind(this);
   }
 
 
   componentWillMount() {
     TemplateListStore.on("change", this.getTemplateList);
-
+    //general condition
     GeneralConditionTemplateStore.on("change", this.getGeneralConditionsTempalte);
     GeneralConditionTemplateStore.on("change", this.getGenConTemplateUpdateStatus);
     GeneralConditionTemplateStore.on("change", this.getGenConTemplateInsertStatus);
     GeneralConditionTemplateStore.on("change", this.getGenConTemplateDeleteStatus);
-
-
+    //sub items
+    SubItemsTemplateStore.on("change", this.getSubItemsTempalte);
   }
 
   componentWillUnmount() {
     TemplateListStore.removeListener("change", this.getTemplateList);
-
+    //general condition
     GeneralConditionTemplateStore.removeListener("change", this.getGeneralConditionsTempalte);
     GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateUpdateStatus);
     GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateInsertStatus);
     GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateDeleteStatus);
+    //sub items
+    SubItemsTemplateStore.removeListener("change", this.getSubItemsTempalte);
   }
 
   //error snack close
@@ -341,9 +351,34 @@ export default class Template extends React.Component {
 
   }
 
-
   /*
   * GENERAL CONDITION LIST--------------------------------------------END-------------------------------------------------------
+  *
+  */
+
+
+  /*
+  * SUBITEMS LIST--------------------------------------------START-------------------------------------------------------
+  *
+  */
+
+  //sub items list template
+  getSubItemsTempalte(){
+
+      let subitems_list = SubItemsTemplateStore.getSubitemsTemplate();
+
+      let subitems = this.state.sub_items;
+      subitems['list'] = subitems_list;
+      this.setState({
+        sub_items: subitems,
+        startSending: false
+      });
+
+  }
+
+
+  /*
+  * SUBITEMS LIST--------------------------------------------END-------------------------------------------------------
   *
   */
 
@@ -363,6 +398,14 @@ export default class Template extends React.Component {
 
       GeneralconditionTemplateActions.getGeneralConditionsTemplate();
 
+    }
+    else if(id == 'SUB'){
+
+      this.setState({
+        startSending: true
+      });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(item_id);
     }
 
 
@@ -425,6 +468,10 @@ export default class Template extends React.Component {
         addNewOptionItem = {this.handleAddNewOptItemGeneral.bind(this)}
         editOptionItem = {this.handleEditOptionItem.bind(this)} />
     }
+    else if(this.state.sidebarState == 'SUB'){
+      right_div = <SubItemsTemplate list={this.state.sub_items.list} title={this.state.formTitle} />
+    }
+
 
 
 
@@ -462,7 +509,7 @@ export default class Template extends React.Component {
                   <ListItem
                     leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={grey400} />}
                     primaryText="General Condition"
-                    secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')}/>
+                    secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')} />
 
                   {sidebaritems}
 
