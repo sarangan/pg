@@ -70,6 +70,7 @@ export default class Template extends React.Component {
 
     //sub items
     this.getSubItemsTempalte = this.getSubItemsTempalte.bind(this);
+    this.getSubItemsTemplateUpdateStatus = this.getSubItemsTemplateUpdateStatus.bind(this);
   }
 
 
@@ -82,6 +83,7 @@ export default class Template extends React.Component {
     GeneralConditionTemplateStore.on("change", this.getGenConTemplateDeleteStatus);
     //sub items
     SubItemsTemplateStore.on("change", this.getSubItemsTempalte);
+    SubItemsTemplateStore.on("change", this.getSubItemsTemplateUpdateStatus);
   }
 
   componentWillUnmount() {
@@ -93,6 +95,7 @@ export default class Template extends React.Component {
     GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateDeleteStatus);
     //sub items
     SubItemsTemplateStore.removeListener("change", this.getSubItemsTempalte);
+    SubItemsTemplateStore.removeListener("change", this.getSubItemsTemplateUpdateStatus);
   }
 
   //error snack close
@@ -376,6 +379,68 @@ export default class Template extends React.Component {
 
   }
 
+  getSubItemsTemplateUpdateStatus(){
+    let status =  SubItemsTemplateStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+
+  //submit data
+  subitems_handleSubmit(){
+
+    let subitems = this.state.sub_items;
+    let subitems_list = subitems['list'];
+
+    if( subitems_list.length == 0 ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+      SubItemsTemplateActions.updateSubItemsTemplate(subitems_list);
+      this.setState({
+        startSending: true
+      });
+    }
+    event.preventDefault();
+  }
+
+
+  handleSubItemsUpdate(sub_id, text){
+    console.log(sub_id);
+    if(sub_id && text ){
+
+      let subitems = this.state.sub_items;
+      let subitems_list = subitems['list'];
+      let chk = false;
+
+      for(let i =0, l = subitems_list.length; i < l ; i++ ){
+        let item = subitems_list[i];
+        if( item.com_subitem_id == sub_id ){
+          item.item_name = text;
+          chk = true;
+          break;
+        }
+      }
+
+      this.setState({
+        sub_items : subitems
+      });
+
+      if(chk){
+        this.subitems_handleSubmit()
+      }
+
+    }
+
+
+  }
+
 
   /*
   * SUBITEMS LIST--------------------------------------------END-------------------------------------------------------
@@ -469,7 +534,8 @@ export default class Template extends React.Component {
         editOptionItem = {this.handleEditOptionItem.bind(this)} />
     }
     else if(this.state.sidebarState == 'SUB'){
-      right_div = <SubItemsTemplate list={this.state.sub_items.list} title={this.state.formTitle} />
+      right_div = <SubItemsTemplate list={this.state.sub_items.list} title={this.state.formTitle}
+        updateSubitems={this.handleSubItemsUpdate.bind(this)}/>
     }
 
 

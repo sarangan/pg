@@ -5,11 +5,16 @@ class SubItemsTemplateStore extends EventEmitter {
   constructor() {
     super()
     this.subitemslist = [];
+    this.updateStatusSubList = null;
   }
 
 
   getSubitemsTemplate() {
     return this.subitemslist;
+  }
+
+  getUpdateStatus() {
+    return this.updateStatusSubList;
   }
 
   handleActions(action) {
@@ -18,8 +23,16 @@ class SubItemsTemplateStore extends EventEmitter {
 
       case "GET_TEMPLATESUBITEMSLIST": {
         this.subitemslist = action.data.sub_items;
+        this.updateStatusSubList = null;
         console.log(this.subitemslist);
         this.emit("change");
+        break;
+      }
+
+      case "UPDATE_SUBITEMSTEMPLATE" : {
+        console.log(action);
+        this.updateStatusSubList = action.data.status == 1? true: false;
+        this.emit('change');
         break;
       }
 

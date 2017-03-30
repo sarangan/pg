@@ -59,7 +59,7 @@ export default class SubItemsTemplate extends React.Component {
       }
       else if(item.type == 'ITEM'){
         sub_items.push(
-          <SingleItemElementTemplate item_name={item.item_name} key={item.com_subitem_id}/>
+          <SingleItemElementTemplate item_name={item.item_name} key={item.com_subitem_id} sub_id={item.com_subitem_id} update={this.props.updateSubitems}/>
         );
       }
 
