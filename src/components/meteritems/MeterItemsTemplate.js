@@ -5,13 +5,13 @@ import TextField from 'material-ui/TextField';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
-export default class SubItemsTemplate extends React.Component {
+export default class MeterItemsTemplate extends React.Component {
 
   constructor(props){
     super(props);
     this.props = props;
     this.state = {
-      newsubitem: ''
+      newmeteritem : ''
     };
   }
 
@@ -24,7 +24,7 @@ export default class SubItemsTemplate extends React.Component {
   handleInputChange(event){
     const target = event.target;
     this.setState({
-      newsubitem : target.value
+      newmeteritem : target.value
     });
   }
 
@@ -58,37 +58,26 @@ export default class SubItemsTemplate extends React.Component {
 
     };
 
-  
-    let general_item = [];
-    let sub_items = [];
+    let meter_items = [];
 
     for(let i=0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
 
-      if(item.type == 'GENERAL'){
-        general_item.push(
-          <div style={styles.addTextContainer} key={item.com_subitem_id}>
-          <TextField disabled={true}  defaultValue={item.item_name} name="generalitem" floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
-          </div>
+        meter_items.push(
+          <SingleItemElementTemplate item_name={item.meter_name} key={item.com_meter_id} sub_id={item.com_meter_id} delete={this.props.deleteMeterItem} update={this.props.updateMeterItem}/>
         );
-      }
-      else if(item.type == 'ITEM'){
-        sub_items.push(
-          <SingleItemElementTemplate item_name={item.item_name} key={item.com_subitem_id} sub_id={item.com_subitem_id} update={this.props.updateSubitems} delete={this.props.deleteSubitems}/>
-        );
-      }
 
     }
 
     return(
       <div>
         <h2>{this.props.title}</h2>
-        {general_item}
-        {sub_items}
+
+        {meter_items}
 
         <div style={styles.addTextContainer}>
-          <TextField hintText="Add sub item" floatingLabelText="Add sub item" name="newsubitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
-          <FloatingActionButton mini={true} style={styles.addButton} backgroundColor={pink400} onClick={()=>this.props.addSubItem(this.state.newsubitem)}>
+          <TextField hintText="Add meter" floatingLabelText="Add meter" name="newmeteritem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+          <FloatingActionButton mini={true} style={styles.addButton} backgroundColor={pink400} onClick={()=>this.props.addMeterItem(this.state.newmeteritem)}>
             <ContentAdd />
           </FloatingActionButton>
         </div>
@@ -97,5 +86,6 @@ export default class SubItemsTemplate extends React.Component {
     );
 
   }
+
 
 }

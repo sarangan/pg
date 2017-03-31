@@ -1,22 +1,19 @@
 import dispatcher from "../../dispatcher";
 import axios from 'axios';
 
-export function fetchSubitemstemplate(com_master_id) {
+export function fetchMeterListtemplate() {
 
-  var url = 'http://52.39.72.94:3000/Property/getsubitemstmplate';
+  var url = 'http://52.39.72.94:3000/Property/getmeterlisttemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
-           },
-          data: {
-            com_master_id
-          }
+           }
         })
         .then(function (response) {
           dispatcher.dispatch({
-            type: "GET_TEMPLATESUBITEMSLIST",
+            type: "GET_TEMPLATEMETERLIST",
             data: response.data,
           });
 
@@ -27,9 +24,9 @@ export function fetchSubitemstemplate(com_master_id) {
 
 }
 
-export function updateSubItemsTemplate(data){
+export function updateMeterListTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/updatesubitemstemplate';
+  var url = 'http://52.39.72.94:3000/Property/updatemeterlisttemplate';
   axios({
           method: 'post',
           url: url,
@@ -37,13 +34,13 @@ export function updateSubItemsTemplate(data){
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
            },
           data: {
-            sub_items: data
+            meter_list: data
           }
         })
         .then(function (response) {
 
           dispatcher.dispatch({
-            type: "UPDATE_SUBITEMSTEMPLATE",
+            type: "UPDATE_METERLISTTEMPLATE",
             data: response.data
           });
 
@@ -54,9 +51,9 @@ export function updateSubItemsTemplate(data){
 
 }
 
-export function deleteSubItemsTemplate(sub_id){
+export function deleteMeterItemTemplate(meter_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletesubitemstemplate';
+  var url = 'http://52.39.72.94:3000/Property/deletemeteritemtemplate';
   axios({
           method: 'post',
           url: url,
@@ -64,13 +61,13 @@ export function deleteSubItemsTemplate(sub_id){
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
            },
           data: {
-            sub_id: sub_id
+            meter_id
           }
         })
         .then(function (response) {
 
           dispatcher.dispatch({
-            type: "DELETE_SUBITEMTEMPLATE_ITEM",
+            type: "DELETE_METERTEMPLATE_ITEM",
             data: response.data
           });
 
@@ -81,9 +78,9 @@ export function deleteSubItemsTemplate(sub_id){
 
 }
 
-export function insertSubItemTemplate(data){
+export function insertMeterItemTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/insertsubitemtemplate';
+  var url = 'http://52.39.72.94:3000/Property/insertmeteritemtemplate';
   axios({
           method: 'post',
           url: url,
@@ -91,13 +88,13 @@ export function insertSubItemTemplate(data){
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
            },
           data: {
-            sub_item: data
+            meter_item: data
           }
         })
         .then(function (response) {
 
           dispatcher.dispatch({
-            type: "INSERT_SUBITEMTEMPLATE",
+            type: "INSERT_METERITEMTEMPLATE",
             data: response.data
           });
 

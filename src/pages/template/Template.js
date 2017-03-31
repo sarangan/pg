@@ -34,6 +34,12 @@ import SubItemsTemplate from '../../components/subitems/SubItemsTemplate';
 import * as SubItemsTemplateActions from "../../actions/template/SubItemsTemplateActions";
 import SubItemsTemplateStore from "../../stores/template/SubItemsTemplateStore";
 
+//meter items
+import MeterItemsTemplate from '../../components/meteritems/MeterItemsTemplate';
+import * as MeterListTemplateActions from "../../actions/template/MeterListTemplateActions";
+import MeteritemsTemplateStore from "../../stores/template/MeteritemsTemplateStore";
+
+
 export default class Template extends React.Component {
 
   constructor(props){
@@ -45,7 +51,11 @@ export default class Template extends React.Component {
         gen_list: []
       },
       sub_items: {
-        list: []
+        list: [],
+        master_id: ''
+      },
+      meter_list:{
+        list : []
       },
       sidebarState: 'GEN',
       startSending: true,
@@ -71,6 +81,14 @@ export default class Template extends React.Component {
     //sub items
     this.getSubItemsTempalte = this.getSubItemsTempalte.bind(this);
     this.getSubItemsTemplateUpdateStatus = this.getSubItemsTemplateUpdateStatus.bind(this);
+    this.getSubItemsTemplateDeleteStatus = this.getSubItemsTemplateDeleteStatus.bind(this);
+    this.getSubItemsTemplateInsertStatus = this.getSubItemsTemplateInsertStatus.bind(this);
+
+    //meter list
+    this.getMeterListTempalte = this.getMeterListTempalte.bind(this);
+    this.getMeterItemTemplateInsertStatus = this.getMeterItemTemplateInsertStatus.bind(this);
+    this.getMeterItemTemplateDeleteStatus = this.getMeterItemTemplateDeleteStatus.bind(this);
+    this.getMeterListTemplateUpdateStatus = this.getMeterListTemplateUpdateStatus.bind(this);
   }
 
 
@@ -84,6 +102,14 @@ export default class Template extends React.Component {
     //sub items
     SubItemsTemplateStore.on("change", this.getSubItemsTempalte);
     SubItemsTemplateStore.on("change", this.getSubItemsTemplateUpdateStatus);
+    SubItemsTemplateStore.on("change", this.getSubItemsTemplateDeleteStatus);
+    SubItemsTemplateStore.on("change", this.getSubItemsTemplateInsertStatus);
+    //meter list
+    MeteritemsTemplateStore.on("change", this.getMeterListTempalte);
+    MeteritemsTemplateStore.on("change", this.getMeterItemTemplateInsertStatus);
+    MeteritemsTemplateStore.on("change", this.getMeterItemTemplateDeleteStatus);
+    MeteritemsTemplateStore.on("change", this.getMeterListTemplateUpdateStatus);
+
   }
 
   componentWillUnmount() {
@@ -96,6 +122,13 @@ export default class Template extends React.Component {
     //sub items
     SubItemsTemplateStore.removeListener("change", this.getSubItemsTempalte);
     SubItemsTemplateStore.removeListener("change", this.getSubItemsTemplateUpdateStatus);
+    SubItemsTemplateStore.removeListener("change", this.getSubItemsTemplateDeleteStatus);
+    SubItemsTemplateStore.removeListener("change", this.getSubItemsTemplateInsertStatus);
+    //meter list
+    MeteritemsTemplateStore.removeListener("change", this.getMeterListTempalte);
+    MeteritemsTemplateStore.removeListener("change", this.getMeterItemTemplateInsertStatus);
+    MeteritemsTemplateStore.removeListener("change", this.getMeterItemTemplateDeleteStatus);
+    MeteritemsTemplateStore.removeListener("change", this.getMeterListTemplateUpdateStatus);
   }
 
   //error snack close
@@ -379,6 +412,7 @@ export default class Template extends React.Component {
 
   }
 
+  // sub items update status
   getSubItemsTemplateUpdateStatus(){
     let status =  SubItemsTemplateStore.getUpdateStatus();
 
@@ -389,6 +423,31 @@ export default class Template extends React.Component {
       });
     }
 
+  }
+
+  //sub items delete status
+  getSubItemsTemplateDeleteStatus(){
+    let status =  SubItemsTemplateStore.getDeleteStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+  //get the general condition template insert status
+  getSubItemsTemplateInsertStatus(){
+    let status =  SubItemsTemplateStore.getInsertStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
   }
 
 
@@ -410,9 +469,9 @@ export default class Template extends React.Component {
     event.preventDefault();
   }
 
-
+  //update sub items
   handleSubItemsUpdate(sub_id, text){
-    console.log(sub_id);
+
     if(sub_id && text ){
 
       let subitems = this.state.sub_items;
@@ -438,15 +497,194 @@ export default class Template extends React.Component {
 
     }
 
-
   }
 
+  handleDeleteSubitems(sub_id){
+
+    if(sub_id){
+      SubItemsTemplateActions.deleteSubItemsTemplate(sub_id);
+      this.setState({
+        startSending: true
+      });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
+
+    }
+
+    event.preventDefault();
+  }
+
+  //add new sub item
+  handleAddSubItem(sub_item){
+
+    if(sub_item.trim().length > 0){
+      let insert_data = {
+        item_name : sub_item.trim(),
+        priority :  1,
+        type : 'ITEM',
+        com_master_id: this.state.sub_items.master_id
+      };
+      SubItemsTemplateActions.insertSubItemTemplate(insert_data);
+      this.setState({
+        startSending: true
+      });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
+
+    }
+
+    event.preventDefault();
+  }
 
   /*
   * SUBITEMS LIST--------------------------------------------END-------------------------------------------------------
   *
   */
 
+
+  /*
+  * METER LIST--------------------------------------------START-------------------------------------------------------
+  *
+  */
+
+  //get meter list
+  getMeterListTempalte(){
+    let meter_list = MeteritemsTemplateStore.getMeterlistTemplate();
+    console.log(meter_list);
+    let meterlist = this.state.meter_list;
+    meterlist['list'] = meter_list;
+    this.setState({
+      meter_list: meterlist,
+      startSending: false
+    });
+
+  }
+
+  //get add new meter item
+  getMeterItemTemplateInsertStatus(){
+    let status =  MeteritemsTemplateStore.getInsertStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+  }
+
+  //meter item delete status
+  getMeterItemTemplateDeleteStatus(){
+    let status =  MeteritemsTemplateStore.getDeleteStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+
+  // meter item update status
+  getMeterListTemplateUpdateStatus(){
+    let status =  MeteritemsTemplateStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+  //add new meter item
+  handleAddMeterItem(meter_item){
+
+    if(meter_item.trim().length > 0){
+      let insert_data = {
+        meter_name : meter_item.trim()
+      };
+      MeterListTemplateActions.insertMeterItemTemplate(insert_data);
+      this.setState({
+        startSending: true
+      });
+
+      MeterListTemplateActions.fetchMeterListtemplate();
+
+    }
+
+    event.preventDefault();
+  }
+
+  handleDeleteMeterItem(meter_id){
+
+    if(meter_id){
+      MeterListTemplateActions.deleteMeterItemTemplate(meter_id);
+      this.setState({
+        startSending: true
+      });
+
+      MeterListTemplateActions.fetchMeterListtemplate();
+
+    }
+
+    event.preventDefault();
+  }
+
+  //submit data
+  meterlist_handleSubmit(){
+
+    let meteritems = this.state.meter_list;
+    let meter_list = meteritems['list'];
+
+    if( meter_list.length == 0 ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+      MeterListTemplateActions.updateMeterListTemplate(meter_list);
+      this.setState({
+        startSending: true
+      });
+    }
+    event.preventDefault();
+  }
+
+  //update meter item
+  handleUpdateMeterItem(meter_id, text){
+
+    if(meter_id && text ){
+
+      let meteritems = this.state.meter_list;
+      let meter_list = meteritems['list'];
+      let chk = false;
+
+      for(let i =0, l = meter_list.length; i < l ; i++ ){
+        let item = meter_list[i];
+        if( item.com_meter_id == meter_id ){
+          item.meter_name = text;
+          chk = true;
+          break;
+        }
+      }
+
+      this.setState({
+        meter_list : meteritems
+      });
+
+      if(chk){
+        this.meterlist_handleSubmit()
+      }
+
+    }
+
+  }
+
+  /*
+  * METER LIST--------------------------------------------END-------------------------------------------------------
+  *
+  */
 
   //handles sidebar items click
   sidebarClick = (id, title, item_id) => {
@@ -465,12 +703,24 @@ export default class Template extends React.Component {
 
     }
     else if(id == 'SUB'){
+      let subitems = this.state.sub_items;
+      subitems['master_id'] = item_id;
+      this.setState({
+        startSending: true,
+        sub_items: subitems
+      });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(item_id);
+    }
+
+    else if(id == 'METER'){
+
+      MeterListTemplateActions.fetchMeterListtemplate();
 
       this.setState({
         startSending: true
       });
 
-      SubItemsTemplateActions.fetchSubitemstemplate(item_id);
     }
 
 
@@ -535,7 +785,15 @@ export default class Template extends React.Component {
     }
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsTemplate list={this.state.sub_items.list} title={this.state.formTitle}
-        updateSubitems={this.handleSubItemsUpdate.bind(this)}/>
+        updateSubitems={this.handleSubItemsUpdate.bind(this)}
+        deleteSubitems={this.handleDeleteSubitems.bind(this)}
+        addSubItem ={this.handleAddSubItem.bind(this)}/>
+    }
+    else if(this.state.sidebarState == 'METER'){
+      right_div = <MeterItemsTemplate list={this.state.meter_list.list} title={this.state.formTitle}
+        addMeterItem={this.handleAddMeterItem.bind(this)}
+        deleteMeterItem={this.handleDeleteMeterItem.bind(this)}
+        updateMeterItem ={this.handleUpdateMeterItem.bind(this)}/>
     }
 
 

@@ -6,6 +6,8 @@ import ContentDone from 'material-ui/svg-icons/action/done';
 import ContentCreate from 'material-ui/svg-icons/content/create';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconButton from 'material-ui/IconButton';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class SingleItemElementTemplate extends React.Component {
 
@@ -15,7 +17,9 @@ export default class SingleItemElementTemplate extends React.Component {
     this.state = {
       disable: true,
       save: false,
-      text: this.props.item_name
+      text: this.props.item_name,
+      sub_id: this.props.sub_id,
+      deldialog: false
     };
   }
 
@@ -23,6 +27,27 @@ export default class SingleItemElementTemplate extends React.Component {
   }
 
   componentWillUnmount(){
+  }
+
+  handleDelDialogOpen = () => {
+    this.setState(
+      {
+        deldialog: true
+      }
+    );
+
+  };
+
+  handleDelDialogClose = () => {
+    this.setState({deldialog: false});
+  };
+
+  handleDelDialogOk =() => {
+    this.setState({deldialog: false});
+    if(this.state.sub_id){
+      this.props.delete(this.state.sub_id)
+    }
+
   }
 
   enabletext(){
@@ -40,7 +65,7 @@ export default class SingleItemElementTemplate extends React.Component {
   }
 
   handleSave(event){
-    this.props.update(this.props.sub_id, this.state.text);
+    this.props.update(this.state.sub_id, this.state.text);
     this.setState({
       disable: true,
       save: false
@@ -62,12 +87,27 @@ export default class SingleItemElementTemplate extends React.Component {
       addTextContainer: {
         paddingLeft: 20,
       },
+      dialog: {
+        width: 350
+      }
     };
 
-
+    const del_actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleDelDialogClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDelDialogOk}
+      />,
+    ];
+    
     return(
       <div style={styles.addTextContainer}>
-        <TextField hintText="Item name" disabled={this.state.disable} defaultValue={this.props.item_name} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+        <TextField hintText="Item name" disabled={this.state.disable} defaultValue={this.state.text} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
           {!this.state.save &&
             <IconButton tooltip="Edit" style={styles.deletebtn} onClick={this.enabletext.bind(this)}>
               <ContentCreate />
@@ -78,10 +118,23 @@ export default class SingleItemElementTemplate extends React.Component {
               <ContentDone />
             </IconButton>
           }
-        <IconButton tooltip="Delete" style={styles.deletebtn}>
+        <IconButton tooltip="Delete" style={styles.deletebtn} onClick={this.handleDelDialogOpen.bind(this)}>
           <ContentDelete />
         </IconButton>
+
+        <Dialog
+          actions={del_actions}
+          modal={false}
+          open={this.state.deldialog}
+          onRequestClose={this.handleDelDialogClose}
+          contentStyle ={styles.dialog}
+        >
+          Are you sure you want to delete?
+        </Dialog>
+
       </div>
+
+
     );
 
   }

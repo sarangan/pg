@@ -60,7 +60,7 @@ export default StyleSheet.create({
         "paddingRight": 10,
         "paddingBottom": 10,
         "paddingLeft": 10,
-        "maxHeight": 650,
+        "maxHeight": 700,
         "overflow": "auto"
     },
     "roomlist-right-wrapper": {
