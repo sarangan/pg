@@ -22,6 +22,9 @@ import LinearProgress from 'material-ui/LinearProgress';
 import * as TemplateListActions from "../../actions/template/TemplateListActions";
 import TemplateListStore from "../../stores/template/TemplateListStore";
 
+import MaterItemSingleTemplate from '../../components/singleitem/MaterItemSingleTemplate';
+
+
 
 //General Conditions
 import GeneralconditionTemplate from '../../components/generalconditions/GeneralconditionTemplate';
@@ -61,14 +64,18 @@ export default class Template extends React.Component {
       startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
-      formTitle: ''
+      formTitle: '',
+      master_id : '',
+      master_status : true
     };
 
     GeneralconditionTemplateActions.getGeneralConditionsTemplate();
 
     this.getTemplateList = this.getTemplateList.bind(this);
     TemplateListActions.fetchTemplateList();
-
+    this.getMasteritemTemplateDeleteStatus = this.getMasteritemTemplateDeleteStatus.bind(this);
+    this.getMasterItemTemplateUpdateStatus = this.getMasterItemTemplateUpdateStatus.bind(this);
+    this.getMasterItemTemplateInsertStatus = this.getMasterItemTemplateInsertStatus.bind(this);
 
     //general condition
     this.getGeneralConditionsTempalte = this.getGeneralConditionsTempalte.bind(this);
@@ -94,6 +101,10 @@ export default class Template extends React.Component {
 
   componentWillMount() {
     TemplateListStore.on("change", this.getTemplateList);
+    TemplateListStore.on("change", this.getMasteritemTemplateDeleteStatus);
+    TemplateListStore.on("change", this.getMasterItemTemplateUpdateStatus);
+    TemplateListStore.on("change", this.getMasterItemTemplateInsertStatus);
+
     //general condition
     GeneralConditionTemplateStore.on("change", this.getGeneralConditionsTempalte);
     GeneralConditionTemplateStore.on("change", this.getGenConTemplateUpdateStatus);
@@ -114,6 +125,10 @@ export default class Template extends React.Component {
 
   componentWillUnmount() {
     TemplateListStore.removeListener("change", this.getTemplateList);
+    TemplateListStore.removeListener("change", this.getMasteritemTemplateDeleteStatus);
+    TemplateListStore.removeListener("change", this.getMasterItemTemplateUpdateStatus);
+    TemplateListStore.removeListener("change", this.getMasterItemTemplateInsertStatus);
+
     //general condition
     GeneralConditionTemplateStore.removeListener("change", this.getGeneralConditionsTempalte);
     GeneralConditionTemplateStore.removeListener("change", this.getGenConTemplateUpdateStatus);
@@ -153,8 +168,137 @@ export default class Template extends React.Component {
       templatelist: TemplateListStore.getTemplateList(),
       startSending: false
     });
+    console.log(this.state.templatelist);
+  }
+
+  handleDeleteMasterItem(master_id){
+
+    if(master_id){
+      TemplateListActions.deleteMasterItemTemplate(master_id);
+      this.setState({
+        startSending: true
+      });
+
+      TemplateListActions.getTemplateList();
+
+    }
+
+    event.preventDefault();
 
   }
+
+  //get the general condition delete status
+  getMasteritemTemplateDeleteStatus(){
+    let status =  TemplateListStore.getDeleteStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+
+  }
+
+  //submit data
+  subitems_handleSubmit(){
+
+    let master_items = this.state.templatelist;
+
+    if( master_items.length == 0 ){
+      this.setState({showErrorSnack: true  });
+    }
+    else{
+      TemplateListActions.updateMasteritemTemplate(master_items);
+      this.setState({
+        startSending: true
+      });
+    }
+    event.preventDefault();
+  }
+
+  //get the general condition template update status
+  getMasterItemTemplateUpdateStatus(){
+    let status =  TemplateListStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+  }
+
+  handleUpdateMasterItem(master_id, text, type='name'){
+
+    if(typeof type == 'undefined' ){
+      type = 'name'
+    }
+
+    if(master_id ){
+
+      let master_items = this.state.templatelist;
+
+      let chk = false;
+
+      for(let i =0, l = master_items.length; i < l ; i++ ){
+        let item = master_items[i];
+        if( item.com_master_id == master_id ){
+          if(type == 'name'){
+            item.item_name = text;
+          }
+          else if(type == 'status'){
+            item.status = text;
+          }
+          chk = true;
+          break;
+        }
+      }
+
+      this.setState({
+        templatelist : master_items
+      });
+
+      if(chk){
+        this.masterlist_handleSubmit()
+      }
+
+    }
+
+  }
+
+  //get the general condition template insert status
+  getMasterItemTemplateInsertStatus(){
+    let status =  TemplateListStore.getInsertStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+    }
+  }
+
+  handleAddMasterItem(master_item, type){
+
+    if(master_item.trim().length > 0){
+      let insert_data = {
+        item_name : master_item.trim(),
+        priority :  1,
+        type : type
+      };
+      TemplateListActions.insertMasterItemTemplate(insert_data);
+      this.setState({
+        startSending: true
+      });
+
+      TemplateListActions.getTemplateList();
+
+    }
+
+    event.preventDefault();
+  }
+
 
   /*
   * GENERAL CONDITION LIST--------------------------------------------START-------------------------------------------------------
@@ -687,11 +831,12 @@ export default class Template extends React.Component {
   */
 
   //handles sidebar items click
-  sidebarClick = (id, title, item_id) => {
+  sidebarClick = (id, title, item_id, status) => {
 
     this.setState({
       sidebarState: id,
-      formTitle: title
+      formTitle: title,
+      master_status: (status == 1)?  true : false
     });
 
     if(id == 'GEN'){
@@ -712,13 +857,19 @@ export default class Template extends React.Component {
 
       SubItemsTemplateActions.fetchSubitemstemplate(item_id);
     }
-
     else if(id == 'METER'){
 
       MeterListTemplateActions.fetchMeterListtemplate();
 
       this.setState({
         startSending: true
+      });
+
+    }
+    else if(id == 'ITEM'){
+      //nothiong to do\
+      this.setState({
+        master_id: item_id,
       });
 
     }
@@ -757,8 +908,7 @@ export default class Template extends React.Component {
 
     const rightIconMenu = (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>Reply</MenuItem>
-        <MenuItem>Forward</MenuItem>
+        <MenuItem>Edit</MenuItem>
         <MenuItem>Delete</MenuItem>
       </IconMenu>
     );
@@ -795,7 +945,13 @@ export default class Template extends React.Component {
         deleteMeterItem={this.handleDeleteMeterItem.bind(this)}
         updateMeterItem ={this.handleUpdateMeterItem.bind(this)}/>
     }
-
+    else if(this.state.sidebarState == 'ITEM'){
+      right_div = <MaterItemSingleTemplate title={this.state.formTitle} masterid={this.state.master_id} status={this.state.master_status}
+        deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
+        updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
+        updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}
+        insertMasterItem = {this.handleAddMasterItem.bind(this)}/>
+    }
 
 
 
@@ -807,13 +963,14 @@ export default class Template extends React.Component {
       if(item.status != 1){
         mycolor = yellow600;
       }
+
       sidebaritems.push(
         <ListItem key={item.com_master_id}
           leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={mycolor}/>}
           rightIconButton={rightIconMenu}
           primaryText={item.item_name}
           secondaryText=""
-          onClick={this.sidebarClick.bind(this, item.type, item.item_name , item.com_master_id)}
+          onTouchTap={this.sidebarClick.bind(this, item.type, item.item_name , item.com_master_id, item.status)}
         />
       );
 
