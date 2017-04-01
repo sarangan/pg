@@ -17,7 +17,12 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
-
+import RaisedButton from 'material-ui/RaisedButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
 import * as TemplateListActions from "../../actions/template/TemplateListActions";
 import TemplateListStore from "../../stores/template/TemplateListStore";
@@ -66,7 +71,10 @@ export default class Template extends React.Component {
       showSuccessSnack: false,
       formTitle: '',
       master_id : '',
-      master_status : true
+      master_status : true,
+      dialog: false,
+      addNewItem: '',
+      itemType: 'ITEM'
     };
 
     GeneralconditionTemplateActions.getGeneralConditionsTemplate();
@@ -168,7 +176,7 @@ export default class Template extends React.Component {
       templatelist: TemplateListStore.getTemplateList(),
       startSending: false
     });
-    console.log(this.state.templatelist);
+    //console.log(this.state.templatelist);
   }
 
   handleDeleteMasterItem(master_id){
@@ -179,7 +187,7 @@ export default class Template extends React.Component {
         startSending: true
       });
 
-      TemplateListActions.getTemplateList();
+      TemplateListActions.fetchTemplateList();
 
     }
 
@@ -201,7 +209,7 @@ export default class Template extends React.Component {
   }
 
   //submit data
-  subitems_handleSubmit(){
+  masterlist_handleSubmit(){
 
     let master_items = this.state.templatelist;
 
@@ -209,6 +217,8 @@ export default class Template extends React.Component {
       this.setState({showErrorSnack: true  });
     }
     else{
+
+
       TemplateListActions.updateMasteritemTemplate(master_items);
       this.setState({
         startSending: true
@@ -248,7 +258,8 @@ export default class Template extends React.Component {
             item.item_name = text;
           }
           else if(type == 'status'){
-            item.status = text;
+
+            item.status = (text)? 1 : 2;
           }
           chk = true;
           break;
@@ -830,6 +841,54 @@ export default class Template extends React.Component {
   *
   */
 
+  handleDialogOpen = () => {
+    this.setState({dialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({dialog: false});
+
+    if(this.state.addNewItem.trim().length > 0){
+      //call save
+      let insert_data = {
+        item_name: this.state.addNewItem.trim(),
+        type: this.state.itemType
+      };
+
+      TemplateListActions.insertMasterItemTemplate(insert_data);
+      this.setState({
+        startSending: true
+      });
+      TemplateListActions.fetchTemplateList();
+
+    }
+    else{
+      console.log('Empty dialog');
+    }
+
+  };
+
+  handleAddMasterItemInputChange(event){
+    const target = event.target;
+    this.setState({
+      addNewItem : target.value
+    });
+  }
+
+  //input change
+  addNewMaster_handleInputChange(event){
+
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      itemType : value
+    });
+
+
+  }
+
   //handles sidebar items click
   sidebarClick = (id, title, item_id, status) => {
 
@@ -872,6 +931,7 @@ export default class Template extends React.Component {
         master_id: item_id,
       });
 
+
     }
 
 
@@ -894,8 +954,42 @@ export default class Template extends React.Component {
       progressbar:{
         width: 'auto',
         height: 20
+      },
+      optAdd:{
+        marginTop: 10,
+        marginBottom: 10,
+        width: '95%'
+      },
+      dialog: {
+        width: 350
+      },
+      block: {
+        maxWidth: 250,
+      },
+      radioButton: {
+        marginBottom: 16,
+        marginTop:16
+      },
+      select: {
+        marginTop: 10
       }
     };
+
+    const actions = [
+
+        <FlatButton
+          label="Cancel"
+          primary={false}
+          keyboardFocused={false}
+          onTouchTap={this.handleDialogClose}
+        />,
+        <FlatButton
+          label="Ok"
+          primary={false}
+          keyboardFocused={true}
+          onTouchTap={this.handleDialogClose}
+          />
+    ];
 
     const iconButtonElement = (
       <IconButton
@@ -986,6 +1080,41 @@ export default class Template extends React.Component {
             <div className="room-list">
               <List>
                 <Subheader inset={true}>Room list</Subheader>
+                <RaisedButton
+                   label="Add new item"
+                   labelPosition="after"
+                   primary={true}
+                   icon={<ContentAdd />}
+                   style={styles.optAdd}
+                   onTouchTap={this.handleDialogOpen.bind(this)}
+                 />
+
+                 <Dialog
+                   title="Add new item"
+                   actions={actions}
+                   modal={false}
+                   open={this.state.dialog}
+                   onRequestClose={this.handleDialogClose.bind(this)}
+                   contentStyle ={styles.dialog} >
+                   <TextField hintText="Add new item" floatingLabelText="Add new item" name="addnewitem" onChange={this.handleAddMasterItemInputChange.bind(this)}/>
+
+                   <div style={styles.select}>Select type:</div>
+                   <RadioButtonGroup name="notRight" style={styles.rdbblock} onChange={this.addNewMaster_handleInputChange.bind(this)} defaultSelected="ITEM">
+
+                     <RadioButton
+                       value="ITEM"
+                       label="Single item"
+                       style={styles.radioButton}
+                     />
+                     <RadioButton
+                        value="SUB"
+                        label="Sub items"
+                        style={styles.radioButton}
+                      />
+
+                   </RadioButtonGroup>
+
+                 </Dialog>
 
                   <ListItem
                     leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={grey400} />}

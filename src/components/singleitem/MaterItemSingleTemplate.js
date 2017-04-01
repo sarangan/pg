@@ -12,7 +12,7 @@ export default class MaterItemSingleTemplate extends React.Component {
   constructor(props){
     super(props);
     this.props = props;
-    this.state = {
+    this.state ={
       toggle_status : this.props.status
     };
   }
@@ -24,12 +24,9 @@ export default class MaterItemSingleTemplate extends React.Component {
   }
 
 
-  setToggle(){
-    this.setState({
-      toggle_status :  !(this.state.toggle_status)
-    })
+  setToggle(event, isInputChecked){
 
-    this.props.updateStatusMasterItem(this.props.masterid, this.state.toggle_status, 'status' );
+    this.props.updateStatusMasterItem(this.props.masterid, isInputChecked, 'status' );
   }
 
 
@@ -81,7 +78,7 @@ export default class MaterItemSingleTemplate extends React.Component {
           <div style={styles.block}>
             <Toggle
               label="Enable"
-              defaultToggled={this.state.toggle_status}
+              defaultToggled={(this.props.status == 1)?true:false}
               style={styles.toggle}
               onToggle={this.setToggle.bind(this)}
             />

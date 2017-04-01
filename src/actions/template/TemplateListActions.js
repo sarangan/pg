@@ -93,7 +93,7 @@ export function insertMasterItemTemplate(data){
           }
         })
         .then(function (response) {
-
+          console.log(response);
           dispatcher.dispatch({
             type: "INSERT_MASTERITEMTEMPLATE",
             data: response.data

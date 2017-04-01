@@ -104,10 +104,10 @@ export default class SingleItemElementTemplate extends React.Component {
         onTouchTap={this.handleDelDialogOk}
       />,
     ];
-    
+
     return(
       <div style={styles.addTextContainer}>
-        <TextField hintText="Item name" disabled={this.state.disable} defaultValue={this.state.text} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+        <TextField hintText="Item name" disabled={this.state.disable} value={this.props.item_name} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
           {!this.state.save &&
             <IconButton tooltip="Edit" style={styles.deletebtn} onClick={this.enabletext.bind(this)}>
               <ContentCreate />
