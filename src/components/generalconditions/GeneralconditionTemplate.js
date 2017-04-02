@@ -247,6 +247,7 @@ export default class GeneralconditionTemplate extends React.Component {
 
     return(
       <form>
+
         <h2>{this.props.title}</h2>
 
         <h3>Options

@@ -187,8 +187,6 @@ export default class Template extends React.Component {
         startSending: true
       });
 
-      TemplateListActions.fetchTemplateList();
-
     }
 
     event.preventDefault();
@@ -204,7 +202,10 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+      TemplateListActions.fetchTemplateList();
     }
+
+
 
   }
 
@@ -217,7 +218,6 @@ export default class Template extends React.Component {
       this.setState({showErrorSnack: true  });
     }
     else{
-
 
       TemplateListActions.updateMasteritemTemplate(master_items);
       this.setState({
@@ -236,7 +236,11 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      TemplateListActions.fetchTemplateList();
     }
+
+
   }
 
   handleUpdateMasterItem(master_id, text, type='name'){
@@ -287,6 +291,9 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      TemplateListActions.fetchTemplateList();
+
     }
   }
 
@@ -298,13 +305,10 @@ export default class Template extends React.Component {
         priority :  1,
         type : type
       };
-      TemplateListActions.insertMasterItemTemplate(insert_data);
       this.setState({
         startSending: true
       });
-
-      TemplateListActions.getTemplateList();
-
+      TemplateListActions.insertMasterItemTemplate(insert_data);
     }
 
     event.preventDefault();
@@ -340,6 +344,9 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
+
     }
   }
 
@@ -352,6 +359,7 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
     }
   }
 
@@ -364,6 +372,7 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
     }
 
   }
@@ -449,8 +458,6 @@ export default class Template extends React.Component {
         startSending: true
       });
 
-      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
-
     }
 
     event.preventDefault();
@@ -464,8 +471,6 @@ export default class Template extends React.Component {
       this.setState({
         startSending: true
       });
-
-      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
 
     }
 
@@ -505,8 +510,6 @@ export default class Template extends React.Component {
       this.setState({
         startSending: true
       });
-
-      GeneralconditionTemplateActions.getGeneralConditionsTemplate();
 
     }
 
@@ -576,6 +579,9 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
+
     }
 
   }
@@ -589,6 +595,8 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
     }
 
   }
@@ -602,6 +610,8 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
     }
   }
 
@@ -655,14 +665,12 @@ export default class Template extends React.Component {
   }
 
   handleDeleteSubitems(sub_id){
-
+    console.log(sub_id);
     if(sub_id){
       SubItemsTemplateActions.deleteSubItemsTemplate(sub_id);
       this.setState({
         startSending: true
       });
-
-      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
 
     }
 
@@ -683,8 +691,6 @@ export default class Template extends React.Component {
       this.setState({
         startSending: true
       });
-
-      SubItemsTemplateActions.fetchSubitemstemplate(this.state.sub_items.master_id);
 
     }
 
@@ -724,6 +730,8 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      MeterListTemplateActions.fetchMeterListtemplate();
     }
   }
 
@@ -736,6 +744,9 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      MeterListTemplateActions.fetchMeterListtemplate();
+
     }
 
   }
@@ -750,6 +761,8 @@ export default class Template extends React.Component {
         showSuccessSnack: true,
         startSending: false
       });
+
+      MeterListTemplateActions.fetchMeterListtemplate();
     }
 
   }
@@ -766,8 +779,6 @@ export default class Template extends React.Component {
         startSending: true
       });
 
-      MeterListTemplateActions.fetchMeterListtemplate();
-
     }
 
     event.preventDefault();
@@ -780,8 +791,6 @@ export default class Template extends React.Component {
       this.setState({
         startSending: true
       });
-
-      MeterListTemplateActions.fetchMeterListtemplate();
 
     }
 
@@ -859,7 +868,7 @@ export default class Template extends React.Component {
       this.setState({
         startSending: true
       });
-      TemplateListActions.fetchTemplateList();
+
 
     }
     else{
@@ -895,7 +904,8 @@ export default class Template extends React.Component {
     this.setState({
       sidebarState: id,
       formTitle: title,
-      master_status: (status == 1)?  true : false
+      master_status: (status == 1)?  true : false,
+      master_id: item_id
     });
 
     if(id == 'GEN'){
@@ -930,7 +940,6 @@ export default class Template extends React.Component {
       this.setState({
         master_id: item_id,
       });
-
 
     }
 
@@ -1025,13 +1034,22 @@ export default class Template extends React.Component {
         addNewComment={this.handleAddGeneralComment.bind(this)}
         deleteItem ={this.handleDeleteGeneral.bind(this) }
         addNewOptionItem = {this.handleAddNewOptItemGeneral.bind(this)}
-        editOptionItem = {this.handleEditOptionItem.bind(this)} />
+        editOptionItem = {this.handleEditOptionItem.bind(this)}
+
+      />
     }
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsTemplate list={this.state.sub_items.list} title={this.state.formTitle}
         updateSubitems={this.handleSubItemsUpdate.bind(this)}
         deleteSubitems={this.handleDeleteSubitems.bind(this)}
-        addSubItem ={this.handleAddSubItem.bind(this)}/>
+        addSubItem ={this.handleAddSubItem.bind(this)}
+
+        master_id={this.state.master_id} master_status={this.state.master_status}
+          deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
+          updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
+          updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}
+          insertMasterItem = {this.handleAddMasterItem.bind(this)}
+        />
     }
     else if(this.state.sidebarState == 'METER'){
       right_div = <MeterItemsTemplate list={this.state.meter_list.list} title={this.state.formTitle}
@@ -1040,7 +1058,7 @@ export default class Template extends React.Component {
         updateMeterItem ={this.handleUpdateMeterItem.bind(this)}/>
     }
     else if(this.state.sidebarState == 'ITEM'){
-      right_div = <MaterItemSingleTemplate title={this.state.formTitle} masterid={this.state.master_id} status={this.state.master_status}
+      right_div = <MaterItemSingleTemplate key={this.state.master_id} title={this.state.formTitle} masterid={this.state.master_id} status={this.state.master_status}
         deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
         updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
         updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}

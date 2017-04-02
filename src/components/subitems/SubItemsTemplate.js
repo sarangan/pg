@@ -4,6 +4,7 @@ import {blue100, lightGreen500, blue500, pink400, yellow400} from 'material-ui/s
 import TextField from 'material-ui/TextField';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import MaterItemSingleTemplate from '../singleitem/MaterItemSingleTemplate';
 
 export default class SubItemsTemplate extends React.Component {
 
@@ -58,7 +59,7 @@ export default class SubItemsTemplate extends React.Component {
 
     };
 
-  
+
     let general_item = [];
     let sub_items = [];
 
@@ -82,7 +83,13 @@ export default class SubItemsTemplate extends React.Component {
 
     return(
       <div>
-        <h2>{this.props.title}</h2>
+
+        <MaterItemSingleTemplate key={this.props.masterid} title={this.props.title} masterid={this.props.master_id} status={this.props.master_status}
+          deleteMasterItem={this.props.deleteMasterItem}
+          updateMasterItem ={this.props.updateMasterItem}
+          updateStatusMasterItem ={this.props.updateStatusMasterItem}
+          insertMasterItem = {this.props.insertMasterItem}/>
+
         {general_item}
         {sub_items}
 

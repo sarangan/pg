@@ -73,7 +73,7 @@ export default class MaterItemSingleTemplate extends React.Component {
         <h2>{this.props.title}</h2>
 
         <div className="master-template-edit">
-          <SingleItemElementTemplate item_name={this.props.title} sub_id={this.props.masterid} delete={this.props.deleteMasterItem} update={this.props.updateMasterItem}/>
+          <SingleItemElementTemplate key={this.props.masterid} item_name={this.props.title} sub_id={this.props.masterid} delete={this.props.deleteMasterItem} update={this.props.updateMasterItem}/>
 
           <div style={styles.block}>
             <Toggle

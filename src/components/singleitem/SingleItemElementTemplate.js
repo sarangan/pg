@@ -17,16 +17,22 @@ export default class SingleItemElementTemplate extends React.Component {
     this.state = {
       disable: true,
       save: false,
-      text: this.props.item_name,
+      item_name: this.props.item_name,
       sub_id: this.props.sub_id,
       deldialog: false
     };
   }
 
   componentWillMount(){
+    this.setState({
+      item_name: this.props.item_name
+    })
   }
 
   componentWillUnmount(){
+    this.setState({
+      item_name: ''
+    });
   }
 
   handleDelDialogOpen = () => {
@@ -60,12 +66,14 @@ export default class SingleItemElementTemplate extends React.Component {
   handleInputChange(event){
     const target = event.target;
     this.setState({
-      text : target.value
+      item_name : target.value
     });
   }
 
   handleSave(event){
-    this.props.update(this.state.sub_id, this.state.text);
+    console.log(this.state.item_name);
+    console.log(this.state.sub_id);
+    this.props.update(this.state.sub_id, this.state.item_name);
     this.setState({
       disable: true,
       save: false
@@ -107,7 +115,7 @@ export default class SingleItemElementTemplate extends React.Component {
 
     return(
       <div style={styles.addTextContainer}>
-        <TextField hintText="Item name" disabled={this.state.disable} value={this.props.item_name} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+        <TextField hintText="Item name" disabled={this.state.disable} value={this.state.item_name} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
           {!this.state.save &&
             <IconButton tooltip="Edit" style={styles.deletebtn} onClick={this.enabletext.bind(this)}>
               <ContentCreate />
