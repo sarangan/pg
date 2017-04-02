@@ -4,6 +4,7 @@ import {blue100, lightGreen500, blue500, pink400, yellow400} from 'material-ui/s
 import TextField from 'material-ui/TextField';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import MaterItemSingleTemplate from '../singleitem/MaterItemSingleTemplate';
 
 export default class MeterItemsTemplate extends React.Component {
 
@@ -71,7 +72,13 @@ export default class MeterItemsTemplate extends React.Component {
 
     return(
       <div>
-        <h2>{this.props.title}</h2>
+        <MaterItemSingleTemplate key={this.props.masterid} title={this.props.title} masterid={this.props.master_id} status={this.props.master_status}
+          deleteMasterItem={this.props.deleteMasterItem}
+          updateMasterItem ={this.props.updateMasterItem}
+          updateStatusMasterItem ={this.props.updateStatusMasterItem}
+          insertMasterItem = {this.props.insertMasterItem}/>
+
+        <h3>Meter items</h3>
 
         {meter_items}
 

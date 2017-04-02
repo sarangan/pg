@@ -90,6 +90,8 @@ export default class SubItemsTemplate extends React.Component {
           updateStatusMasterItem ={this.props.updateStatusMasterItem}
           insertMasterItem = {this.props.insertMasterItem}/>
 
+        <h3>Sub items</h3>
+
         {general_item}
         {sub_items}
 

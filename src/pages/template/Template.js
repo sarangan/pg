@@ -1055,7 +1055,14 @@ export default class Template extends React.Component {
       right_div = <MeterItemsTemplate list={this.state.meter_list.list} title={this.state.formTitle}
         addMeterItem={this.handleAddMeterItem.bind(this)}
         deleteMeterItem={this.handleDeleteMeterItem.bind(this)}
-        updateMeterItem ={this.handleUpdateMeterItem.bind(this)}/>
+        updateMeterItem ={this.handleUpdateMeterItem.bind(this)}
+        
+        master_id={this.state.master_id} master_status={this.state.master_status}
+          deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
+          updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
+          updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}
+          insertMasterItem = {this.handleAddMasterItem.bind(this)}
+        />
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <MaterItemSingleTemplate key={this.state.master_id} title={this.state.formTitle} masterid={this.state.master_id} status={this.state.master_status}
