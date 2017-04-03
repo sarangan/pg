@@ -64,7 +64,11 @@ export default StyleSheet.create({
         "overflow": "auto"
     },
     "roomlist-right-wrapper": {
-        "height": "auto"
+        "height": "auto",
+        "paddingTop": 10,
+        "paddingRight": 10,
+        "paddingBottom": 10,
+        "paddingLeft": 10
     },
     "template-opt": {
         "minWidth": 280

@@ -25,7 +25,6 @@ import AddProperty from '../components/addproperty/AddProperty';
 import * as PropertyActions from "../actions/PropertyActions";
 import PropertyStore from "../stores/PropertyStore";
 
-
 //General Conditions
 import Generalconditionlist from '../components/generalconditions/Generalconditionlist';
 import * as GeneralConditionActions from "../actions/GeneralConditionActions";
@@ -45,6 +44,10 @@ import SingleItemStore from "../stores/SingleItemStore";
 import MeterItems from '../components/meteritems/MeterItems';
 import * as MeterItemActions from "../actions/MeterItemActions";
 import MeterItemsStore from "../stores/MeterItemsStore";
+
+//photos
+import * as PhotosActions from "../actions/PhotosActions";
+import PhotosStore from "../stores/PhotosStore";
 
 
 export default class PropertyRoomList extends React.Component {
@@ -80,6 +83,7 @@ export default class PropertyRoomList extends React.Component {
         list: [],
         gen_comment: {}
       },
+      photos: [],
       sidebarState: 'PROP',
       startSending: true,
       showErrorSnack: false,
@@ -129,6 +133,9 @@ export default class PropertyRoomList extends React.Component {
 
     this.subItems_handleInputChange = this.subItems_handleInputChange.bind(this);
     this.subItems_handleSubmit = this.subItems_handleSubmit.bind(this);
+
+    //photos
+    this.getPhotos = this.getPhotos.bind(this);
   }
 
   componentWillMount(){
@@ -148,6 +155,8 @@ export default class PropertyRoomList extends React.Component {
 
     SubItemsStore.on("change", this.getSubItems);
     SubItemsStore.on("change", this.getSubItemsUpdateStatus);
+
+    PhotosStore.on("change", this.getPhotos);
   }
 
   componentWillUnmount(){
@@ -167,6 +176,8 @@ export default class PropertyRoomList extends React.Component {
 
     SubItemsStore.removeListener("change", this.getSubItems);
     SubItemsStore.removeListener("change", this.getSubItemsUpdateStatus);
+
+    PhotosStore.removeListener("change", this.getPhotos);
   }
 
   getRoomList(){
@@ -501,13 +512,27 @@ export default class PropertyRoomList extends React.Component {
   //get single item from api
   getSingleItem(){
       let single_item = SingleItemStore.getItem();
+      console.log(single_item);
       let temp = {
         reading_value: '',
-        option: single_item.option,
-        description: single_item.description,
-        comment: single_item.comment,
-        prop_feedback_id: single_item.prop_feedback_id
+        option: '',
+        description: '',
+        comment: '',
+        prop_feedback_id: ''
       };
+
+      if(single_item){
+
+        let temp = {
+          reading_value: '',
+          option: (single_item.hasOwnProperty('option') )?single_item.option:'',
+          description: (single_item.hasOwnProperty('description') )?single_item.description:'',
+          comment: (single_item.hasOwnProperty('comment') )? single_item.comment: '',
+          prop_feedback_id: (single_item.hasOwnProperty('prop_feedback_id') ) ? single_item.prop_feedback_id : ''
+        };
+
+      }
+
 
       this.setState({
          single_item: temp,
@@ -648,6 +673,26 @@ export default class PropertyRoomList extends React.Component {
   *
   */
 
+  /*
+  *PHOTOS ------------------------------------------------START------------------------------------------------------
+  *
+  */
+
+  //get photos
+  getPhotos(){
+    let photos = PhotosStore.getPhotos();
+
+    console.log(photos);
+    this.setState({
+      photos
+    });
+  }
+
+  /*
+  *PHOTOS ------------------------------------------------END------------------------------------------------------
+  *
+  */
+
 
   //handles sidebar items click
   sidebarClick = (id, title, item_id) => {
@@ -683,6 +728,9 @@ export default class PropertyRoomList extends React.Component {
       });
 
       SubItemsActions.fetchSubitemslist(this.state.property_id, item_id);
+
+      //get photos
+      PhotosActions.fetchPhotos();
     }
     else if(id == 'METER'){
       this.setState({

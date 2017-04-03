@@ -20,6 +20,7 @@ class SingleItemStore extends EventEmitter {
     switch(action.type) {
 
       case "GET_ITEMSDEAILS": {
+        console.log(action.data);
         if(action.data.single_item && action.data.single_item.constructor === Array ){
           this.item = action.data.single_item[0];
         }

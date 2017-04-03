@@ -62,7 +62,8 @@
 }
 
 .roomlist-right-wrapper{
-    height: auto;
+  height: auto;
+  padding: 10px;
 }
 
 .template-opt{
