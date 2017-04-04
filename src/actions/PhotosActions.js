@@ -1,9 +1,9 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
 
-export function fetchPhotos(property_id, item_id) {
+export function fetchPhotos(property_id, master_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getPhotos';
+  var url = 'http://52.39.72.94:3000/Property/getPhotosByMaster';
   axios({
           method: 'post',
           url: url,
@@ -12,10 +12,11 @@ export function fetchPhotos(property_id, item_id) {
            },
           data: {
             property_id,
-            item_id
+            master_id
           }
         })
         .then(function (response) {
+          //console.log(response);
           dispatcher.dispatch({
             type: "GET_PHOTOS",
             data: response.data,

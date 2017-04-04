@@ -53,10 +53,23 @@ export default class SubItemsList extends React.Component {
       }
     };
 
+
+    let photos = this.props.photos;
+    let sub_photos = [];
+    let gen_photos = [];
+    for(let i =0, l = photos.length; i < l ; i++){
+      if(photos[i].type == 'SUB'){
+        sub_photos.push(photos[i]);
+      }
+      else if( photos[i].type == 'GENERAL'){
+        gen_photos.push(photos[i]);
+      }
+
+    }
+
     let singleItem = [];
     let gotGeneralCondition = false;
     let generalItem = null;
-
     for(let i =0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
       let data = {
@@ -71,7 +84,7 @@ export default class SubItemsList extends React.Component {
       gotGeneralCondition = ( (item.type == 'GENERAL')? true : false);
       if(!gotGeneralCondition){
         singleItem.push(
-          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id}/>
+          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={sub_photos} />
         );
       }
       else{
@@ -80,7 +93,7 @@ export default class SubItemsList extends React.Component {
           item_id : item.prop_subitem_id
         };
 
-        generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} />
+        generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={gen_photos} />
       }
 
 
