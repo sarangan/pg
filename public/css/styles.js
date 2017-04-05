@@ -131,5 +131,43 @@ export default StyleSheet.create({
         "content": "''",
         "display": "table",
         "clear": "both"
+    },
+    "photo-items": {
+        "position": "relative",
+        "overflow": "hidden",
+        "minWidth": "100%",
+        "color": "rgb(0, 188, 212)",
+        "marginRight": 20
+    },
+    "close": {
+        "color": "white",
+        "position": "absolute",
+        "top": 10,
+        "right": 25,
+        "fontSize": 35,
+        "fontWeight": "bold"
+    },
+    "close:hover": {
+        "color": "#999",
+        "textDecoration": "none",
+        "cursor": "pointer"
+    },
+    "close:focus": {
+        "color": "#999",
+        "textDecoration": "none",
+        "cursor": "pointer"
+    },
+    "modal": {
+        "display": "none",
+        "position": "fixed",
+        "zIndex": 1500,
+        "paddingTop": 100,
+        "left": 0,
+        "top": 0,
+        "width": "100%",
+        "height": "100%",
+        "overflow": "auto",
+        "backgroundColor": "rgba(0, 0, 0, 0.83)",
+        "textAlign": "center"
     }
 });

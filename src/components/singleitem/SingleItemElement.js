@@ -5,6 +5,7 @@ import ActionFavoriteBorder from 'material-ui/svg-icons/action/favorite-border';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
+import PhotoWarpper from '../photos/PhotoWarpper';
 
 
 export default class SingleItemElement extends React.Component {
@@ -108,6 +109,8 @@ export default class SingleItemElement extends React.Component {
         }
 
         <h4>Photos:</h4>
+
+        <PhotoWarpper photos={this.props.photos} />
 
         <Divider />
 

@@ -55,11 +55,14 @@ export default class SubItemsList extends React.Component {
 
 
     let photos = this.props.photos;
-    let sub_photos = [];
+    let sub_photos = {};
     let gen_photos = [];
     for(let i =0, l = photos.length; i < l ; i++){
       if(photos[i].type == 'SUB'){
-        sub_photos.push(photos[i]);
+        //sub_photos.push(photos[i]);
+        let pho = sub_photos[photos[i].item_id] || [];
+        pho.push(photos[i]);
+        sub_photos[photos[i].item_id] = pho;
       }
       else if( photos[i].type == 'GENERAL'){
         gen_photos.push(photos[i]);
@@ -84,7 +87,7 @@ export default class SubItemsList extends React.Component {
       gotGeneralCondition = ( (item.type == 'GENERAL')? true : false);
       if(!gotGeneralCondition){
         singleItem.push(
-          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={sub_photos} />
+          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={sub_photos[item.prop_subitem_id]} />
         );
       }
       else{
