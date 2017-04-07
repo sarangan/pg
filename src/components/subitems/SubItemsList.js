@@ -2,8 +2,11 @@ import React, { Component, PropTypes } from "react";
 import RaisedButton from 'material-ui/RaisedButton';
 import SingleItemElement from '../singleitem/SingleItemElement';
 import GeneralItemElement from '../singleitem/GeneralItemElement';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import ItemTypes from '../../utils/ItemTypes';
 
-export default class SubItemsList extends React.Component {
+class SubItemsList extends React.Component {
 
   constructor(props){
     super(props);
@@ -33,6 +36,16 @@ export default class SubItemsList extends React.Component {
 
   componentWillReceiveProps(){
     //console.log(this.props.list);
+  }
+
+
+  handleDrop(){
+    console.log('dropping ');
+  }
+
+
+  handleDrag(){
+    console.log('dragging');
   }
 
   render() {
@@ -87,7 +100,8 @@ export default class SubItemsList extends React.Component {
       gotGeneralCondition = ( (item.type == 'GENERAL')? true : false);
       if(!gotGeneralCondition){
         singleItem.push(
-          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={sub_photos[item.prop_subitem_id]} />
+          <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id}
+            photos={sub_photos[item.prop_subitem_id]} on_drop={this.handleDrop.bind(this)} on_drag={this.handleDrag.bind(this)} />
         );
       }
       else{
@@ -96,7 +110,8 @@ export default class SubItemsList extends React.Component {
           item_id : item.prop_subitem_id
         };
 
-        generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={gen_photos} />
+        generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={gen_photos}
+        on_drag={this.handleDrag.bind(this)} on_drop={this.handleDrop.bind(this)}/>
       }
 
 
@@ -143,3 +158,5 @@ export default class SubItemsList extends React.Component {
   }
 
 }
+
+export default DragDropContext(HTML5Backend)(SubItemsList);

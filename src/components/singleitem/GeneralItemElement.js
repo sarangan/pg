@@ -39,7 +39,7 @@ export default class GeneralItemElement extends React.Component {
 
           <h4>Photos:</h4>
 
-          <PhotoWarpper photos={this.props.photos}/>
+          <PhotoWarpper photos={this.props.photos} on_drag={this.props.on_drag} />
 
           <Divider />
 

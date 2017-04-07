@@ -3,6 +3,7 @@ import IconButton from 'material-ui/IconButton';
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle';
 import ZoomIcon from 'material-ui/svg-icons/image/loupe';
 
+
 export default class PhotoItem extends React.Component {
 
   constructor(props){
@@ -25,6 +26,8 @@ export default class PhotoItem extends React.Component {
       show : !this.state.show
     });
   }
+
+
 
   render() {
 
@@ -59,9 +62,13 @@ export default class PhotoItem extends React.Component {
       }
     };
 
+    const { connectDragSource, isDragging } = this.props;
+
     return(
-        <div>
-              <div className="photo-items">
+        <div style={{
+        cursor: 'move'
+      }}  draggable="true" onDrag={this.props.on_drag}>
+              <div className="photo-items" >
                 <IconButton style={styles.removeBtn}><RemoveIcon color="rgb(255, 9, 9)" /></IconButton>
                 <img src={this.props.image_url} style={styles.img} />
                 <IconButton style={styles.zoomBtn} onClick={this.toggleImg.bind(this)}><ZoomIcon color="rgb(42, 220, 80)" /></IconButton>

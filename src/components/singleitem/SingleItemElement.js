@@ -110,7 +110,7 @@ export default class SingleItemElement extends React.Component {
 
         <h4>Photos:</h4>
 
-        <PhotoWarpper photos={this.props.photos} />
+        <PhotoWarpper photos={this.props.photos} on_drop={this.props.on_drop}/>
 
         <Divider />
 

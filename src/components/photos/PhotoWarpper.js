@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from "react";
-import uitl from '../../utils/utils.js';
+import config from '../../config/config';
 import PhotoItem from './PhotoItem';
 
 export default class PhotoWarpper extends React.Component {
@@ -18,6 +18,9 @@ export default class PhotoWarpper extends React.Component {
   componentWillUnmount(){
   }
 
+  allowDrop(e){
+    e.preventDefault();
+  }
 
   render() {
 
@@ -44,11 +47,11 @@ export default class PhotoWarpper extends React.Component {
     };
 
     return(
-      <div style={styles.root}>
+      <div style={styles.root} onDrop={this.props.on_drop} onDragOver={this.allowDrop.bind(this)}>
           {this.props.photos && this.props.photos.map((photo) => (
             <div style={styles.img_container}
               key={photo.photo_id} >
-              <PhotoItem image_url={uitl.server_path + photo.file_name}/>
+              <PhotoItem image_url={config.SERVER_PATH + photo.file_name} on_drag={this.props.on_drag}/>
             </div>
           ))}
       </div>
