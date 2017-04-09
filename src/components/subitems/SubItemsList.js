@@ -2,11 +2,8 @@ import React, { Component, PropTypes } from "react";
 import RaisedButton from 'material-ui/RaisedButton';
 import SingleItemElement from '../singleitem/SingleItemElement';
 import GeneralItemElement from '../singleitem/GeneralItemElement';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import ItemTypes from '../../utils/ItemTypes';
 
-class SubItemsList extends React.Component {
+export default class SubItemsList extends React.Component {
 
   constructor(props){
     super(props);
@@ -158,5 +155,3 @@ class SubItemsList extends React.Component {
   }
 
 }
-
-export default DragDropContext(HTML5Backend)(SubItemsList);
