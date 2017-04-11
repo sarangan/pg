@@ -28,7 +28,6 @@ export default class PhotoItem extends React.Component {
   }
 
 
-
   render() {
 
     let dp = 'none';
@@ -67,7 +66,7 @@ export default class PhotoItem extends React.Component {
     return(
         <div style={{
         cursor: 'move'
-      }}  draggable="true" onDrag={this.props.on_drag}>
+      }}  draggable="true" onDrag={this.props.on_drag} onDragStart={()=>this.props.on_drag_start(this.props.photo_id)}>
               <div className="photo-items" >
                 <IconButton style={styles.removeBtn}><RemoveIcon color="rgb(255, 9, 9)" /></IconButton>
                 <img src={this.props.image_url} style={styles.img} />

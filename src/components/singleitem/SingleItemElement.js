@@ -85,32 +85,35 @@ export default class SingleItemElement extends React.Component {
 
     return(
       <div>
-        <h3>{this.props.title}</h3>
+        <div>
+            <h3>{this.props.title}</h3>
 
-        {meterorItem}
+            {meterorItem}
 
-        { this.props.type == 'ITEM' &&
-        <Divider style={styles.bottomDivider}/>
-        }
+            { this.props.type == 'ITEM' &&
+            <Divider style={styles.bottomDivider}/>
+            }
 
-        <h4>Description:</h4>
-        <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' } value={this.props.data.description?this.props.data.description: '' } onChange={this.props.handleInputChange}/>
+            <h4>Description:</h4>
+            <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' } value={this.props.data.description?this.props.data.description: '' } onChange={this.props.handleInputChange}/>
 
-        { this.props.type == 'ITEM' &&
-        <Divider style={styles.bottomDivider}/>
-        }
+            { this.props.type == 'ITEM' &&
+            <Divider style={styles.bottomDivider}/>
+            }
 
-        <h4>Comment:</h4>
-        <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.type == 'ITEM'?'comment':this.props.data.item_id +';'+ 'comment'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
+            <h4>Comment:</h4>
+            <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.type == 'ITEM'?'comment':this.props.data.item_id +';'+ 'comment'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
 
 
-        { this.props.type == 'ITEM' &&
-        <Divider style={styles.bottomDivider}/>
-        }
+            { this.props.type == 'ITEM' &&
+            <Divider style={styles.bottomDivider}/>
+            }
+
+        </div>
 
         <h4>Photos:</h4>
 
-        <PhotoWarpper photos={this.props.photos} on_drop={this.props.on_drop}/>
+        <PhotoWarpper sub_id={this.props.sub_id} photos={this.props.photos} on_drop={this.props.on_drop} dragging={this.props.dragging} on_drag_start={this.props.on_drag_start} />
 
         <Divider />
 
