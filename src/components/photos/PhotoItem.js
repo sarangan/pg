@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from "react";
 import IconButton from 'material-ui/IconButton';
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle';
 import ZoomIcon from 'material-ui/svg-icons/image/loupe';
-
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class PhotoItem extends React.Component {
 
@@ -10,7 +11,9 @@ export default class PhotoItem extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      show: false
+      show: false,
+      deldialog: false,
+      del_photo_id: '',
     };
 
   }
@@ -20,6 +23,29 @@ export default class PhotoItem extends React.Component {
 
   componentWillUnmount(){
   }
+
+  handleDelDialogOpen = (photo_id) => {
+    this.setState(
+      {
+        deldialog: true,
+        del_photo_id: photo_id
+      }
+    );
+
+  };
+
+  handleDelDialogClose = () => {
+    this.setState({deldialog: false});
+  };
+
+  handleDelDialogOk =() => {
+    this.setState({deldialog: false});
+    if(this.state.del_photo_id){
+      this.props.photoDelete(this.state.del_photo_id);
+    }
+
+  }
+
 
   toggleImg(){
     this.setState({
@@ -57,9 +83,24 @@ export default class PhotoItem extends React.Component {
       zoomImg: {
         width: '80%',
         height: 'auto',
-
-      }
+      },
+      dialog: {
+        width: 350
+      },
     };
+
+    const del_actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleDelDialogClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDelDialogOk}
+      />,
+    ];
 
     const { connectDragSource, isDragging } = this.props;
 
@@ -68,7 +109,7 @@ export default class PhotoItem extends React.Component {
         cursor: 'move'
       }}  draggable="true" onDrag={this.props.on_drag} onDragStart={()=>this.props.on_drag_start(this.props.photo_id)}>
               <div className="photo-items" >
-                <IconButton style={styles.removeBtn}><RemoveIcon color="rgb(255, 9, 9)" /></IconButton>
+                <IconButton style={styles.removeBtn} onClick={()=>this.handleDelDialogOpen(this.props.photo_id)}><RemoveIcon color="rgb(255, 9, 9)" /></IconButton>
                 <img src={this.props.image_url} style={styles.img} />
                 <IconButton style={styles.zoomBtn} onClick={this.toggleImg.bind(this)}><ZoomIcon color="rgb(42, 220, 80)" /></IconButton>
               </div>
@@ -79,6 +120,17 @@ export default class PhotoItem extends React.Component {
                      <img src={this.props.image_url} style={styles.zoomImg} />
                 </div>
               </div>
+
+              <Dialog
+                actions={del_actions}
+                modal={false}
+                open={this.state.deldialog}
+                onRequestClose={this.handleDelDialogClose}
+                contentStyle ={styles.dialog}
+              >
+                Are you sure you want to delete?
+              </Dialog>
+
           </div>
     );
   }

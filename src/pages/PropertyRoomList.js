@@ -88,7 +88,8 @@ export default class PropertyRoomList extends React.Component {
       startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
-      formTitle: 'Update Property info'
+      formTitle: 'Update Property info',
+      master_id: ''
     };
 
     this.getRoomList = this.getRoomList.bind(this);
@@ -136,6 +137,8 @@ export default class PropertyRoomList extends React.Component {
 
     //photos
     this.getPhotos = this.getPhotos.bind(this);
+    this.getPhotoDnDUpdateStatus = this.getPhotoDnDUpdateStatus.bind(this);
+    this.getPhotoDeleteStatus = this.getPhotoDeleteStatus.bind(this);
   }
 
   componentWillMount(){
@@ -157,6 +160,9 @@ export default class PropertyRoomList extends React.Component {
     SubItemsStore.on("change", this.getSubItemsUpdateStatus);
 
     PhotosStore.on("change", this.getPhotos);
+    PhotosStore.on("change", this.getPhotoDnDUpdateStatus);
+    PhotosStore.on("change", this.getPhotoDeleteStatus);
+
   }
 
   componentWillUnmount(){
@@ -178,6 +184,8 @@ export default class PropertyRoomList extends React.Component {
     SubItemsStore.removeListener("change", this.getSubItemsUpdateStatus);
 
     PhotosStore.removeListener("change", this.getPhotos);
+    PhotosStore.removeListener("change", this.getPhotoDnDUpdateStatus);
+    PhotosStore.removeListener("change", this.getPhotoDeleteStatus);
   }
 
   getRoomList(){
@@ -682,10 +690,59 @@ export default class PropertyRoomList extends React.Component {
   getPhotos(){
     let photos = PhotosStore.getPhotos();
 
-    console.log(photos);
+    //console.log(photos);
     this.setState({
       photos
     });
+  }
+
+  getPhotoDnDUpdateStatus(){
+    let status = PhotosStore.getPhotoDnDStatus();
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+
+      PhotosActions.fetchPhotos(this.state.property_id, this.state.master_id);
+
+    }
+  }
+
+
+  getPhotoDeleteStatus(){
+    let status = PhotosStore.getPhotoDeleteStatus();
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+
+      PhotosActions.fetchPhotos(this.state.property_id, this.state.master_id);
+
+    }
+  }
+
+
+  handleDargDropPhoto(sub_id, photo_id){
+
+    PhotosActions.updateDragDrop(photo_id, sub_id);
+
+    this.setState({
+      startSending: true
+    });
+
+  }
+
+
+  handlePhotoDelete(photo_id){
+
+    PhotosActions.deletePhoto(photo_id);
+
+    this.setState({
+      startSending: true
+    });
+
   }
 
   /*
@@ -699,7 +756,8 @@ export default class PropertyRoomList extends React.Component {
 
     this.setState({
       sidebarState: id,
-      formTitle: title
+      formTitle: title,
+      master_id: item_id
     });
 
     if (id == 'PROP') {
@@ -806,7 +864,8 @@ export default class PropertyRoomList extends React.Component {
     }
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsList generalcomment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
-        handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit} photos={this.state.photos}/>
+        handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit} photos={this.state.photos} dragDropPhoto={this.handleDargDropPhoto.bind(this)}
+        photoDelete={this.handlePhotoDelete.bind(this)}/>
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>

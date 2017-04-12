@@ -6,10 +6,20 @@ class PhotosStore extends EventEmitter {
   constructor() {
     super();
     this.photos = [];
+    this.updateDnDStatus = null;
+    this.deletePhotoStatus = null;
   }
 
   getPhotos() {
     return this.photos;
+  }
+
+  getPhotoDnDStatus(){
+    return this.updateDnDStatus;
+  }
+
+  getPhotoDeleteStatus(){
+    return this.deletePhotoStatus;
   }
 
   handleActions(action) {
@@ -18,9 +28,25 @@ class PhotosStore extends EventEmitter {
 
       case "GET_PHOTOS": {
         this.photos = action.data.photos;
+        this.updateDnDStatus = false;
         this.emit("change");
         break;
       }
+
+      case "UPDATE_PHOTODnD": {
+        this.updateDnDStatus = action.data.status == 1? true: false;
+        this.deletePhotoStatus = null;
+        this.emit("change");
+        break;
+      }
+
+      case "DELETE_PHOTO": {
+        this.deletePhotoStatus = action.data.status == 1? true: false;
+        this.updateDnDStatus = null;
+        this.emit("change");
+        break;
+      }
+
 
     }
 
