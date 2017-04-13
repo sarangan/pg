@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from "react";
 import RaisedButton from 'material-ui/RaisedButton';
 import SingleItemElement from '../singleitem/SingleItemElement';
 import GeneralItemElement from '../singleitem/GeneralItemElement';
-import DropzoneComponent from 'react-dropzone-component';
 
 export default class SubItemsList extends React.Component {
 
@@ -64,7 +63,6 @@ export default class SubItemsList extends React.Component {
     });
   }
 
-
   render() {
 
     const styles = {
@@ -83,17 +81,6 @@ export default class SubItemsList extends React.Component {
       }
     };
 
-    var componentConfig = {
-      iconFiletypes: ['.jpg', '.png'],
-      showFiletypeIcon: true,
-      postUrl: '/uploadHandler'
-    };
-    var djsConfig = {
-      addRemoveLinks: false,
-      params: {
-          myParameter: "I'm a parameter!"
-      }
-  };
 
     let photos = this.props.photos;
     let sub_photos = {};
@@ -131,7 +118,7 @@ export default class SubItemsList extends React.Component {
           <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange}
             key={item.prop_subitem_id}
             photos={sub_photos[item.prop_subitem_id]} on_drop={this.handleDrop.bind(this)} on_drag={this.handleDrag.bind(this)} dragging={this.state.dragging}
-            on_drag_start={this.handleDragStart.bind(this)} sub_id={item.prop_subitem_id} photoDelete={this.props.photoDelete}/>
+            on_drag_start={this.handleDragStart.bind(this)} sub_id={item.prop_subitem_id} photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}/>
         );
       }
       else{
@@ -141,11 +128,14 @@ export default class SubItemsList extends React.Component {
         };
 
         generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={gen_photos}
-        on_drag={this.handleDrag.bind(this)} on_drop={this.handleDrop.bind(this)} on_drag_start={this.handleDragStart.bind(this)}  photoDelete={this.props.photoDelete}/>
+        on_drag={this.handleDrag.bind(this)} on_drop={this.handleDrop.bind(this)} on_drag_start={this.handleDragStart.bind(this)}  photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}/>
       }
 
 
     }
+
+
+
 
 
     return(
@@ -158,9 +148,7 @@ export default class SubItemsList extends React.Component {
               {generalItem}
             </div>
 
-            <DropzoneComponent config={componentConfig} djsConfig={djsConfig}/>
-
-            <div className="control-wrapper-flex-2 roomlist-right-wrapper scroll-style">
+            <div className="control-wrapper-flex-1 roomlist-right-wrapper-snd scroll-style">
 
                 <div className='roomlist-right-div scroll-style'>
 

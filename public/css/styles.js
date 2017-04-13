@@ -48,12 +48,14 @@ export default StyleSheet.create({
         "WebkitFlex": 1,
         "MsFlex": 1,
         "flex": 1,
-        "marginLeft": 30
+        "marginLeft": 30,
+        "width": "75%"
     },
     "control-wrapper-flex-2": {
         "WebkitFlex": 2,
         "MsFlex": 2,
-        "flex": 2
+        "flex": 2,
+        "width": "25%"
     },
     "roomlist-right-div": {
         "paddingTop": 10,
@@ -69,6 +71,9 @@ export default StyleSheet.create({
         "paddingRight": 10,
         "paddingBottom": 10,
         "paddingLeft": 10
+    },
+    "roomlist-right-wrapper-snd": {
+        "height": "auto"
     },
     "template-opt": {
         "minWidth": 280
@@ -267,9 +272,9 @@ export default StyleSheet.create({
     },
     "dropzone dz-message": {
         "textAlign": "center",
-        "marginTop": 2,
+        "marginTop": 5,
         "marginRight": 0,
-        "marginBottom": 2,
+        "marginBottom": 5,
         "marginLeft": 0
     },
     "dropzone dz-preview": {
@@ -376,10 +381,10 @@ export default StyleSheet.create({
         "filter": "blur(8px)"
     },
     "dropzone dz-preview dz-image": {
-        "borderRadius": 20,
+        "borderRadius": 0,
         "overflow": "hidden",
-        "width": 120,
-        "height": 120,
+        "width": 60,
+        "height": 60,
         "position": "relative",
         "display": "block",
         "zIndex": 10

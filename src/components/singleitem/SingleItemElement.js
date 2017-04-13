@@ -57,7 +57,23 @@ export default class SingleItemElement extends React.Component {
       saveButton: {
         marginLeft: 5,
         marginRight: 10
+      },
+      wrapper:{
+        boxShadow:' rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px',
+        borderRadius: 2,
+        padding: 10,
+        marginBottom: 30,
+        marginTop: 20
+      },
+      heading:{
+        color: 'rgb(79, 189, 160)',
+        marginBottom: 0
+      },
+      headinghr:{
+        backgroundColor: 'rgb(79, 189, 160)'
       }
+
+
     };
 
     let meterorItem = null;
@@ -84,9 +100,10 @@ export default class SingleItemElement extends React.Component {
 
 
     return(
-      <div>
+      <div style={styles.wrapper}>
         <div>
-            <h3>{this.props.title}</h3>
+            <h3 style={styles.heading}>{this.props.title}</h3>
+            <Divider style={styles.headinghr}/>
 
             {meterorItem}
 
@@ -113,7 +130,8 @@ export default class SingleItemElement extends React.Component {
 
         <h4>Photos:</h4>
 
-        <PhotoWarpper sub_id={this.props.sub_id} photos={this.props.photos} on_drop={this.props.on_drop} dragging={this.props.dragging} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete}/>
+        <PhotoWarpper sub_id={this.props.sub_id} photos={this.props.photos} on_drop={this.props.on_drop} dragging={this.props.dragging} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete}
+          photoUpload={this.props.photoUpload} type="SUB"/>
 
         <Divider />
 

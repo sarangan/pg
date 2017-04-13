@@ -745,6 +745,14 @@ export default class PropertyRoomList extends React.Component {
 
   }
 
+  handleUploadPhoto(file, sub_id, type){
+    console.log(file);
+    console.log(sub_id);
+    console.log(type);
+
+    PhotosActions.uploadPhoto(file, sub_id, type);
+  }
+
   /*
   *PHOTOS ------------------------------------------------END------------------------------------------------------
   *
@@ -865,7 +873,7 @@ export default class PropertyRoomList extends React.Component {
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsList generalcomment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
         handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit} photos={this.state.photos} dragDropPhoto={this.handleDargDropPhoto.bind(this)}
-        photoDelete={this.handlePhotoDelete.bind(this)}/>
+        photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)}/>
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>

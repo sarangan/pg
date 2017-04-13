@@ -39,7 +39,8 @@ export default class GeneralItemElement extends React.Component {
 
           <h4>Photos:</h4>
 
-          <PhotoWarpper photos={this.props.photos} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete}/>
+          <PhotoWarpper photos={this.props.photos} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}
+            type="GENERAL" sub_id={this.props.data.item_id } />
 
           <Divider />
 
