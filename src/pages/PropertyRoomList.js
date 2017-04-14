@@ -139,6 +139,7 @@ export default class PropertyRoomList extends React.Component {
     this.getPhotos = this.getPhotos.bind(this);
     this.getPhotoDnDUpdateStatus = this.getPhotoDnDUpdateStatus.bind(this);
     this.getPhotoDeleteStatus = this.getPhotoDeleteStatus.bind(this);
+    this.getPhotoUploadStatus = this.getPhotoUploadStatus.bind(this);
   }
 
   componentWillMount(){
@@ -162,6 +163,7 @@ export default class PropertyRoomList extends React.Component {
     PhotosStore.on("change", this.getPhotos);
     PhotosStore.on("change", this.getPhotoDnDUpdateStatus);
     PhotosStore.on("change", this.getPhotoDeleteStatus);
+    PhotosStore.on("change", this.getPhotoUploadStatus);
 
   }
 
@@ -186,6 +188,7 @@ export default class PropertyRoomList extends React.Component {
     PhotosStore.removeListener("change", this.getPhotos);
     PhotosStore.removeListener("change", this.getPhotoDnDUpdateStatus);
     PhotosStore.removeListener("change", this.getPhotoDeleteStatus);
+    PhotosStore.removeListener("change", this.getPhotoUploadStatus);
   }
 
   getRoomList(){
@@ -723,6 +726,19 @@ export default class PropertyRoomList extends React.Component {
     }
   }
 
+  getPhotoUploadStatus(){
+    let status = PhotosStore.getPhotoUploadStatus();
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+
+      PhotosActions.fetchPhotos(this.state.property_id, this.state.master_id);
+
+    }
+  }
+
 
   handleDargDropPhoto(sub_id, photo_id){
 
@@ -746,11 +762,13 @@ export default class PropertyRoomList extends React.Component {
   }
 
   handleUploadPhoto(file, sub_id, type){
-    console.log(file);
-    console.log(sub_id);
-    console.log(type);
 
-    PhotosActions.uploadPhoto(file, sub_id, type);
+    PhotosActions.uploadPhoto(this.state.property_id, file, sub_id, type, this.state.master_id);
+
+    this.setState({
+      startSending: true
+    });
+    
   }
 
   /*

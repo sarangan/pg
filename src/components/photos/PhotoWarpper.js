@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from "react";
 import config from '../../config/config';
 import PhotoItem from './PhotoItem';
 import DropzoneComponent from 'react-dropzone-component';
+import Dropzone from 'react-dropzone';
+import ReactDOMServer from 'react-dom/server';
 
 export default class PhotoWarpper extends React.Component {
 
@@ -24,7 +26,20 @@ export default class PhotoWarpper extends React.Component {
   }
 
   uploadFile(file){
-    //this.props.photoUpload(file, this.props.sub_id, this.props.type );
+    this.props.photoUpload(file, this.props.sub_id, this.props.type );
+  }
+
+  onDrop(files){
+    // var file = new FormData();
+    // file.append('name',files[0])
+    // var req=request
+    //           .post('http://localhost:8000/api/v0/image/')
+    //           .send(file);
+    // req.end(function(err,response){
+    //     console.log("upload done!!!!!");
+    // });
+    //event.preventDefault();
+    this.props.photoUpload(files[0], this.props.sub_id, this.props.type );
   }
 
   render() {
@@ -72,6 +87,9 @@ export default class PhotoWarpper extends React.Component {
       },
       dragging: {
         backgroundColor: ''
+      },
+      none:{
+        display: 'none'
       }
 
     };
@@ -80,23 +98,26 @@ export default class PhotoWarpper extends React.Component {
     var componentConfig = {
       iconFiletypes: ['.jpg', '.png'],
       showFiletypeIcon: true,
-      postUrl: 'http://52.39.72.94:3000/Property/uploadphoto'
+      postUrl: 'no-url'
+      //postUrl: 'http://52.39.72.94:3000/Property/uploadphoto'
     };
     var djsConfig = {
       addRemoveLinks: false,
-      autoProcessQueue: true,
+      autoProcessQueue: false,
       params: {
-        data: {
-          id: '',
-          sync: '',
-          property_id: '',
-          item_id: this.props.sub_id,
-          parent_id : 'naan'
-        }
       },
-      headers: {
-         'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
-      }
+      previewTemplate: ReactDOMServer.renderToStaticMarkup(
+          <div className="dz-preview dz-file-preview">
+            <div className="dz-details">
+              <div className="dz-filename"><span data-dz-name="false"></span></div>
+              <img data-dz-thumbnail="false" style={styles.none} />
+            </div>
+            <div className="dz-progress"><span className="dz-upload" data-dz-uploadprogress="false"></span></div>
+            <div className="dz-success-mark"><span>✔</span></div>
+            <div className="dz-error-mark"><span>✘</span></div>
+            <div className="dz-error-message"><span data-dz-errormessage="true"></span></div>
+          </div>
+        )
     };
     var eventHandlers = { addedfile: (file) => this.uploadFile(file) }
 
@@ -114,6 +135,11 @@ export default class PhotoWarpper extends React.Component {
         </div>
         <div style={styles.dropzone}>
           <DropzoneComponent config={componentConfig} djsConfig={djsConfig} eventHandlers={eventHandlers}/>
+
+          {/* <Dropzone onDrop={this.onDrop.bind(this)}>
+            <div>Drop files here to upload.</div>
+          </Dropzone> */}
+
         </div>
       </div>
 

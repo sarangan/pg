@@ -1,5 +1,6 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
+import request from 'superagent';
 
 export function fetchPhotos(property_id, master_id) {
 
@@ -87,24 +88,38 @@ export function deletePhoto(photo_id){
 }
 
 
-export function uploadPhoto(file, sub_id, type){
+export function uploadPhoto(property_id, file, sub_id, type, master_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletephoto';
+  var url = 'http://52.39.72.94:3000/Property/uploadfile';
+  var data = {
+    id: '',
+    sync: '',
+    property_id: property_id,
+    item_id: sub_id,
+    parent_id : 'naan',
+    type: type
+  };
+
+  var formData = new FormData();
+  formData.append("property_id", property_id);
+  formData.append("item_id", sub_id);
+  formData.append("parent_id", master_id);
+  formData.append("type", type);
+  formData.append("photo", file, file.name);
+
   axios({
           method: 'post',
           url: url,
           headers: {
              'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc',
-             'Content-Type': file.type
+             'Content-Type': 'multipart/form-data'
            },
-          data: {
-            
-          }
+          data: formData
         })
         .then(function (response) {
-
+          console.log(response);
           dispatcher.dispatch({
-            type: "DELETE_PHOTO",
+            type: "UPLOAD_PHOTO",
             data: response.data
           });
 
