@@ -194,6 +194,52 @@
   }
 }
 
+.SortableList {
+    position: relative;
+    z-index: 0;
+    background-color: #F3F3F3;
+    border: 1px solid #EFEFEF;
+    border-radius: 3px;
+    outline: none;
+
+    width: 80%;
+    /*height: 600px;*/
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #E0E0E0;
+    list-style: none;
+    padding: 0;
+}
+.SortableItem {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    background-color: #FFF;
+    border-bottom: 1px solid #EFEFEF;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #333;
+    font-weight: 500;
+}
+
+
+.lisort{
+  margin-right: 10px;
+  position: 'relative';
+  margin-top: 5px;
+  cursor: pointer;
+}
 
 /* Filepicker CSS */
 .filepicker {

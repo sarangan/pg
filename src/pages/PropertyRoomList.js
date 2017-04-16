@@ -523,7 +523,7 @@ export default class PropertyRoomList extends React.Component {
   //get single item from api
   getSingleItem(){
       let single_item = SingleItemStore.getItem();
-      console.log(single_item);
+      //console.log(single_item);
       let temp = {
         reading_value: '',
         option: '',
@@ -532,24 +532,25 @@ export default class PropertyRoomList extends React.Component {
         prop_feedback_id: ''
       };
 
-      if(single_item){
+      // if(single_item){
+      //
+      //   let temp = {
+      //     reading_value: '',
+      //     option: (single_item.hasOwnProperty('option') )?single_item.option:'',
+      //     description: (single_item.hasOwnProperty('description') )?single_item.description:'',
+      //     comment: (single_item.hasOwnProperty('comment') )? single_item.comment: '',
+      //     prop_feedback_id: (single_item.hasOwnProperty('prop_feedback_id') ) ? single_item.prop_feedback_id : ''
+      //   };
+      //
+      // }
 
-        let temp = {
-          reading_value: '',
-          option: (single_item.hasOwnProperty('option') )?single_item.option:'',
-          description: (single_item.hasOwnProperty('description') )?single_item.description:'',
-          comment: (single_item.hasOwnProperty('comment') )? single_item.comment: '',
-          prop_feedback_id: (single_item.hasOwnProperty('prop_feedback_id') ) ? single_item.prop_feedback_id : ''
-        };
-
-      }
-
+      //console.log(temp);
 
       this.setState({
-         single_item: temp,
+         single_item: single_item,
          startSending: false
       });
-      this.forceUpdate();
+      //this.forceUpdate();
 
   }
 
@@ -576,6 +577,10 @@ export default class PropertyRoomList extends React.Component {
       startSending: true,
       single_item,
     });
+
+    single_item['item_id'] = this.state.master_id;
+    single_item['parent_id'] = this.state.master_id;
+    single_item['type'] = 'ITEM';
 
     SingleItemActions.updateSingleItem(this.state.property_id, single_item);
 
@@ -768,7 +773,7 @@ export default class PropertyRoomList extends React.Component {
     this.setState({
       startSending: true
     });
-    
+
   }
 
   /*
@@ -811,6 +816,8 @@ export default class PropertyRoomList extends React.Component {
         startSending: true
       });
 
+
+
       SubItemsActions.fetchSubitemslist(this.state.property_id, item_id);
 
       //get photos
@@ -821,12 +828,20 @@ export default class PropertyRoomList extends React.Component {
         startSending: true
       });
       MeterItemActions.fetchMeterItems(this.state.property_id);
+
+      //get photos
+      PhotosActions.fetchPhotos(this.state.property_id, item_id);
     }
     else if(id == 'ITEM'){
       this.setState({
         startSending: true
       });
+      console.log(item_id);
       SingleItemActions.fetchSingleItem(this.state.property_id, item_id, 'ITEM');
+
+      //get photos
+      PhotosActions.fetchPhotosItem(this.state.property_id, item_id);
+
     }
 
   }
