@@ -409,6 +409,14 @@ export default class PropertyRoomList extends React.Component {
 
   }
 
+  handleGenSort(oldIndex, newIndex){
+    console.log(oldIndex, newIndex);
+
+    let generals = this.state.general_conditions;
+    let gen_list = generals['gen_list'];
+    console.log(gen_list);
+  }
+
   /*
   * GENERAL CONDITION LIST--------------------------------------------END----------------------------------------------------------------
   *
@@ -905,7 +913,9 @@ export default class PropertyRoomList extends React.Component {
     }
     else if(this.state.sidebarState == 'GEN'){
       right_div = <Generalconditionlist list={this.state.general_conditions.gen_list} title={this.state.formTitle}
-        handleGeneralSubmit={this.generalconditions_handleSubmit} handleInputChange={this.generalconditions_handleInputChange} handleSelectChange={this.generalconditions_handleSelectChange}/>
+        handleGeneralSubmit={this.generalconditions_handleSubmit} handleInputChange={this.generalconditions_handleInputChange} handleSelectChange={this.generalconditions_handleSelectChange}
+        handleSort={this.handleGenSort.bind(this)}
+      />
     }
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsList generalcomment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}

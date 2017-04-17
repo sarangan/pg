@@ -12,7 +12,7 @@ import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'rea
 const DragHandle = SortableHandle(() => <span className="lisort"><ActionDrag /></span>); // This can be any component you want
 
 const SortableItem = SortableElement(({value}) =>
-  <li className="SortableItem"> <DragHandle />{value}</li>
+  <li className="SortableItem lisort"> <ActionDrag />{value}</li>
 );
 
 const SortableList = SortableContainer(({items}) => {
@@ -49,10 +49,10 @@ export default class Generalconditionlist extends React.Component {
   }
 
   onSortEnd = ({oldIndex, newIndex}) => {
-    console.log(oldIndex, newIndex);
+
+    this.props.handleSort(oldIndex, newIndex);
+
   };
-
-
 
 
   render(){
@@ -137,7 +137,7 @@ export default class Generalconditionlist extends React.Component {
         <div>
           <h5> sorting </h5>
 
-          <SortableList items={this.props.list} onSortEnd={this.onSortEnd} useDragHandle={true}/>
+          <SortableList items={this.props.list} onSortEnd={this.onSortEnd} useDragHandle={false}/>
 
           <div style={styles.buttons}>
 
