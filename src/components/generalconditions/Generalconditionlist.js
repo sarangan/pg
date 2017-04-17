@@ -95,7 +95,7 @@ export default class Generalconditionlist extends React.Component {
     <div>
     <div style={styles.buttonsrtl}>
 
-              <FloatingActionButton mini={true} onClick={this.handleEnableSort.bind(this)}>
+            <FloatingActionButton mini={true} onClick={this.handleEnableSort.bind(this)} zDepth={1} >
               <ActionSort />
             </FloatingActionButton>
 

@@ -44,12 +44,12 @@ export default class SingleItem extends React.Component {
     };
 
 
-
-
     return(
       <form>
 
-        <SingleItemElement optlist={this.state.optlist} type="ITEM" title={this.props.title} data={this.props.data} handleInputChange={this.props.handleInputChange}/>
+        <SingleItemElement optlist={this.state.optlist} type="ITEM" title={this.props.title} data={this.props.data} handleInputChange={this.props.handleInputChange}
+          item_id={this.props.master_id} photos={this.props.photos}
+          photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload} />
 
         <div style={styles.buttons}>
 

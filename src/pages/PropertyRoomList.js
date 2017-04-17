@@ -766,13 +766,17 @@ export default class PropertyRoomList extends React.Component {
 
   }
 
-  handleUploadPhoto(file, sub_id, type){
-
-    PhotosActions.uploadPhoto(this.state.property_id, file, sub_id, type, this.state.master_id);
+  handleUploadPhoto(files, sub_id, type){
 
     this.setState({
       startSending: true
     });
+
+    for(let i =0, l = files.length; i < l ; i++){
+      PhotosActions.uploadPhoto(this.state.property_id, files[i], sub_id, type, this.state.master_id);
+    }
+
+
 
   }
 
@@ -836,7 +840,7 @@ export default class PropertyRoomList extends React.Component {
       this.setState({
         startSending: true
       });
-      console.log(item_id);
+
       SingleItemActions.fetchSingleItem(this.state.property_id, item_id, 'ITEM');
 
       //get photos
@@ -909,10 +913,14 @@ export default class PropertyRoomList extends React.Component {
         photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)}/>
     }
     else if(this.state.sidebarState == 'ITEM'){
-      right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}/>
+      right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}
+         photos={this.state.photos} photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} master_id={this.state.master_id}
+        />
     }
     else if(this.state.sidebarState == 'METER'){
-      right_div = <MeterItems list={this.state.meter_items.meter_list} handleInputChange={this.meterItems_handleInputChange} handleSubmit={this.meterItems_handleSubmit}/>
+      right_div = <MeterItems list={this.state.meter_items.meter_list} handleInputChange={this.meterItems_handleInputChange} handleSubmit={this.meterItems_handleSubmit}
+        photos={this.state.photos} photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} master_id={this.state.master_id}
+        />
     }
 
     let sidebaritems = [];

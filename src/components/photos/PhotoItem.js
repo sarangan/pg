@@ -74,7 +74,7 @@ export default class PhotoItem extends React.Component {
       },
       zoomBtn: {
         position: 'absolute',
-        top: '35%',
+        bottom: 0,
         right: 12
       },
       modal: {

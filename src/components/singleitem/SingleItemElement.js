@@ -130,8 +130,8 @@ export default class SingleItemElement extends React.Component {
 
         <h4>Photos:</h4>
 
-        <PhotoWarpper sub_id={this.props.sub_id} photos={this.props.photos} on_drop={this.props.on_drop} dragging={this.props.dragging} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete}
-          photoUpload={this.props.photoUpload} type="SUB"/>
+        <PhotoWarpper item_id={this.props.item_id} photos={this.props.photos} on_drop={this.props.on_drop} dragging={this.props.dragging} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete}
+          photoUpload={this.props.photoUpload} type={this.props.type}/>
 
         <Divider />
 
