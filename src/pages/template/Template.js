@@ -976,9 +976,11 @@ export default class Template extends React.Component {
     let sorted = false;
     let template_list = null;
 
-    // just fot the sake of generals
-    let gen_list = [];
+    // just fot the sake of comments
+    let item_list = [];
     let comment_list = [];
+
+    console.log(this.state.sub_items);
 
 
     if( type == 'GEN'){
@@ -986,12 +988,12 @@ export default class Template extends React.Component {
       let generals_list = generals['gen_list'];
 
       //avoid accidentelly replace general comment item
-      let gen_list = [];
-      let comment_list = [];
+      item_list = [];
+      comment_list = [];
       for(let i =0, l = generals_list.length; i < l ; i++ ){
 
         if(generals_list[i].type == 'ITEM'){
-          gen_list.push(generals_list[i]);
+          item_list.push(generals_list[i]);
         }
         else{
           comment_list.push(generals_list[i]);
@@ -999,8 +1001,27 @@ export default class Template extends React.Component {
 
       }
 
-      template_list = gen_list;
+      template_list = item_list;
 
+    }
+    else if(type == 'SUB'){
+      let subitems = this.state.sub_items;
+      let subitems_list = subitems['list'];
+
+      item_list = [];
+      comment_list = [];
+      for(let i =0, l = subitems_list.length; i < l ; i++ ){
+
+        if(subitems_list[i].type == 'ITEM'){
+          item_list.push(subitems_list[i]);
+        }
+        else{
+          comment_list.push(subitems_list[i]);
+        }
+
+      }
+
+      template_list = item_list;
     }
 
 
@@ -1027,12 +1048,13 @@ export default class Template extends React.Component {
 
     if(sorted == true){
 
+      item_list = template_list;
+
+      //concadinate gen items and comment
+      let templist = item_list.concat(comment_list);
+
+
       if( type == 'GEN'){
-
-        gen_list = template_list;
-
-        //concadinate gen items and comment
-        let templist = gen_list.concat(comment_list);
 
         this.setState({
           general_conditions:{
@@ -1041,6 +1063,17 @@ export default class Template extends React.Component {
         });
 
         GeneralconditionTemplateActions.updateSortGeneralConditionTemplate( this.state.general_conditions.gen_list);
+
+      }
+      else if( type == 'SUB'){
+
+        this.setState({
+          sub_items:{
+            list: templist
+          }
+        });
+
+        SubItemsTemplateActions.updateSortSubItemsTemplate( this.state.sub_items.list);
 
       }
 
@@ -1216,6 +1249,7 @@ export default class Template extends React.Component {
         updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
         updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}
         insertMasterItem = {this.handleAddMasterItem.bind(this)}
+        handleSort={this.handleTemplateSort.bind(this)}
         />
     }
     else if(this.state.sidebarState == 'METER'){
@@ -1331,7 +1365,7 @@ export default class Template extends React.Component {
           <div style={styles.buttonsrtl}>
                <FlatButton
                  onClick={this.handleEnableSort.bind(this)}
-                 label="Ok"
+                 label="Back"
                  primary={true}
                />
 

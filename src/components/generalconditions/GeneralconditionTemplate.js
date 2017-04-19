@@ -382,14 +382,15 @@ export default class GeneralconditionTemplate extends React.Component {
 
       let general_items_sort_view = <div>
         <Subheader inset={false}>sorting</Subheader>
-
-        <SortableList items={generalItemCollection} onSortEnd={this.onSortEnd} useDragHandle={false}/>
-
-        <div style={styles.buttons}>
-
-          <RaisedButton label="Ok" style={styles.saveButton} onClick={this.handleEnableSort.bind(this)} primary={true} />
+        <div style={styles.buttonsrtl}>
+             <FlatButton
+               onClick={this.handleEnableSort.bind(this)}
+               label="Back"
+               primary={true}
+             />
 
         </div>
+        <SortableList items={generalItemCollection} onSortEnd={this.onSortEnd} useDragHandle={false}/>
 
       </div>
 

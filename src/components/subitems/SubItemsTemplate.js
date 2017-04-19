@@ -59,7 +59,7 @@ export default class SubItemsTemplate extends React.Component {
 
   onSortEnd = ({oldIndex, newIndex}) => {
 
-    this.props.handleSort('GEN', oldIndex, newIndex);
+    this.props.handleSort('SUB', oldIndex, newIndex);
 
   };
 
@@ -108,6 +108,7 @@ export default class SubItemsTemplate extends React.Component {
 
     let general_item = [];
     let sub_items = [];
+    let subItemCollection = [];
 
     for(let i=0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
@@ -120,6 +121,7 @@ export default class SubItemsTemplate extends React.Component {
         );
       }
       else if(item.type == 'ITEM'){
+        subItemCollection.push(item);
         sub_items.push(
           <SingleItemElementTemplate item_name={item.item_name} key={item.com_subitem_id} sub_id={item.com_subitem_id} update={this.props.updateSubitems} delete={this.props.deleteSubitems}/>
         );
@@ -127,28 +129,66 @@ export default class SubItemsTemplate extends React.Component {
 
     }
 
-    return(
-      <div>
+    let sub_items_content = <div>
 
-        <MaterItemSingleTemplate key={this.props.masterid} title={this.props.title} masterid={this.props.master_id} status={this.props.master_status}
-          deleteMasterItem={this.props.deleteMasterItem}
-          updateMasterItem ={this.props.updateMasterItem}
-          updateStatusMasterItem ={this.props.updateStatusMasterItem}
-          insertMasterItem = {this.props.insertMasterItem}/>
+      <MaterItemSingleTemplate key={this.props.masterid} title={this.props.title} masterid={this.props.master_id} status={this.props.master_status}
+        deleteMasterItem={this.props.deleteMasterItem}
+        updateMasterItem ={this.props.updateMasterItem}
+        updateStatusMasterItem ={this.props.updateStatusMasterItem}
+        insertMasterItem = {this.props.insertMasterItem}/>
 
-        <h3>Sub items</h3>
+      <h3>Sub items</h3>
 
-        {general_item}
-        {sub_items}
+      <div style={styles.buttonsrtl}>
 
-        <div style={styles.addTextContainer}>
-          <TextField hintText="Add sub item" floatingLabelText="Add sub item" name="newsubitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
-          <FloatingActionButton mini={true} style={styles.addButton} backgroundColor={pink400} onClick={()=>this.props.addSubItem(this.state.newsubitem)}>
-            <ContentAdd />
-          </FloatingActionButton>
-        </div>
+        <FlatButton
+            onClick={this.handleEnableSort.bind(this)}
+            label="Sort"
+            primary={true}
+            icon={<ActionSort />}
+        />
 
       </div>
+
+      {general_item}
+      {sub_items}
+
+      <div style={styles.addTextContainer}>
+        <TextField hintText="Add sub item" floatingLabelText="Add sub item" name="newsubitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+        <FloatingActionButton mini={true} style={styles.addButton} backgroundColor={pink400} onClick={()=>this.props.addSubItem(this.state.newsubitem)}>
+          <ContentAdd />
+        </FloatingActionButton>
+      </div>
+
+    </div>;
+
+    let sub_items_sort = <div>
+      <h2>{this.props.title}</h2>
+      <Subheader inset={false}>sorting</Subheader>
+      <div style={styles.buttonsrtl}>
+           <FlatButton
+             onClick={this.handleEnableSort.bind(this)}
+             label="Back"
+             primary={true}
+           />
+
+      </div>
+      <SortableList items={subItemCollection} onSortEnd={this.onSortEnd} useDragHandle={false}/>
+
+    </div>;
+
+    return(
+      <div>
+      {this.state.enableSort== false &&
+        sub_items_content
+      }
+
+      {this.state.enableSort== true &&
+        sub_items_sort
+      }
+
+    </div>
+
     );
 
   }

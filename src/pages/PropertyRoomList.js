@@ -1131,7 +1131,7 @@ export default class PropertyRoomList extends React.Component {
         <div style={styles.buttons}>
           <FlatButton
             onClick={this.handleEnableSort.bind(this)}
-            label="Ok"
+            label="Back"
             primary={true}
             style={styles.saveButton}
           />
