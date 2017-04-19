@@ -12,10 +12,15 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import ActionSort from 'material-ui/svg-icons/content/sort';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
+import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
 
 import * as PropertyRoomListActions from "../actions/PropertyRoomListActions";
 import PropertyRoomListStore from "../stores/PropertyRoomListStore";
@@ -49,6 +54,26 @@ import MeterItemsStore from "../stores/MeterItemsStore";
 import * as PhotosActions from "../actions/PhotosActions";
 import PhotosStore from "../stores/PhotosStore";
 
+
+//-----------------------------master item sorting -------------------------
+
+const DragHandle = SortableHandle(() => <span className="lisort"><ActionDrag /></span>); // This can be any component you want
+
+const SortableItem = SortableElement(({value}) =>
+  <li className="SortableItem lisort"> <ActionDrag style={ {marginRight: 10} }/>{value}</li>
+);
+
+const SortableList = SortableContainer(({items}) => {
+  return (
+    <ul className="SortableList master-item-sortableList">
+      {items.map((value, index) => (
+        <SortableItem key={`item-${index}`} index={index} value={value.name} />
+      ))}
+    </ul>
+  );
+});
+
+//-----------------------------master item sorting end ---------------------
 
 export default class PropertyRoomList extends React.Component {
 
@@ -89,7 +114,8 @@ export default class PropertyRoomList extends React.Component {
       showErrorSnack: false,
       showSuccessSnack: false,
       formTitle: 'Update Property info',
-      master_id: ''
+      master_id: '',
+      enableSort : false
     };
 
     this.getRoomList = this.getRoomList.bind(this);
@@ -212,6 +238,50 @@ export default class PropertyRoomList extends React.Component {
       showSuccessSnack: false,
       startSending: false
     });
+  };
+
+  // handle sort event
+  handleEnableSort(){
+      this.setState({
+        enableSort: !this.state.enableSort
+      })
+  }
+
+
+  onSortEnd = ({oldIndex, newIndex}) => {
+
+    let room_list = this.state.roomlist;
+    let sorted = false;
+
+    // going down
+    if(newIndex > oldIndex){
+
+      let tempCurrent = room_list[oldIndex];
+      for(let i = (oldIndex + 1), endPos = newIndex ; i <= endPos; i++ ){
+        room_list[i - 1] =  room_list[i];
+      }
+      room_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+    else if(newIndex < oldIndex){ // going up
+
+      let tempCurrent = room_list[oldIndex];
+      for(let i = (oldIndex - 1), endPos = newIndex ; i >= endPos; i-- ){
+        room_list[i + 1] =  room_list[i];
+      }
+      room_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+
+    if(sorted == true){
+
+      this.setState({
+        roomlist: room_list
+      });
+      PropertyRoomListActions.updateSortRoomList(this.state.property_id, this.state.roomlist);
+
+    }
+
   };
 
 
@@ -410,11 +480,59 @@ export default class PropertyRoomList extends React.Component {
   }
 
   handleGenSort(oldIndex, newIndex){
-    console.log(oldIndex, newIndex);
 
     let generals = this.state.general_conditions;
-    let gen_list = generals['gen_list'];
-    console.log(gen_list);
+    let generals_list = generals['gen_list'];
+    let sorted = false;
+
+    //avoid accidentelly replace general comment item
+    let gen_list = [];
+    let comment_list = [];
+    for(let i =0, l = generals_list.length; i < l ; i++ ){
+
+      if(generals_list[i].type == 'ITEM'){
+        gen_list.push(generals_list[i]);
+      }
+      else{
+        comment_list.push(generals_list[i]);
+      }
+
+    }
+
+    // going down
+    if(newIndex > oldIndex){
+
+      let tempCurrent = gen_list[oldIndex];
+      for(let i = (oldIndex + 1), endPos = newIndex ; i <= endPos; i++ ){
+        gen_list[i - 1] =  gen_list[i];
+      }
+      gen_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+    else if(newIndex < oldIndex){ // going up
+
+      let tempCurrent = gen_list[oldIndex];
+      for(let i = (oldIndex - 1), endPos = newIndex ; i >= endPos; i-- ){
+        gen_list[i + 1] =  gen_list[i];
+      }
+      gen_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+
+    if(sorted == true){
+      //concadinate gen items and comment
+      let templist = gen_list.concat(comment_list);
+
+      this.setState({
+        general_conditions:{
+          gen_list: templist
+        }
+      });
+
+      GeneralConditionActions.updateSortGeneralCondition(this.state.property_id, this.state.general_conditions.gen_list);
+
+    }
+
   }
 
   /*
@@ -871,6 +989,23 @@ export default class PropertyRoomList extends React.Component {
       tblProgress: {
         margin: '20px auto',
         textAlign: 'center'
+      },
+      buttonsrtl:{
+        textAlign: 'right',
+        paddingRight: 10
+      },
+      buttons: {
+        marginBottom: 10,
+        float: 'right'
+      },
+      saveButton: {
+        marginLeft: 5,
+        marginRight: 10
+      },
+      lisort:{
+        marginRight: 10,
+        position: 'relative',
+        marginTop: 5
       }
     };
 
@@ -934,6 +1069,7 @@ export default class PropertyRoomList extends React.Component {
     }
 
     let sidebaritems = [];
+
     for(let i=0, l = this.state.roomlist.length; i < l; i++){
       let item = this.state.roomlist[i];
 
@@ -960,6 +1096,51 @@ export default class PropertyRoomList extends React.Component {
 
     let roomlist_right_div = `control-wrapper-flex-2 ${roomlist_right_div_cls} scroll-style`;
 
+    let room_list_view = <div className="room-list">
+                            <List>
+                              <Subheader inset={true}>Room list</Subheader>
+
+                                <div style={styles.buttonsrtl}>
+
+                                    <FlatButton
+                                      onClick={this.handleEnableSort.bind(this)}
+                                      label="Sort"
+                                      primary={true}
+                                      icon={<ActionSort />}
+                                    />
+
+                                </div>
+
+                                <ListItem
+                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                                  primaryText="Property Info"
+                                  secondaryText="" onClick={this.sidebarClick.bind(this, 'PROP', 'Update Property info', '')}/>
+
+                                <ListItem
+                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                                  primaryText="General Condition"
+                                  secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')}/>
+
+                                {sidebaritems}
+
+                            </List>
+                          </div> ;
+
+    let room_list_sort =  <div className="room-list">
+      <Subheader inset={true}>Sort: Room list</Subheader>
+        <div style={styles.buttons}>
+          <FlatButton
+            onClick={this.handleEnableSort.bind(this)}
+            label="Ok"
+            primary={true}
+            style={styles.saveButton}
+          />
+        </div>
+
+      <SortableList items={this.state.roomlist} onSortEnd={this.onSortEnd} useDragHandle={false}/>
+
+    </div> ;
+
 
     return(
       <PageBase title="Room List" navigation="Home / Property / Room list">
@@ -968,24 +1149,13 @@ export default class PropertyRoomList extends React.Component {
 
           <div className="control-wrapper roomlist-container scroll-style">
 
-            <div className="room-list">
-              <List>
-                <Subheader inset={true}>Room list</Subheader>
+            {this.state.enableSort== false &&
+              room_list_view
+            }
 
-                  <ListItem
-                    leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
-                    primaryText="Property Info"
-                    secondaryText="" onClick={this.sidebarClick.bind(this, 'PROP', 'Update Property info', '')}/>
-
-                  <ListItem
-                    leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
-                    primaryText="General Condition"
-                    secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')}/>
-
-                  {sidebaritems}
-
-              </List>
-            </div>
+            {this.state.enableSort== true &&
+              room_list_sort
+            }
 
           </div>
 

@@ -192,6 +192,25 @@ export default StyleSheet.create({
         "paddingBottom": 0,
         "paddingLeft": 0
     },
+    "master-item-sortableList": {
+        "position": "relative",
+        "zIndex": 0,
+        "backgroundColor": "#F3F3F3",
+        "border": "1px solid #E0E0E0",
+        "borderRadius": 3,
+        "outline": "none",
+        "width": "80%",
+        "overflow": "auto",
+        "WebkitOverflowScrolling": "touch",
+        "listStyle": "none",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "SortableListmaster-item-sortableList": {
+        "width": "95%"
+    },
     "SortableItem": {
         "display": "flex",
         "WebkitBoxAlign": "center",

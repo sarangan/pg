@@ -5,6 +5,27 @@ import TextField from 'material-ui/TextField';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import MaterItemSingleTemplate from '../singleitem/MaterItemSingleTemplate';
+import ActionSort from 'material-ui/svg-icons/content/sort';
+import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
+import FlatButton from 'material-ui/FlatButton';
+import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
+import Subheader from 'material-ui/Subheader';
+
+const DragHandle = SortableHandle(() => <span className="lisort"><ActionDrag /></span>); // This can be any component you want
+
+const SortableItem = SortableElement(({value}) =>
+  <li className="SortableItem lisort"> <ActionDrag />{value}</li>
+);
+
+const SortableList = SortableContainer(({items}) => {
+  return (
+    <ul className="SortableList">
+      {items.map((value, index) => (
+        <SortableItem key={`item-${index}`} index={index} value={value.item_name} />
+      ))}
+    </ul>
+  );
+});
 
 export default class SubItemsTemplate extends React.Component {
 
@@ -12,7 +33,8 @@ export default class SubItemsTemplate extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      newsubitem: ''
+      newsubitem: '',
+      enableSort : false
     };
   }
 
@@ -28,6 +50,19 @@ export default class SubItemsTemplate extends React.Component {
       newsubitem : target.value
     });
   }
+
+  handleEnableSort(){
+      this.setState({
+        enableSort: !this.state.enableSort
+      })
+  }
+
+  onSortEnd = ({oldIndex, newIndex}) => {
+
+    this.props.handleSort('GEN', oldIndex, newIndex);
+
+  };
+
 
   render() {
 
@@ -55,7 +90,18 @@ export default class SubItemsTemplate extends React.Component {
       addButton:{
         marginRight: 20
       },
-
+      buttonsrtl:{
+        textAlign: 'right'
+      },
+      lisort:{
+        marginRight: 10,
+        position: 'relative',
+        marginTop: 5
+      },
+      saveButton: {
+        marginLeft: 5,
+        marginRight: 10
+      }
 
     };
 

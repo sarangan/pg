@@ -11,6 +11,7 @@ import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import FileFolder from 'material-ui/svg-icons/file/folder';
+import ActionSort from 'material-ui/svg-icons/content/sort';
 import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
@@ -23,6 +24,9 @@ import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
+import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
+
 
 import * as TemplateListActions from "../../actions/template/TemplateListActions";
 import TemplateListStore from "../../stores/template/TemplateListStore";
@@ -47,6 +51,26 @@ import MeterItemsTemplate from '../../components/meteritems/MeterItemsTemplate';
 import * as MeterListTemplateActions from "../../actions/template/MeterListTemplateActions";
 import MeteritemsTemplateStore from "../../stores/template/MeteritemsTemplateStore";
 
+
+//-----------------------------master items sorting start -------------------------
+
+const DragHandle = SortableHandle(() => <span className="lisort"><ActionDrag /></span>); // This can be any component you want
+
+const SortableItem = SortableElement(({value}) =>
+  <li className="SortableItem lisort"> <ActionDrag style={ {marginRight: 10} }/>{value}</li>
+);
+
+const SortableList = SortableContainer(({items}) => {
+  return (
+    <ul className="SortableList master-item-sortableList">
+      {items.map((value, index) => (
+        <SortableItem key={`item-${index}`} index={index} value={value.item_name} />
+      ))}
+    </ul>
+  );
+});
+
+//-----------------------------master items sorting end ---------------------
 
 export default class Template extends React.Component {
 
@@ -74,7 +98,8 @@ export default class Template extends React.Component {
       master_status : true,
       dialog: false,
       addNewItem: '',
-      itemType: 'ITEM'
+      itemType: 'ITEM',
+      enableSort: false
     };
 
     GeneralconditionTemplateActions.getGeneralConditionsTemplate();
@@ -313,6 +338,52 @@ export default class Template extends React.Component {
 
     event.preventDefault();
   }
+
+
+  // handle sort event
+  handleEnableSort(){
+      this.setState({
+        enableSort: !this.state.enableSort
+      })
+  }
+
+
+  onSortEnd = ({oldIndex, newIndex}) => {
+
+    let room_list = this.state.templatelist;
+    let sorted = false;
+
+    // going down
+    if(newIndex > oldIndex){
+
+      let tempCurrent = room_list[oldIndex];
+      for(let i = (oldIndex + 1), endPos = newIndex ; i <= endPos; i++ ){
+        room_list[i - 1] =  room_list[i];
+      }
+      room_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+    else if(newIndex < oldIndex){ // going up
+
+      let tempCurrent = room_list[oldIndex];
+      for(let i = (oldIndex - 1), endPos = newIndex ; i >= endPos; i-- ){
+        room_list[i + 1] =  room_list[i];
+      }
+      room_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+
+    if(sorted == true){
+
+      this.setState({
+        templatelist: room_list
+      });
+
+      TemplateListActions.sortMasteritemTemplate(this.state.templatelist);
+
+    }
+
+  };
 
 
   /*
@@ -898,6 +969,86 @@ export default class Template extends React.Component {
 
   }
 
+
+  //template sorting
+  handleTemplateSort(type, oldIndex, newIndex){
+
+    let sorted = false;
+    let template_list = null;
+
+    // just fot the sake of generals
+    let gen_list = [];
+    let comment_list = [];
+
+
+    if( type == 'GEN'){
+      let generals = this.state.general_conditions;
+      let generals_list = generals['gen_list'];
+
+      //avoid accidentelly replace general comment item
+      let gen_list = [];
+      let comment_list = [];
+      for(let i =0, l = generals_list.length; i < l ; i++ ){
+
+        if(generals_list[i].type == 'ITEM'){
+          gen_list.push(generals_list[i]);
+        }
+        else{
+          comment_list.push(generals_list[i]);
+        }
+
+      }
+
+      template_list = gen_list;
+
+    }
+
+
+    // going down
+    if(newIndex > oldIndex){
+
+      let tempCurrent = template_list[oldIndex];
+      for(let i = (oldIndex + 1), endPos = newIndex ; i <= endPos; i++ ){
+        template_list[i - 1] =  template_list[i];
+      }
+      template_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+    else if(newIndex < oldIndex){ // going up
+
+      let tempCurrent = template_list[oldIndex];
+      for(let i = (oldIndex - 1), endPos = newIndex ; i >= endPos; i-- ){
+        template_list[i + 1] =  template_list[i];
+      }
+      template_list[newIndex] = tempCurrent;
+      sorted = true;
+    }
+
+
+    if(sorted == true){
+
+      if( type == 'GEN'){
+
+        gen_list = template_list;
+
+        //concadinate gen items and comment
+        let templist = gen_list.concat(comment_list);
+
+        this.setState({
+          general_conditions:{
+            gen_list: templist
+          }
+        });
+
+        GeneralconditionTemplateActions.updateSortGeneralConditionTemplate( this.state.general_conditions.gen_list);
+
+      }
+
+
+    }
+
+  }
+
   //handles sidebar items click
   sidebarClick = (id, title, item_id, status) => {
 
@@ -981,6 +1132,23 @@ export default class Template extends React.Component {
       },
       select: {
         marginTop: 10
+      },
+      buttonsrtl:{
+        textAlign: 'right',
+        paddingRight: 10
+      },
+      buttons: {
+        marginBottom: 10,
+        float: 'right'
+      },
+      saveButton: {
+        marginLeft: 5,
+        marginRight: 10
+      },
+      lisort:{
+        marginRight: 10,
+        position: 'relative',
+        marginTop: 5
       }
     };
 
@@ -1035,7 +1203,7 @@ export default class Template extends React.Component {
         deleteItem ={this.handleDeleteGeneral.bind(this) }
         addNewOptionItem = {this.handleAddNewOptItemGeneral.bind(this)}
         editOptionItem = {this.handleEditOptionItem.bind(this)}
-
+        handleSort={this.handleTemplateSort.bind(this)}
       />
     }
     else if(this.state.sidebarState == 'SUB'){
@@ -1043,12 +1211,11 @@ export default class Template extends React.Component {
         updateSubitems={this.handleSubItemsUpdate.bind(this)}
         deleteSubitems={this.handleDeleteSubitems.bind(this)}
         addSubItem ={this.handleAddSubItem.bind(this)}
-
         master_id={this.state.master_id} master_status={this.state.master_status}
-          deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
-          updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
-          updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}
-          insertMasterItem = {this.handleAddMasterItem.bind(this)}
+        deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
+        updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
+        updateStatusMasterItem ={this.handleUpdateMasterItem.bind(this)}
+        insertMasterItem = {this.handleAddMasterItem.bind(this)}
         />
     }
     else if(this.state.sidebarState == 'METER'){
@@ -1056,7 +1223,6 @@ export default class Template extends React.Component {
         addMeterItem={this.handleAddMeterItem.bind(this)}
         deleteMeterItem={this.handleDeleteMeterItem.bind(this)}
         updateMeterItem ={this.handleUpdateMeterItem.bind(this)}
-        
         master_id={this.state.master_id} master_status={this.state.master_status}
           deleteMasterItem={this.handleDeleteMasterItem.bind(this)}
           updateMasterItem ={this.handleUpdateMasterItem.bind(this)}
@@ -1095,6 +1261,86 @@ export default class Template extends React.Component {
 
     }
 
+
+    let room_list_template =
+                <div className="room-list">
+                  <List>
+                    <Subheader inset={true}>Room list</Subheader>
+
+                      <div style={styles.buttonsrtl}>
+
+                          <RaisedButton
+                             label="Add new item"
+                             labelPosition="after"
+                             primary={true}
+                             icon={<ContentAdd />}
+                             style={styles.optAdd}
+                             onTouchTap={this.handleDialogOpen.bind(this)}
+                           />
+
+                           <FlatButton
+                             onClick={this.handleEnableSort.bind(this)}
+                             label="Sort"
+                             primary={true}
+                             icon={<ActionSort />}
+                           />
+
+                      </div>
+
+                     <Dialog
+                       title="Add new item"
+                       actions={actions}
+                       modal={false}
+                       open={this.state.dialog}
+                       onRequestClose={this.handleDialogClose.bind(this)}
+                       contentStyle ={styles.dialog} >
+                       <TextField hintText="Add new item" floatingLabelText="Add new item" name="addnewitem" onChange={this.handleAddMasterItemInputChange.bind(this)}/>
+
+                       <div style={styles.select}>Select type:</div>
+                       <RadioButtonGroup name="notRight" style={styles.rdbblock} onChange={this.addNewMaster_handleInputChange.bind(this)} defaultSelected="ITEM">
+
+                         <RadioButton
+                           value="ITEM"
+                           label="Single item"
+                           style={styles.radioButton}
+                         />
+                         <RadioButton
+                            value="SUB"
+                            label="Sub items"
+                            style={styles.radioButton}
+                          />
+
+                       </RadioButtonGroup>
+
+                     </Dialog>
+
+                      <ListItem
+                        leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={grey400} />}
+                        primaryText="General Condition"
+                        secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')} />
+
+                      {sidebaritems}
+
+                  </List>
+                </div>;
+
+    let room_list_sort = <div className="room-list">
+
+        <Subheader inset={true}>Sort: Room list</Subheader>
+
+          <div style={styles.buttonsrtl}>
+               <FlatButton
+                 onClick={this.handleEnableSort.bind(this)}
+                 label="Ok"
+                 primary={true}
+               />
+
+          </div>
+
+          <SortableList items={this.state.templatelist} onSortEnd={this.onSortEnd} useDragHandle={false}/>
+
+    </div>;
+
     return(
       <PageBase title="Room List Template" navigation="Home / Template / Room list Template">
 
@@ -1102,58 +1348,15 @@ export default class Template extends React.Component {
 
           <div className="control-wrapper roomlist-container scroll-style">
 
-            <div className="room-list">
-              <List>
-                <Subheader inset={true}>Room list</Subheader>
-                <RaisedButton
-                   label="Add new item"
-                   labelPosition="after"
-                   primary={true}
-                   icon={<ContentAdd />}
-                   style={styles.optAdd}
-                   onTouchTap={this.handleDialogOpen.bind(this)}
-                 />
+            {this.state.enableSort== false &&
+              room_list_template
+            }
 
-                 <Dialog
-                   title="Add new item"
-                   actions={actions}
-                   modal={false}
-                   open={this.state.dialog}
-                   onRequestClose={this.handleDialogClose.bind(this)}
-                   contentStyle ={styles.dialog} >
-                   <TextField hintText="Add new item" floatingLabelText="Add new item" name="addnewitem" onChange={this.handleAddMasterItemInputChange.bind(this)}/>
-
-                   <div style={styles.select}>Select type:</div>
-                   <RadioButtonGroup name="notRight" style={styles.rdbblock} onChange={this.addNewMaster_handleInputChange.bind(this)} defaultSelected="ITEM">
-
-                     <RadioButton
-                       value="ITEM"
-                       label="Single item"
-                       style={styles.radioButton}
-                     />
-                     <RadioButton
-                        value="SUB"
-                        label="Sub items"
-                        style={styles.radioButton}
-                      />
-
-                   </RadioButtonGroup>
-
-                 </Dialog>
-
-                  <ListItem
-                    leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={grey400} />}
-                    primaryText="General Condition"
-                    secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')} />
-
-                  {sidebaritems}
-
-              </List>
-            </div>
+            {this.state.enableSort== true &&
+              room_list_sort
+            }
 
           </div>
-
-
 
           <div className="control-wrapper-flex-2">
             <div>

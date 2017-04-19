@@ -195,7 +195,7 @@
   }
 }
 
-.SortableList {
+.SortableList, .master-item-sortableList{
     position: relative;
     z-index: 0;
     background-color: #F3F3F3;
@@ -211,6 +211,11 @@
     list-style: none;
     padding: 0;
 }
+
+.SortableList.master-item-sortableList{
+    width: 95%;
+}
+
 .SortableItem {
     display: -webkit-box;
     display: -webkit-flex;

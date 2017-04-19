@@ -10,10 +10,31 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Dialog from 'material-ui/Dialog';
+import ActionSort from 'material-ui/svg-icons/content/sort';
+import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
 import FlatButton from 'material-ui/FlatButton';
+import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
+import Subheader from 'material-ui/Subheader';
 
 import GeneralChipElement from './GeneralChipElement';
 import GeneralTemplateComment from './GeneralTemplateComment';
+
+
+const DragHandle = SortableHandle(() => <span className="lisort"><ActionDrag /></span>); // This can be any component you want
+
+const SortableItem = SortableElement(({value}) =>
+  <li className="SortableItem lisort"> <ActionDrag />{value}</li>
+);
+
+const SortableList = SortableContainer(({items}) => {
+  return (
+    <ul className="SortableList">
+      {items.map((value, index) => (
+        <SortableItem key={`item-${index}`} index={index} value={value.item_name} />
+      ))}
+    </ul>
+  );
+});
 
 export default class GeneralconditionTemplate extends React.Component {
 
@@ -30,7 +51,8 @@ export default class GeneralconditionTemplate extends React.Component {
       del_com_gen_id: '',
       editdialog: false,
       edit_opt: '',
-      edit_com_gen_id: ''
+      edit_com_gen_id: '',
+      enableSort : false
     };
 
   }
@@ -131,6 +153,18 @@ export default class GeneralconditionTemplate extends React.Component {
 
     };
 
+    handleEnableSort(){
+        this.setState({
+          enableSort: !this.state.enableSort
+        })
+    }
+
+    onSortEnd = ({oldIndex, newIndex}) => {
+
+      this.props.handleSort('GEN', oldIndex, newIndex);
+
+    };
+
   render(){
 
     const styles = {
@@ -177,11 +211,29 @@ export default class GeneralconditionTemplate extends React.Component {
        dialog: {
          width: 350
        },
+       buttonsrtl:{
+         textAlign: 'right'
+       },
+       lisort:{
+         marginRight: 10,
+         position: 'relative',
+         marginTop: 5
+       },
+       saveButton: {
+         marginLeft: 5,
+         marginRight: 10
+       }
 
 
     };
 
     const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={false}
+        keyboardFocused={false}
+        onTouchTap={this.handleDialogClose}
+      />,
       <FlatButton
         label="Ok"
         primary={true}
@@ -191,6 +243,12 @@ export default class GeneralconditionTemplate extends React.Component {
     ];
 
     const edit_actions = [
+      <FlatButton
+        label="Cancel"
+        primary={false}
+        keyboardFocused={false}
+        onTouchTap={this.handleEditDialogClose}
+      />,
       <FlatButton
         label="Ok"
         primary={true}
@@ -214,10 +272,14 @@ export default class GeneralconditionTemplate extends React.Component {
 
     let item_list = [];
     let comment_list = [];
+    let generalItemCollection = [];
+
     for(let i=0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
 
       if(item.type == 'ITEM'){
+
+        generalItemCollection.push(item);
 
           item_list.push(
             <div key={item.com_general_id} className="gen-list">
@@ -245,73 +307,104 @@ export default class GeneralconditionTemplate extends React.Component {
 
     }
 
+
+    let gen_items_list_view =
+        <div>
+        <h3>Options
+            <span className="addButtonWrapper">
+              <RaisedButton
+                 label="Add new option"
+                 labelPosition="after"
+                 primary={true}
+                 icon={<ContentAdd />}
+                 style={styles.optAdd}
+                 onTouchTap={this.handleDialogOpen}
+               />
+               <FlatButton
+                   onClick={this.handleEnableSort.bind(this)}
+                   label="Sort"
+                   primary={true}
+                   icon={<ActionSort />}
+               />
+
+            </span>
+
+            </h3>
+
+            <Dialog
+              title="Add new option"
+              actions={actions}
+              modal={false}
+              open={this.state.dialog}
+              onRequestClose={this.handleDialogClose}
+              contentStyle ={styles.dialog}
+            >
+              Option name:
+              <TextField hintText="Add new option" floatingLabelText="Add new option" name="genaddnewopt" onChange={this.handleNewOptInputChange.bind(this)}/>
+
+            </Dialog>
+
+            {item_list}
+            <Divider />
+            <h3>Comments</h3>
+            {comment_list}
+
+            <div style={styles.addTextContainer}>
+              <TextField hintText="Add new comment" floatingLabelText="Add new comment" name="generalcomment" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
+              <FloatingActionButton mini={true} style={styles.addButton} backgroundColor={pink400} onClick={()=>this.props.addNewComment(this.state.comment)}>
+                <ContentAdd />
+              </FloatingActionButton>
+            </div>
+
+            <Dialog
+              actions={del_actions}
+              modal={false}
+              open={this.state.deldialog}
+              onRequestClose={this.handleDelDialogClose}
+              contentStyle ={styles.dialog}
+            >
+              Are you sure you want to delete?
+            </Dialog>
+
+            <Dialog
+              title="Edit option"
+              actions={edit_actions}
+              modal={false}
+              open={this.state.editdialog}
+              onRequestClose={this.handleEditDialogClose}
+              contentStyle ={styles.dialog}
+            >
+              Option name:
+              <TextField hintText="Edit option" floatingLabelText="Edit option" name="geneditopt" onChange={this.handleEditOptInputChange.bind(this)} value={this.state.edit_opt}/>
+
+            </Dialog>
+          </div>;
+
+      let general_items_sort_view = <div>
+        <Subheader inset={false}>sorting</Subheader>
+
+        <SortableList items={generalItemCollection} onSortEnd={this.onSortEnd} useDragHandle={false}/>
+
+        <div style={styles.buttons}>
+
+          <RaisedButton label="Ok" style={styles.saveButton} onClick={this.handleEnableSort.bind(this)} primary={true} />
+
+        </div>
+
+      </div>
+
     return(
       <form>
 
         <h2>{this.props.title}</h2>
 
-        <h3>Options
-        <span className="addButtonWrapper">
-          <RaisedButton
-             label="Add new option"
-             labelPosition="after"
-             primary={true}
-             icon={<ContentAdd />}
-             style={styles.optAdd}
-             onTouchTap={this.handleDialogOpen}
-           />
-        </span>
+          {this.state.enableSort== false &&
+            gen_items_list_view
+          }
 
-
-        </h3>
-
-        <Dialog
-          title="Add new option"
-          actions={actions}
-          modal={false}
-          open={this.state.dialog}
-          onRequestClose={this.handleDialogClose}
-          contentStyle ={styles.dialog}
-        >
-          Option name:
-          <TextField hintText="Add new option" floatingLabelText="Add new option" name="genaddnewopt" onChange={this.handleNewOptInputChange.bind(this)}/>
-
-        </Dialog>
-
-        {item_list}
-        <Divider />
-        <h3>Comments</h3>
-        {comment_list}
-
-        <div style={styles.addTextContainer}>
-          <TextField hintText="Add new comment" floatingLabelText="Add new comment" name="generalcomment" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
-          <FloatingActionButton mini={true} style={styles.addButton} backgroundColor={pink400} onClick={()=>this.props.addNewComment(this.state.comment)}>
-            <ContentAdd />
-          </FloatingActionButton>
-        </div>
-
-        <Dialog
-          actions={del_actions}
-          modal={false}
-          open={this.state.deldialog}
-          onRequestClose={this.handleDelDialogClose}
-          contentStyle ={styles.dialog}
-        >
-          Are you sure you want to delete?
-        </Dialog>
-
-        <Dialog
-          title="Edit option"
-          actions={edit_actions}
-          modal={false}
-          open={this.state.editdialog}
-          onRequestClose={this.handleEditDialogClose}
-          contentStyle ={styles.dialog}
-        >
-          Option name:
-          <TextField hintText="Edit option" floatingLabelText="Edit option" name="geneditopt" onChange={this.handleEditOptInputChange.bind(this)} value={this.state.edit_opt}/>
-
-        </Dialog>
+          {this.state.enableSort== true &&
+            general_items_sort_view
+          }
 
       </form>
     );

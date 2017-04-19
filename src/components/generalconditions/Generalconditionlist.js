@@ -4,10 +4,11 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ActionSort from 'material-ui/svg-icons/content/sort';
 import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
 import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
+import FlatButton from 'material-ui/FlatButton';
+import Subheader from 'material-ui/Subheader';
 
 const DragHandle = SortableHandle(() => <span className="lisort"><ActionDrag /></span>); // This can be any component you want
 
@@ -91,39 +92,62 @@ export default class Generalconditionlist extends React.Component {
        }
     };
 
+    let genItems = [];
+    let genComment = [];
+    let generalItemCollection = [];
+
+    for(let i =0, l = this.props.list.length; i < l ; i++ ){
+      let item = this.props.list[i];
+
+      if(item.type == 'ITEM'){
+
+        generalItemCollection.push(item);
+
+        let options = item.options.split(';');
+        let option_list = [];
+        for(let i =0, l = options.length; i < l ; i++ ){
+          option_list.push(<MenuItem value={ options[i] + ';'+  item.prop_general_id}  primaryText={ options[i]} key={i} />);
+        }
+
+        genItems.push( <div key={item.prop_general_id} style={styles.commentbox}>
+                      <h4 style={styles.subheader} className="gen-condition-title">{item.item_name}:</h4>
+
+                        <SelectField floatingLabelText="" value={item.user_input + ';'+  item.prop_general_id} onChange={this.props.handleSelectChange}  name={item.prop_general_id}>
+                          <MenuItem value={null} primaryText=""/>
+
+                          {option_list}
+
+                        </SelectField>
+
+                    </div> );
+
+
+      }
+      else{
+      genComment.push( <div key={item.prop_general_id} style={styles.commentbox}>
+                      <h4 style={styles.subheader} className="gen-condition-title">{item.item_name}:</h4>
+                        <TextField hintText="Provide comment..." multiLine={true} rows={2} rowsMax={3} name={item.prop_general_id} fullWidth={true} value={item.comment} onChange={this.props.handleInputChange}/>
+                    </div> );
+      }
+
+    }
+
+
     let generalContent =
     <div>
-    <div style={styles.buttonsrtl}>
+            <div style={styles.buttonsrtl}>
 
-            <FloatingActionButton mini={true} onClick={this.handleEnableSort.bind(this)} zDepth={1} >
-              <ActionSort />
-            </FloatingActionButton>
+              <FlatButton
+                  onClick={this.handleEnableSort.bind(this)}
+                  label="Sort"
+                  primary={true}
+                  icon={<ActionSort />}
+              />
 
             </div>
 
-            {this.props.list.map(item =>
-                <div key={item.prop_general_id} style={styles.commentbox}>
-                  <h4 style={styles.subheader} className="gen-condition-title">{item.item_name}:</h4>
-
-                  {
-                    (item.type == 'ITEM') &&
-                      <SelectField floatingLabelText="" value={item.user_input + ';'+  item.prop_general_id} onChange={this.props.handleSelectChange}  name={item.prop_general_id}>
-                        <MenuItem value={null} primaryText=""/>
-
-                        {item.options.split(';').map( (opt, index) =>
-                          <MenuItem value={opt + ';'+  item.prop_general_id}  primaryText={opt} key={index} />
-                        )}
-
-                      </SelectField>
-
-                  }
-
-
-                  <TextField hintText="Provide comment..." multiLine={true} rows={2} rowsMax={3} name={item.prop_general_id} fullWidth={true} value={item.comment} onChange={this.props.handleInputChange}/>
-
-                </div>
-                )
-            }
+            {genItems}
+            {genComment}
 
             <div style={styles.buttons}>
 
@@ -135,9 +159,9 @@ export default class Generalconditionlist extends React.Component {
 
         let sorting =
         <div>
-          <h5> sorting </h5>
+          <Subheader inset={false}>sorting</Subheader>
 
-          <SortableList items={this.props.list} onSortEnd={this.onSortEnd} useDragHandle={false}/>
+          <SortableList items={generalItemCollection} onSortEnd={this.onSortEnd} useDragHandle={false}/>
 
           <div style={styles.buttons}>
 
