@@ -6,8 +6,7 @@ class SubItemsStore extends EventEmitter {
     super();
     this.sub_items = {
       list: [],
-      gen_comment: '',
-      voices: []
+      gen_comment: ''
     };
     this.updateStatus = null;
   }

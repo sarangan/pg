@@ -245,6 +245,23 @@ export default StyleSheet.create({
         "marginTop": 5,
         "cursor": "pointer"
     },
+    "comment-voice-wrapper": {
+        "width": "100%",
+        "display": "block"
+    },
+    "gen-comment-content": {
+        "width": "50%",
+        "float": "left",
+        "marginRight": 10
+    },
+    "gen-comment-content::after": {
+        "content": "''",
+        "display": "table",
+        "clear": "both"
+    },
+    "voices-content": {
+        "width": "auto"
+    },
     "filepicker": {
         "fontFamily": "sans-serif"
     },

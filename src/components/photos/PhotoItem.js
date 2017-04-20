@@ -53,6 +53,13 @@ export default class PhotoItem extends React.Component {
     });
   }
 
+  handleDragStart(){
+
+    if(this.props.disableDrag == false){
+      this.props.on_drag_start(this.props.photo_id);
+    }
+  }
+
 
   render() {
 
@@ -107,7 +114,7 @@ export default class PhotoItem extends React.Component {
     return(
         <div style={{
         cursor: 'move'
-      }}  draggable="true" onDrag={this.props.on_drag} onDragStart={()=>this.props.on_drag_start(this.props.photo_id)}>
+      }}  draggable="true" onDrag={this.props.on_drag} onDragStart={this.handleDragStart.bind(this)}>
               <div className="photo-items" >
                 <IconButton style={styles.removeBtn} onClick={()=>this.handleDelDialogOpen(this.props.photo_id)}><RemoveIcon color="rgb(255, 9, 9)" /></IconButton>
                 <img src={this.props.image_url} style={styles.img} />

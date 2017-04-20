@@ -90,7 +90,7 @@ export function updateDragDrop(photo_id, item_id){
 
 export function deletePhoto(photo_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletephoto';
+  var url = 'http://52.39.72.94:3000/Property/photodelete';
   axios({
           method: 'post',
           url: url,

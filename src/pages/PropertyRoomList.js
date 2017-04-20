@@ -54,6 +54,9 @@ import MeterItemsStore from "../stores/MeterItemsStore";
 import * as PhotosActions from "../actions/PhotosActions";
 import PhotosStore from "../stores/PhotosStore";
 
+//audios
+import * as AudiosActions from "../actions/AudiosActions";
+import AudiosStore from "../stores/AudiosStore";
 
 //-----------------------------master item sorting -------------------------
 
@@ -109,6 +112,7 @@ export default class PropertyRoomList extends React.Component {
         gen_comment: {}
       },
       photos: [],
+      voices: [],
       sidebarState: 'PROP',
       startSending: true,
       showErrorSnack: false,
@@ -166,6 +170,9 @@ export default class PropertyRoomList extends React.Component {
     this.getPhotoDnDUpdateStatus = this.getPhotoDnDUpdateStatus.bind(this);
     this.getPhotoDeleteStatus = this.getPhotoDeleteStatus.bind(this);
     this.getPhotoUploadStatus = this.getPhotoUploadStatus.bind(this);
+
+    //audios
+    this.getVoices = this.getVoices.bind(this);
   }
 
   componentWillMount(){
@@ -191,6 +198,7 @@ export default class PropertyRoomList extends React.Component {
     PhotosStore.on("change", this.getPhotoDeleteStatus);
     PhotosStore.on("change", this.getPhotoUploadStatus);
 
+    AudiosStore.on("change", this.getVoices);
   }
 
   componentWillUnmount(){
@@ -215,6 +223,8 @@ export default class PropertyRoomList extends React.Component {
     PhotosStore.removeListener("change", this.getPhotoDnDUpdateStatus);
     PhotosStore.removeListener("change", this.getPhotoDeleteStatus);
     PhotosStore.removeListener("change", this.getPhotoUploadStatus);
+
+    AudiosStore.removeListener("change", this.getVoices);
   }
 
   getRoomList(){
@@ -870,7 +880,7 @@ export default class PropertyRoomList extends React.Component {
     }
   }
 
-
+  // drag and dropped photo
   handleDargDropPhoto(sub_id, photo_id){
 
     PhotosActions.updateDragDrop(photo_id, sub_id);
@@ -912,6 +922,26 @@ export default class PropertyRoomList extends React.Component {
   */
 
 
+  /*
+  *AUDIOS ------------------------------------------------START------------------------------------------------------
+  *
+  */
+
+  //get voices
+  getVoices(){
+    let voices = AudiosStore.getVoices();
+
+    //console.log(voices);
+    this.setState({
+      voices
+    });
+  }
+
+  /*
+  *AUDIOS ------------------------------------------------END------------------------------------------------------
+  *
+  */
+
   //handles sidebar items click
   sidebarClick = (id, title, item_id) => {
 
@@ -952,6 +982,9 @@ export default class PropertyRoomList extends React.Component {
 
       //get photos
       PhotosActions.fetchPhotos(this.state.property_id, item_id);
+
+      //get voices
+      AudiosActions.fetchVoices(this.state.property_id, item_id);
     }
     else if(id == 'METER'){
       this.setState({
@@ -1020,8 +1053,7 @@ export default class PropertyRoomList extends React.Component {
 
     const rightIconMenu = (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>Reply</MenuItem>
-        <MenuItem>Forward</MenuItem>
+        <MenuItem>Copy</MenuItem>
         <MenuItem>Delete</MenuItem>
       </IconMenu>
     );
@@ -1055,7 +1087,7 @@ export default class PropertyRoomList extends React.Component {
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsList generalcomment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
         handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit} photos={this.state.photos} dragDropPhoto={this.handleDargDropPhoto.bind(this)}
-        photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)}/>
+        photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} voices={this.state.voices}/>
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}
@@ -1079,7 +1111,7 @@ export default class PropertyRoomList extends React.Component {
           rightIconButton={rightIconMenu}
           primaryText={item.name}
           secondaryText=""
-          onClick={this.sidebarClick.bind(this, item.template_type, item.name , item.prop_master_id)}
+          onTouchTap={this.sidebarClick.bind(this, item.template_type, item.name , item.prop_master_id)}
         />
       );
 
