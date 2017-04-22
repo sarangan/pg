@@ -1,14 +1,16 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
+import config from '../config/config';
+import loginauth from '../auth/loginauth';
 
 export function fetchSingleItem(property_id, prop_master_id, type) {
-  var url = 'http://52.39.72.94:3000/Property/getSingleItem';
-  
+  var url = config.ENDPOINT_URL + 'getSingleItem';
+
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,
@@ -33,13 +35,13 @@ export function fetchSingleItem(property_id, prop_master_id, type) {
 
 export function updateSingleItem(property_id, data){
 
-  var url = 'http://52.39.72.94:3000/Property/updateSingleItem';
+  var url = config.ENDPOINT_URL + 'updateSingleItem';
 
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,

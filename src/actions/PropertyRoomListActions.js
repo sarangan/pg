@@ -1,14 +1,17 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
+import config from '../config/config';
+import loginauth from '../auth/loginauth';
+
 
 export function fetchRoomList(property_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getRoomlist';
+  var url = config.ENDPOINT_URL + 'getRoomlist';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id: property_id
@@ -30,12 +33,12 @@ export function fetchRoomList(property_id) {
 
 export function updateSortRoomList(property_id, data){
 
-  var url = 'http://52.39.72.94:3000/Property/sortroomlist';
+  var url = config.ENDPOINT_URL + 'sortroomlist';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,

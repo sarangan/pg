@@ -1,14 +1,16 @@
 import dispatcher from "../../dispatcher";
 import axios from 'axios';
+import config from '../../config/config';
+import loginauth from '../../auth/loginauth';
 
 export function fetchMeterListtemplate() {
 
-  var url = 'http://52.39.72.94:3000/Property/getmeterlisttemplate';
+  var url = config.ENDPOINT_URL + 'getmeterlisttemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            }
         })
         .then(function (response) {
@@ -26,12 +28,12 @@ export function fetchMeterListtemplate() {
 
 export function updateMeterListTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/updatemeterlisttemplate';
+  var url = config.ENDPOINT_URL + 'updatemeterlisttemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             meter_list: data
@@ -53,12 +55,12 @@ export function updateMeterListTemplate(data){
 
 export function deleteMeterItemTemplate(meter_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletemeteritemtemplate';
+  var url = config.ENDPOINT_URL + 'deletemeteritemtemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             meter_id
@@ -80,12 +82,12 @@ export function deleteMeterItemTemplate(meter_id){
 
 export function insertMeterItemTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/insertmeteritemtemplate';
+  var url = config.ENDPOINT_URL + 'insertmeteritemtemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             meter_item: data

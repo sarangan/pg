@@ -1,14 +1,16 @@
 import dispatcher from "../../dispatcher";
 import axios from 'axios';
+import config from '../../config/config';
+import loginauth from '../../auth/loginauth';
 
 export function fetchSubitemstemplate(com_master_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getsubitemstmplate';
+  var url = config.ENDPOINT_URL + 'getsubitemstmplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             com_master_id
@@ -29,12 +31,12 @@ export function fetchSubitemstemplate(com_master_id) {
 
 export function updateSubItemsTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/updatesubitemstemplate';
+  var url = config.ENDPOINT_URL + 'updatesubitemstemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             sub_items: data
@@ -56,12 +58,12 @@ export function updateSubItemsTemplate(data){
 
 export function deleteSubItemsTemplate(sub_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletesubitemstemplate';
+  var url = config.ENDPOINT_URL + 'deletesubitemstemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             sub_id: sub_id
@@ -83,12 +85,12 @@ export function deleteSubItemsTemplate(sub_id){
 
 export function insertSubItemTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/insertsubitemtemplate';
+  var url = config.ENDPOINT_URL + 'insertsubitemtemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             sub_item: data
@@ -110,12 +112,12 @@ export function insertSubItemTemplate(data){
 
 export function updateSortSubItemsTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/sortsubitemstemplate';
+  var url = config.ENDPOINT_URL + 'sortsubitemstemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             sub_items: data

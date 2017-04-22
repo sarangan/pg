@@ -1,14 +1,16 @@
 import dispatcher from "../../dispatcher";
 import axios from 'axios';
+import config from '../../config/config';
+import loginauth from '../../auth/loginauth';
 
 export function fetchTemplateList() {
 
-  var url = 'http://52.39.72.94:3000/Property/getcompanytemplate';
+  var url = config.ENDPOINT_URL + 'getcompanytemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            }
         })
         .then(function (response) {
@@ -27,12 +29,12 @@ export function fetchTemplateList() {
 
 export function deleteMasterItemTemplate(master_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletecompanytemplate';
+  var url = config.ENDPOINT_URL + 'deletecompanytemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             master_id
@@ -54,12 +56,12 @@ export function deleteMasterItemTemplate(master_id){
 
 export function updateMasteritemTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/updatecompanytemplate';
+  var url = config.ENDPOINT_URL + 'updatecompanytemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             master_item: data
@@ -81,12 +83,12 @@ export function updateMasteritemTemplate(data){
 
 export function insertMasterItemTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/insertcompanytemplate';
+  var url = config.ENDPOINT_URL + 'insertcompanytemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             master_item: data
@@ -108,12 +110,12 @@ export function insertMasterItemTemplate(data){
 
 export function sortMasteritemTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/sortcompanytemplate';
+  var url = config.ENDPOINT_URL + 'sortcompanytemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             master_list: data

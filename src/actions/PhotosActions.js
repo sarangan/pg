@@ -1,15 +1,17 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
-import request from 'superagent';
+//import request from 'superagent';
+import config from '../config/config';
+import loginauth from '../auth/loginauth';
 
 export function fetchPhotos(property_id, master_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getPhotosByMaster';
+  var url =  config.ENDPOINT_URL + 'getPhotosByMaster';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,
@@ -32,12 +34,12 @@ export function fetchPhotos(property_id, master_id) {
 
 export function fetchPhotosItem(property_id, item_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getPhotos';
+  var url =  config.ENDPOINT_URL + 'getPhotos';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,
@@ -61,12 +63,12 @@ export function fetchPhotosItem(property_id, item_id) {
 
 export function updateDragDrop(photo_id, item_id){
 
-  var url = 'http://52.39.72.94:3000/Property/updatephotodnd';
+  var url =  config.ENDPOINT_URL + 'updatephotodnd';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             photo_id,
@@ -90,12 +92,12 @@ export function updateDragDrop(photo_id, item_id){
 
 export function deletePhoto(photo_id){
 
-  var url = 'http://52.39.72.94:3000/Property/photodelete';
+  var url =  config.ENDPOINT_URL + 'photodelete';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             photo_id
@@ -118,7 +120,7 @@ export function deletePhoto(photo_id){
 
 export function uploadPhoto(property_id, file, sub_id, type, master_id){
 
-  var url = 'http://52.39.72.94:3000/Property/uploadfile';
+  var url =  config.ENDPOINT_URL + 'uploadfile';
   var data = {
     id: '',
     sync: '',
@@ -139,7 +141,7 @@ export function uploadPhoto(property_id, file, sub_id, type, master_id){
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc',
+             'Authorization': loginauth.AUTHTOKEN,
              'Content-Type': 'multipart/form-data'
            },
           data: formData

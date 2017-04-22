@@ -1,14 +1,16 @@
 import dispatcher from "../../dispatcher";
 import axios from 'axios';
+import config from '../../config/config';
+import loginauth from '../../auth/loginauth';
 
 export function getGeneralConditionsTemplate() {
 
-  var url = 'http://52.39.72.94:3000/Property/getgeneralconditiontemplate';
+  var url = config.ENDPOINT_URL + 'getgeneralconditiontemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            }
         })
         .then(function (response) {
@@ -27,12 +29,12 @@ export function getGeneralConditionsTemplate() {
 
 export function updateGeneralConditionTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/updategeneralconditiontemplate';
+  var url = config.ENDPOINT_URL + 'updategeneralconditiontemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             gen_list: data
@@ -54,12 +56,12 @@ export function updateGeneralConditionTemplate(data){
 
 export function insertGeneralConditionTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/insertgeneralconditiontemplate';
+  var url = config.ENDPOINT_URL + 'insertgeneralconditiontemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             gen_item: data
@@ -81,12 +83,12 @@ export function insertGeneralConditionTemplate(data){
 
 export function deleteGeneralConditionTemplate(gen_id){
 
-  var url = 'http://52.39.72.94:3000/Property/deletegeneralconditiontemplate';
+  var url = config.ENDPOINT_URL + 'deletegeneralconditiontemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             general_id: gen_id
@@ -108,12 +110,12 @@ export function deleteGeneralConditionTemplate(gen_id){
 
 export function updateSortGeneralConditionTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/sortgeneralconditiontemplate';
+  var url = config.ENDPOINT_URL + 'sortgeneralconditiontemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             gen_list: data

@@ -30,7 +30,7 @@ export default class PhotoWarpper extends React.Component {
       if(this.props.photos &&  nextProps.photos){
 
         if( (this.props.photos.length != nextProps.photos.length) && (nextProps.photos.length > 0)  ){
-          
+
           this.setState({
             uploading: false
           });
@@ -143,7 +143,7 @@ export default class PhotoWarpper extends React.Component {
             {this.props.photos && this.props.photos.map((photo) => (
               <div style={styles.img_container}
                 key={photo.photo_id} >
-                <PhotoItem image_url={config.SERVER_PATH + photo.file_name} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}
+                <PhotoItem image_url={config.SERVER_IMAGE_PATH + photo.file_name} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}
                 photo_id={photo.photo_id}  photoDelete={this.props.photoDelete} disableDrag={this.props.disableDrag}/>
               </div>
             ))}

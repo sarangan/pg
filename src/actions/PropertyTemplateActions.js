@@ -1,14 +1,16 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
+import config from '../config/config';
+import loginauth from '../auth/loginauth';
 
 export function fetchTempalte(property_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getTemplate';
+  var url = config.ENDPOINT_URL + 'getTemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id: property_id
@@ -31,12 +33,12 @@ export function fetchTempalte(property_id) {
 
 export function saveTemplate(data){
 
-  var url = 'http://52.39.72.94:3000/Property/saveTemplate';
+  var url = config.ENDPOINT_URL + 'saveTemplate';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: data
         })

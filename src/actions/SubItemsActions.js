@@ -1,14 +1,16 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
+import config from '../config/config';
+import loginauth from '../auth/loginauth';
 
 export function fetchSubitemslist(property_id, prop_master_id) {
 
-  var url = 'http://52.39.72.94:3000/Property/getSubItemsList';
+  var url = config.ENDPOINT_URL + 'getSubItemsList';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,
@@ -32,12 +34,12 @@ export function fetchSubitemslist(property_id, prop_master_id) {
 export function updateSubItems(property_id, prop_master_id, sub_list, gen_comment){
 
 
-  var url = 'http://52.39.72.94:3000/Property/updatesubitems';
+  var url = config.ENDPOINT_URL + 'updatesubitems';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: {
             property_id,

@@ -1,16 +1,18 @@
 import dispatcher from "../dispatcher";
 import axios from 'axios';
+import config from '../config/config';
+import loginauth from '../auth/loginauth';
 
 export function addProperty(data) {
 
   console.log(data);
 
-  var url = 'http://52.39.72.94:3000/Property/add';
+  var url = config.ENDPOINT_URL + 'add';
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: data
         })
@@ -31,12 +33,12 @@ export function addProperty(data) {
 
 export function getProperty(property_id){
 
-  var url = 'http://52.39.72.94:3000/Property/getProperty';
+  var url = config.ENDPOINT_URL + 'getProperty';
   axios({
         method: 'post',
         url: url,
         headers: {
-           'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+           'Authorization': loginauth.AUTHTOKEN
          },
         data: {
           property_id: property_id
@@ -58,18 +60,18 @@ export function getProperty(property_id){
 
 export function updateProperty(property_id, data) {
 
-  var url = 'http://52.39.72.94:3000/Property/edit';
+  var url = config.ENDPOINT_URL + 'edit';
   data['property_id'] = property_id;
   axios({
           method: 'post',
           url: url,
           headers: {
-             'Authorization': 'Bearer ' +  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOjYsImlhdCI6MTQ4Njk5MzQyNn0.aGfRrEnbiPSH_1sPhxikafaSdudhr9mSnEGkhCUN6dc'
+             'Authorization': loginauth.AUTHTOKEN
            },
           data: data
         })
         .then(function (response) {
-          
+
           dispatcher.dispatch({
             type: "UPDATE_PROPERTY",
             data: response.data
