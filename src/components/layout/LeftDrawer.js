@@ -8,6 +8,7 @@ import Avatar from 'material-ui/Avatar';
 import HomeIcon from 'material-ui/svg-icons/action/home';
 import PropertyListIcon from 'material-ui/svg-icons/action/account-balance';
 import TemplateIcon from 'material-ui/svg-icons/av/web';
+import ReportIcon from 'material-ui/svg-icons/editor/insert-drive-file';
 
 
 export default class LeftDrawer extends React.Component {
@@ -18,6 +19,7 @@ export default class LeftDrawer extends React.Component {
     this.menus = [ {text: 'Home', icon: <HomeIcon/>,  link: '/'  },
                   {text: 'Property List', icon: <PropertyListIcon/>,  link: 'propertylist'  },
                   {text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  },
+                  {text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings'  },
                   {text: 'Settings', icon: <HomeIcon/>,  link: '/'  }
               ];
 

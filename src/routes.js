@@ -10,6 +10,8 @@ import PropertyRoomList from "./pages/PropertyRoomList";
 
 import Template from "./pages/template/Template";
 
+import ReportSettings from "./pages/report/ReportSettings";
+
 export default (
   <Route>
     <Route path="/" component={Layout}>
@@ -20,6 +22,8 @@ export default (
       <Route path="/propertyroomlist" component={PropertyRoomList} />
 
       <Route path="/template" component={Template} />
+
+      <Route path="/reportsettings" component={ReportSettings} />
     </Route>
   </Route>
 );
