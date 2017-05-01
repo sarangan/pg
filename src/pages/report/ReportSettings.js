@@ -27,7 +27,11 @@ export default class ReportSettings extends React.Component {
       uploading: false,
       displayColorPicker: false,
       background: '#fff',
-      pageHeaderLayout: '',
+      formValues: {
+        pageHeaderLayout: '',
+        frontPageSelection: '',
+        photosInclude: ''
+      },
       formatStyle:{
         pageHeaderColor: '#2196f3',
         pageHeaderBgColor: '#2196f3',
@@ -89,24 +93,62 @@ export default class ReportSettings extends React.Component {
     }
   }
 
+  //page header rdb change event
   handleChangePageHeader(event, value){
-
+    let formValues = this.state.formValues;
+    formValues["pageHeaderLayout"] = value
     this.setState({
-      pageHeaderLayout: value
-    })
+      formValues
+    });
+  }
+
+  //front page layout rdb button change
+  handleFrontPageRbd(event, value){
+    let formValues = this.state.formValues;
+    formValues["frontPageSelection"] = value
+    this.setState({
+      formValues
+    });
+  }
+
+  //photos include in items details
+  handlePhotosInclude(event, value){
+    console.log(value)
+    let formValues = this.state.formValues;
+    formValues["photosInclude"] = value
+    this.setState({
+      formValues
+    });
   }
 
   render() {
 
-    let pageHeaderLayout = this.state.pageHeaderLayout;
     let pageHeaderBgColor = '#ffffff';
-
-    if(pageHeaderLayout == 'SOLID'){
+    if(this.state.formValues.pageHeaderLayout == 'SOLID'){
       pageHeaderBgColor = this.state.formatStyle.pageHeaderBgColor;
     }
-    else if(pageHeaderLayout == 'BORDER_BOTTOM'){
+    else if(this.state.formValues.pageHeaderLayout == 'BORDER_BOTTOM'){
       pageHeaderBgColor = '#ffffff';
     }
+
+    let frontPageSelectionSTDColor = '#cccccc';
+    let frontPageSelectionTOPLEFTColor = '#cccccc';
+    if(this.state.formValues.frontPageSelection == 'STANDARD'){
+      frontPageSelectionSTDColor = '#417505';
+      frontPageSelectionTOPLEFTColor = '#cccccc';
+    }
+    else if(this.state.formValues.frontPageSelection == 'TOP_LEFT'){
+      frontPageSelectionSTDColor = '#cccccc';
+      frontPageSelectionTOPLEFTColor = '#417505';
+    }
+
+
+    let limitTxt = 'none';
+    if(this.state.formValues.photosInclude == 'LIMIT'){
+      limitTxt = 'block'
+    }
+
+    console.log(limitTxt);
 
     const styles ={
       tblProgress: {
@@ -192,7 +234,8 @@ export default class ReportSettings extends React.Component {
         width: 50,
         position: 'absolute',
         right: 0,
-        bottom: 10
+        bottom: 10,
+        display: `limitTxt`
       },
       hrcustom:{
         width: '100%',
@@ -263,8 +306,13 @@ export default class ReportSettings extends React.Component {
         width: 150,
         height: 'auto'
       },
-      layouttxt: {
-        color: '#cccccc'
+      layouttxtStd: {
+        color: `${frontPageSelectionSTDColor}`,
+        fontWeight: 700
+      },
+      layouttxtTopLeft: {
+        color: `${frontPageSelectionTOPLEFTColor}`,
+        fontWeight: 700
       }
 
     };
@@ -335,7 +383,7 @@ export default class ReportSettings extends React.Component {
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
                     <h4>Layout:</h4>
-                    <RadioButtonGroup name="page-header-layout" defaultSelected="BORDER_BOTTOM" defaultSelected={this.state.pageHeaderLayout} onChange={this.handleChangePageHeader.bind(this)}>
+                    <RadioButtonGroup name="pageHeaderLayout" defaultSelected={this.state.formValues.pageHeaderLayout} defaultSelected={this.state.pageHeaderLayout} onChange={this.handleChangePageHeader.bind(this)}>
                       <RadioButton
                         value="BORDER_BOTTOM"
                         label="Border bottom"
@@ -389,7 +437,7 @@ export default class ReportSettings extends React.Component {
 
                   <div style={styles.divFlexItem}>
                       <h4>Font color:</h4>
-                      <ColorPicker changeColor={this.changeColor.bind(this)} type="TBLSECCOLOR" defaultColor={this.state.formatStyle.tableSectionColor}/>
+                      <ColorPicker changeColor={this.changeColor.bind(this)} type="TBLSECCOLOR" defaultColor={this.state.formatStyle.tabelSectionColor}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
@@ -421,7 +469,7 @@ export default class ReportSettings extends React.Component {
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
 
-                    <RadioButtonGroup name="page-header-layout" >
+                    <RadioButtonGroup name="frontPageSelection" defaultSelected={this.state.formValues.frontPageSelection} onChange={this.handleFrontPageRbd.bind(this)}>
                       <RadioButton
                         value="STANDARD"
                         label="Standard"
@@ -437,12 +485,12 @@ export default class ReportSettings extends React.Component {
                   </div>
 
                   <div style={styles.divFlexItem}>
-                    <div style={styles.layouttxt}>Standard</div>
+                    <div style={styles.layouttxtStd}>Standard</div>
                     <img src="images/standard_fp_layout.png" alt="standard" style={styles.layoutimg}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
-                    <div style={styles.layouttxt}>Top left</div>
+                    <div style={styles.layouttxtTopLeft}>Top left</div>
                     <img src="images/topleft_fp_layout.png" alt="topleft" style={styles.layoutimg}/>
                   </div>
 
@@ -473,7 +521,7 @@ export default class ReportSettings extends React.Component {
                   <div style={styles.divFlexItem}>
 
                     <h4>Photos in item details:</h4>
-                    <RadioButtonGroup name="page-header-layout" defaultSelected="STANDARD">
+                    <RadioButtonGroup name="photosInclude" defaultSelected={this.state.formValues.photosInclude} onChange={this.handlePhotosInclude.bind(this)}>
                       <RadioButton
                         value="ALL"
                         label="All photos"
@@ -490,7 +538,7 @@ export default class ReportSettings extends React.Component {
                         style={styles.radioButtonwithtxt}
                       />
                     </RadioButtonGroup>
-                    <TextField style={styles.rdosubtxt} name="limit" fullWidth={false}/>
+                    <TextField style={styles.rdosubtxt} name="limitphotos" fullWidth={false} disabled={this.state.formValues.photosInclude != 'LIMIT'}/>
 
                   </div>
 

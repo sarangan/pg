@@ -6,9 +6,6 @@ export default class ColorPicker extends React.Component{
   constructor(){
     super();
     let color = '#2196f3';
-    if (typeof this.props.defaultColor != undefined){
-      color = this.props.defaultColor
-    }
     this.state = {
       displayColorPicker: false,
       color: color
@@ -24,6 +21,18 @@ export default class ColorPicker extends React.Component{
 
   }
 
+  componentDidMount(){
+    let color = '#2196f3';
+
+    if (typeof this.props.defaultColor != undefined){
+      color = this.props.defaultColor;
+    }
+
+    this.setState({
+      color
+    });
+  }
+
   handleClick = () => {
     this.setState({ displayColorPicker: !this.state.displayColorPicker })
   };
@@ -33,7 +42,7 @@ export default class ColorPicker extends React.Component{
   };
 
   handleChange = (color) => {
-    console.log(color);
+    //console.log(color);
     this.setState({ color: color.hex });
     this.props.changeColor(color, this.props.type);
   };
