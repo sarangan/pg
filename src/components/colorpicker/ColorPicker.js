@@ -24,7 +24,7 @@ export default class ColorPicker extends React.Component{
   componentDidMount(){
     let color = '#2196f3';
 
-    if (typeof this.props.defaultColor != undefined){
+    if (typeof this.props.defaultColor != 'undefined'){
       color = this.props.defaultColor;
     }
 
@@ -32,6 +32,18 @@ export default class ColorPicker extends React.Component{
       color
     });
   }
+
+  componentWillReceiveProps(newProps){
+
+    if(this.state.color != newProps.defaultColor ){
+      this.setState({
+        color: newProps.defaultColor
+      });
+    }
+
+  }
+
+
 
   handleClick = () => {
     this.setState({ displayColorPicker: !this.state.displayColorPicker })

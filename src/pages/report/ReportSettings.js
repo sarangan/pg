@@ -13,6 +13,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ColorPicker from '../../components/colorpicker/ColorPicker'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import Checkbox from 'material-ui/Checkbox';
+import config from '../../config/config';
+
+import * as ReportSettingsActions from "../../actions/report/ReportSettingsActions";
+import ReportSettingsStore from "../../stores/report/ReportSettingsStore";
 
 export default class ReportSettings extends React.Component {
 
@@ -20,71 +24,196 @@ export default class ReportSettings extends React.Component {
     super();
 
     this.state = {
-      startSending: false,
+      startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
       open: false,
       uploading: false,
       displayColorPicker: false,
       background: '#fff',
+      coverpage_enable: false,
+      footer_enable: false,
       formValues: {
-        pageHeaderLayout: '',
-        frontPageSelection: '',
-        photosInclude: ''
-      },
-      formatStyle:{
-        pageHeaderColor: '#2196f3',
-        pageHeaderBgColor: '#2196f3',
-        tabelSectionColor: '#ffffff',
-        tableSectionBg: '#2196f3'
+        report_id: '',
+        logo_url: 'images/property-ground-logo.png',
+        base_color: '#2196f3',
+        page_header_layout: '',
+        page_header_color: '#2196f3',
+        table_header_bg_color: '#2196f3',
+        table_header_color: '#ffffff',
+        front_page_layout: '',
+        cover_page_text: '',
+        show_photos: '',
+        show_photos_limit: '',
+        photo_size: '',
+        show_photo_date_time: '',
+        items_details_layout: '',
+        photo_collection_layout: '',
+        footer_logo_url: 'images/property-ground-logo.png',
+        footer_text: '',
+        mailing: '',
+        include_condition_summary: 0,
+        include_singatures: 0
       }
     };
+
+    this.getReportSettings = this.getReportSettings.bind(this);
+    ReportSettingsActions.fetchReportSettings();
+    this.getReportSettingsStatus = this.getReportSettingsStatus.bind(this);
+    this.getUploadLogoStatus = this.getUploadLogoStatus.bind(this);
+
   }
 
   componentWillMount(){
-
+    ReportSettingsStore.on("change", this.getReportSettings);
+    ReportSettingsStore.on("change", this.getReportSettingsStatus);
+    ReportSettingsStore.on("change", this.getUploadLogoStatus);
   }
 
   componentWillUnmount(){
+    ReportSettingsStore.removeListener("change", this.getReportSettings);
+    ReportSettingsStore.removeListener("change", this.getReportSettingsStatus);
+    ReportSettingsStore.removeListener("change", this.getUploadLogoStatus);
+  }
+
+
+  //error snack close
+  errhandleRequestClose = () => {
+    this.setState({
+      showErrorSnack: false,
+    });
+  };
+
+  //error snack success
+  successhandleRequestClose = () => {
+    this.setState({
+      showSuccessSnack: false,
+      startSending: false
+    });
+  };
+
+
+  getReportSettings(){
+
+    let settings = ReportSettingsStore.getSettings();
+
+    if(typeof settings != 'undefined'){
+
+      let formValues = {
+        report_id: settings.report_id,
+        logo_url: (settings.logo_url.length > 0)? config.SERVER_IMAGE_PATH + settings.logo_url: 'images/property-ground-logo.png',
+        base_color: (settings.base_color.length > 0)? settings.base_color: '#2196f3',
+        page_header_layout: settings.page_header_layout,
+        page_header_color: (settings.page_header_color.length > 0)? settings.page_header_color: '#2196f3',
+        table_header_bg_color: (settings.table_header_bg_color.length > 0)? settings.table_header_bg_color: '#2196f3',
+        table_header_color: (settings.table_header_color.length > 0)? settings.table_header_color: '#ffffff',
+        front_page_layout: settings.front_page_layout,
+        cover_page_text: settings.cover_page_text,
+        show_photos: settings.show_photos,
+        show_photos_limit: settings.show_photos_limit,
+        photo_size: settings.photo_size,
+        show_photo_date_time: settings.show_photo_date_time,
+        items_details_layout: settings.items_details_layout,
+        photo_collection_layout: settings.photo_collection_layout,
+        footer_logo_url: (settings.footer_logo_url.length > 0)? settings.footer_logo_url: 'images/property-ground-logo.png',
+        footer_text: settings.footer_text,
+        mailing: settings.mailing,
+        include_condition_summary: settings.include_condition_summary,
+        include_singatures: settings.include_singatures
+      };
+
+      this.setState({
+        formValues,
+        startSending: false
+      });
+
+    }
+    else{
+      this.setState({
+        startSending: false
+      });
+    }
 
   }
 
+  saveReportSettings(){
+
+    this.setState({
+      startSending: true
+    });
+    let formVars = this.state.formValues;
+    delete formVars["logo_url"]
+    ReportSettingsActions.updateReportSettings(formVars);
+
+  }
+
+
+  //get the general condition template insert status
+  getReportSettingsStatus(){
+    let status =  ReportSettingsStore.getUpdateStatus();
+
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false
+      });
+
+      ReportSettingsActions.fetchReportSettings();
+
+    }
+  }
+
+  //uploading logo
   onDrop(files){
 
       this.setState({
         uploading: true
       });
+
+      ReportSettingsActions.uploadReportLogo(files[0]);
+  }
+
+  //upload logo status
+  getUploadLogoStatus(){
+    let status =  ReportSettingsStore.getUploadLogoStatus();
+
+    if(status){
+       this.setState({
+         uploading: false
+       });
+       ReportSettingsActions.fetchReportSettings();
+    }
   }
 
   changeColor(color, type){
-    var formatStyle = this.state.formatStyle;
+    var formValues = this.state.formValues;
 
     switch (type) {
       case 'PHFONTCOLOR':
-          formatStyle['pageHeaderColor'] = color.hex;
+          formValues['page_header_color'] = color.hex;
           this.setState({
-            formatStyle: formatStyle
+            formValues
           });
         break;
 
       case 'BASECOLOR':
-        formatStyle['pageHeaderBgColor'] = color.hex;
+        formValues['base_color'] = color.hex;
         this.setState({
-          formatStyle: formatStyle
+          formValues
         });
         break;
 
       case 'TBLSECBG':
-        formatStyle['tableSectionBg'] = color.hex;
+        formValues['table_header_bg_color'] = color.hex;
         this.setState({
-          formatStyle: formatStyle
+          formValues
         });
         break;
 
       case 'TBLSECCOLOR':
-        formatStyle['tabelSectionColor'] = color.hex;
+        formValues['table_header_color'] = color.hex;
         this.setState({
-          formatStyle: formatStyle
+          formValues
         });
         break;
 
@@ -96,7 +225,7 @@ export default class ReportSettings extends React.Component {
   //page header rdb change event
   handleChangePageHeader(event, value){
     let formValues = this.state.formValues;
-    formValues["pageHeaderLayout"] = value
+    formValues["page_header_layout"] = value
     this.setState({
       formValues
     });
@@ -105,17 +234,162 @@ export default class ReportSettings extends React.Component {
   //front page layout rdb button change
   handleFrontPageRbd(event, value){
     let formValues = this.state.formValues;
-    formValues["frontPageSelection"] = value
+    formValues["front_page_layout"] = value
     this.setState({
       formValues
     });
   }
 
   //photos include in items details
-  handlePhotosInclude(event, value){
-    console.log(value)
+  handleShow_photos(event, value){
     let formValues = this.state.formValues;
-    formValues["photosInclude"] = value
+    formValues["show_photos"] = value
+    this.setState({
+      formValues
+    });
+  }
+
+  //photos size opt
+  handlePhotoSize(event, value){
+    let formValues = this.state.formValues;
+    formValues["photo_size"] = value
+    this.setState({
+      formValues
+    });
+  }
+
+
+  //include the date and time under photos
+  handleChkDTinclude(event, isInputChecked){
+    let formValues = this.state.formValues;
+    formValues["show_photo_date_time"] = (isInputChecked== true? 1 : 0);
+    this.setState({
+      formValues
+    });
+  }
+
+  //include mailing
+  handleMailing(event, value){
+    let formValues = this.state.formValues;
+    formValues["mailing"] = value
+    this.setState({
+      formValues
+    });
+  }
+
+  // front page layout img click event
+  handleFrontPageImg(type){
+    let formValues = this.state.formValues;
+    formValues["front_page_layout"] = type
+    this.setState({
+      formValues
+    });
+  }
+
+  //item details layout
+  handleItemDetailsLayout(event, value){
+    let formValues = this.state.formValues;
+    formValues["items_details_layout"] = value
+    this.setState({
+      formValues
+    });
+  }
+
+  //item details layout img click event
+  handleItemsLayoutImg(type){
+    let formValues = this.state.formValues;
+    formValues["items_details_layout"] = type
+    this.setState({
+      formValues
+    });
+  }
+
+  //photos collection
+  handlePhotoCollectionRbd(event, value){
+    let formValues = this.state.formValues;
+    formValues["photo_collection_layout"] = value
+    this.setState({
+      formValues
+    });
+  }
+
+  //photo collection img click
+  handlePhotoCollectionImg(type){
+    let formValues = this.state.formValues;
+    formValues["photo_collection_layout"] = type
+    this.setState({
+      formValues
+    });
+  }
+
+  //cover page text change
+  handleCoverPagetxt(event){
+    let formValues = this.state.formValues;
+    formValues["cover_page_text"] = event.target.value;
+    this.setState({
+      formValues
+    });
+  }
+
+  //show photos limit
+  handleShowPhotosLimit(event){
+    let formValues = this.state.formValues;
+    formValues["show_photos_limit"] = event.target.value;
+    this.setState({
+      formValues
+    });
+  }
+
+  //footer text change
+  handleFootertxt(event){
+    let formValues = this.state.formValues;
+    formValues["footer_text"] = event.target.value;
+    this.setState({
+      formValues
+    });
+  }
+
+  //include the date and time under photos
+  handleChkConSummary(event, isInputChecked){
+    let formValues = this.state.formValues;
+    formValues["include_condition_summary"] = (isInputChecked== true? 1 : 0);
+    this.setState({
+      formValues
+    });
+  }
+
+  //include the date and time under photos
+  handleChkIncludeSing(event, isInputChecked){
+    let formValues = this.state.formValues;
+    formValues["include_singatures"] = (isInputChecked== true? 1 : 0);
+    this.setState({
+      formValues
+    });
+  }
+
+  //mailer settings
+  handleMailServertxt(event){
+    let formValues = this.state.formValues;
+
+    switch (event.target.name) {
+
+      case 'ex_mail_server':
+        formValues["ex_mail_server"] = event.target.value;
+        break;
+
+      case 'ex_mail_username':
+        formValues["ex_mail_username"] = event.target.value;
+        break;
+
+      case 'ex_mail_password':
+        formValues["ex_mail_password"] = event.target.value;
+        break;
+
+      case 'ex_mail_port':
+        formValues["ex_mail_port"] = event.target.value;
+        break;
+    }
+
     this.setState({
       formValues
     });
@@ -123,32 +397,84 @@ export default class ReportSettings extends React.Component {
 
   render() {
 
-    let pageHeaderBgColor = '#ffffff';
-    if(this.state.formValues.pageHeaderLayout == 'SOLID'){
-      pageHeaderBgColor = this.state.formatStyle.pageHeaderBgColor;
+    let base_color = '#ffffff';
+    if(this.state.formValues.page_header_layout == 'SOLID'){
+      base_color = this.state.formValues.base_color;
     }
-    else if(this.state.formValues.pageHeaderLayout == 'BORDER_BOTTOM'){
-      pageHeaderBgColor = '#ffffff';
+    else if(this.state.formValues.page_header_layout == 'BORDER_BOTTOM'){
+      base_color = '#ffffff';
     }
 
     let frontPageSelectionSTDColor = '#cccccc';
     let frontPageSelectionTOPLEFTColor = '#cccccc';
-    if(this.state.formValues.frontPageSelection == 'STANDARD'){
+    let front_page_layout_Std_img_border = 'none';
+    let front_page_layout_topleft_img_border = 'none';
+    if(this.state.formValues.front_page_layout == 'STANDARD'){
       frontPageSelectionSTDColor = '#417505';
       frontPageSelectionTOPLEFTColor = '#cccccc';
+      front_page_layout_Std_img_border = '2px dashed #417505';
+      front_page_layout_topleft_img_border = 'none';
     }
-    else if(this.state.formValues.frontPageSelection == 'TOP_LEFT'){
+    else if(this.state.formValues.front_page_layout == 'TOP_LEFT'){
       frontPageSelectionSTDColor = '#cccccc';
       frontPageSelectionTOPLEFTColor = '#417505';
+      front_page_layout_topleft_img_border = '2px dashed #417505';
+      front_page_layout_Std_img_border = 'none';
     }
 
-
     let limitTxt = 'none';
-    if(this.state.formValues.photosInclude == 'LIMIT'){
+    if(this.state.formValues.show_photos == 'LIMIT'){
       limitTxt = 'block'
     }
 
-    console.log(limitTxt);
+    let itemslayoutSTDColor = '#cccccc';
+    let itemslayoutTBLColor = '#cccccc';
+    let item_layout_Std_img_border = 'none';
+    let item_layout_Tbl_img_border = 'none';
+    if(this.state.formValues.items_details_layout == 'STANDARD'){
+      itemslayoutSTDColor = '#417505';
+      itemslayoutTBLColor = '#cccccc';
+      item_layout_Std_img_border = '2px dashed #417505';
+      item_layout_Tbl_img_border = 'none';
+    }
+    else if(this.state.formValues.items_details_layout == 'TABLE_ROWS'){
+      itemslayoutSTDColor = '#cccccc';
+      itemslayoutTBLColor = '#417505';
+      item_layout_Tbl_img_border = '2px dashed #417505';
+      item_layout_Std_img_border = 'none';
+    }
+
+    let photocollection2cColor = '#cccccc';
+    let photocollection3cColor = '#cccccc';
+    let photocollection4cColor = '#cccccc';
+    let photocollection_2c_img_border = 'none';
+    let photocollection_3c_img_border = 'none';
+    let photocollection_4c_img_border = 'none';
+
+    if(this.state.formValues.photo_collection_layout == '2-COL'){
+      photocollection2cColor = '#417505';
+      photocollection3cColor = '#cccccc';
+      photocollection4cColor = '#cccccc';
+      photocollection_2c_img_border = '2px dashed #417505';
+      photocollection_3c_img_border = 'none';
+      photocollection_4c_img_border = 'none';
+    }
+    else if(this.state.formValues.photo_collection_layout == '3-COL'){
+      photocollection2cColor = '#cccccc';
+      photocollection3cColor = '#417505';
+      photocollection4cColor = '#cccccc';
+      photocollection_2c_img_border = 'none';
+      photocollection_3c_img_border = '2px dashed #417505';
+      photocollection_4c_img_border = 'none';
+    }
+    else if(this.state.formValues.photo_collection_layout == '4-COL'){
+      photocollection2cColor = '#cccccc';
+      photocollection3cColor = '#cccccc';
+      photocollection4cColor = '#417505';
+      photocollection_2c_img_border = 'none';
+      photocollection_3c_img_border = 'none';
+      photocollection_4c_img_border = '2px dashed #417505';
+    }
 
     const styles ={
       tblProgress: {
@@ -222,9 +548,9 @@ export default class ReportSettings extends React.Component {
         minWidth: 300
       },
       thbg:{
-        backgroundColor: `${this.state.formatStyle.tableSectionBg}`,
+        backgroundColor: `${this.state.formValues.table_header_bg_color}`,
         textAlign: 'left',
-        color: `${this.state.formatStyle.tabelSectionColor}`,
+        color: `${this.state.formValues.table_header_color}`,
         padding: 10
       },
       trbg:{
@@ -271,6 +597,11 @@ export default class ReportSettings extends React.Component {
       footertxt: {
         color: '#cccccc'
       },
+      photofootertxt: {
+        color: '#969696',
+        fontSize: 11,
+        fontStyle: 'italic'
+      },
       logo:{
         width: 150,
         height: 'auto'
@@ -278,8 +609,8 @@ export default class ReportSettings extends React.Component {
       headerStyleWrapper: {
         minWidth: 300,
         display: 'table',
-        borderBottom: `1px solid ${this.state.formatStyle.pageHeaderColor}`,
-        backgroundColor: `${pageHeaderBgColor}`
+        borderBottom: `1px solid ${this.state.formValues.page_header_color}`,
+        backgroundColor: `${base_color}`
       },
       headerStyleLeft: {
         display: 'table-cell',
@@ -297,14 +628,22 @@ export default class ReportSettings extends React.Component {
       },
       headerStyleHeader: {
         fontWeight: 700,
-        color: `${this.state.formatStyle.pageHeaderColor}`
+        color: `${this.state.formValues.page_header_color}`
       },
       headerStyleSubHeader: {
-        color: `${this.state.formatStyle.pageHeaderColor}`
+        color: `${this.state.formValues.page_header_color}`
       },
-      layoutimg: {
+      layoutimgStd: {
         width: 150,
-        height: 'auto'
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${front_page_layout_Std_img_border}`
+      },
+      layoutimgTopLeft: {
+        width: 150,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${front_page_layout_topleft_img_border}`
       },
       layouttxtStd: {
         color: `${frontPageSelectionSTDColor}`,
@@ -313,6 +652,56 @@ export default class ReportSettings extends React.Component {
       layouttxtTopLeft: {
         color: `${frontPageSelectionTOPLEFTColor}`,
         fontWeight: 700
+      },
+      itemlayouttxtStd: {
+        color: `${itemslayoutSTDColor}`,
+        fontWeight: 700
+      },
+      itemlayouttxtTable: {
+        color: `${itemslayoutTBLColor}`,
+        fontWeight: 700
+      },
+      itemlayoutimgStd: {
+        width: 200,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${item_layout_Std_img_border}`
+      },
+      itemlayoutimgTbl: {
+        width: 200,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${item_layout_Tbl_img_border}`
+      },
+      photocollectiontxt2c: {
+        color: `${photocollection2cColor}`,
+        fontWeight: 700
+      },
+      photocollectiontxt3c: {
+        color: `${photocollection3cColor}`,
+        fontWeight: 700
+      },
+      photocollectiontxt4c: {
+        color: `${photocollection4cColor}`,
+        fontWeight: 700
+      },
+      photocollectionimg2c: {
+        width: 150,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${photocollection_2c_img_border}`
+      },
+      photocollectionimg3c: {
+        width: 150,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${photocollection_3c_img_border}`
+      },
+      photocollectionimg4c: {
+        width: 150,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${photocollection_4c_img_border}`
       }
 
     };
@@ -324,6 +713,7 @@ export default class ReportSettings extends React.Component {
     else {
       isShowSaving = '';
     }
+
 
     return (
       <PageBase title="Report settings" navigation="Home / Report settings">
@@ -344,11 +734,11 @@ export default class ReportSettings extends React.Component {
                     <div style={styles.dropzone}>
 
                       <div>
-                         <Dropzone onDrop={this.onDrop.bind(this)} style={styles.dropzoneItem} className="dropzoneItem">
+                        <Dropzone onDrop={this.onDrop.bind(this)} style={styles.dropzoneItem} className="dropzoneItem" multiple={false} >
                           <div>Drop a file or click here to upload.</div>
                             { this.state.uploading &&
                                 <MuiThemeProvider>
-                                <CircularProgress />
+                                  <CircularProgress />
                                 </MuiThemeProvider>
                             }
                         </Dropzone>
@@ -358,7 +748,7 @@ export default class ReportSettings extends React.Component {
 
                   </div>
                   <div style={styles.divFlexItem}>
-                    <img src="images/property-ground-logo.png" alt="logo" style={styles.logo}/>
+                    <img src={this.state.formValues.logo_url} alt="logo" style={styles.logo}/>
                   </div>
 
                 </div>
@@ -372,7 +762,7 @@ export default class ReportSettings extends React.Component {
                 <Divider style={styles.headinghr}/>
 
                 <h4>Select your base color:</h4>
-                <ColorPicker changeColor={this.changeColor.bind(this)} type="BASECOLOR" defaultColor={this.state.formatStyle.pageHeaderBgColor}/>
+                <ColorPicker changeColor={this.changeColor.bind(this)} type="BASECOLOR" defaultColor={this.state.formValues.base_color}/>
           </div>
 
           <div style={styles.wrapper}>
@@ -383,7 +773,7 @@ export default class ReportSettings extends React.Component {
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
                     <h4>Layout:</h4>
-                    <RadioButtonGroup name="pageHeaderLayout" defaultSelected={this.state.formValues.pageHeaderLayout} defaultSelected={this.state.pageHeaderLayout} onChange={this.handleChangePageHeader.bind(this)}>
+                    <RadioButtonGroup name="page_header_layout" valueSelected={this.state.formValues.page_header_layout} onChange={this.handleChangePageHeader.bind(this)}>
                       <RadioButton
                         value="BORDER_BOTTOM"
                         label="Border bottom"
@@ -399,14 +789,15 @@ export default class ReportSettings extends React.Component {
 
                   <div style={styles.divFlexItem}>
                       <h4>Font color:</h4>
-                      <ColorPicker changeColor={this.changeColor.bind(this)} type="PHFONTCOLOR" defaultColor={this.state.formatStyle.pageHeaderColor}/>
+                      <ColorPicker changeColor={this.changeColor.bind(this)} type="PHFONTCOLOR" defaultColor={this.state.formValues.page_header_color}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
                       <div style={styles.headerStyleWrapper}>
+
                         <div style={styles.headerStyleLeft}>
-                        <img src="images/property-ground-logo.png" alt="logo" style={styles.logoheader}/>
-                      </div>
+                          <img src="images/property-ground-logo.png" alt="logo" style={styles.logoheader}/>
+                        </div>
 
                         <div style={styles.headerStyleRight}>
                           <div style={styles.headerStyleHeader}>
@@ -432,12 +823,12 @@ export default class ReportSettings extends React.Component {
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
                     <h4>Base color:</h4>
-                    <ColorPicker changeColor={this.changeColor.bind(this)} type="TBLSECBG" defaultColor={this.state.formatStyle.tableSectionBg} />
+                    <ColorPicker changeColor={this.changeColor.bind(this)} type="TBLSECBG" defaultColor={this.state.formValues.table_header_bg_color} />
                   </div>
 
                   <div style={styles.divFlexItem}>
                       <h4>Font color:</h4>
-                      <ColorPicker changeColor={this.changeColor.bind(this)} type="TBLSECCOLOR" defaultColor={this.state.formatStyle.tabelSectionColor}/>
+                      <ColorPicker changeColor={this.changeColor.bind(this)} type="TBLSECCOLOR" defaultColor={this.state.formValues.table_header_color}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
@@ -467,9 +858,9 @@ export default class ReportSettings extends React.Component {
                 <Divider style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
-                  <div style={styles.divFlexItem}>
 
-                    <RadioButtonGroup name="frontPageSelection" defaultSelected={this.state.formValues.frontPageSelection} onChange={this.handleFrontPageRbd.bind(this)}>
+                  <div style={styles.divFlexItem}>
+                    <RadioButtonGroup name="front_page_layout" valueSelected={this.state.formValues.front_page_layout} onChange={this.handleFrontPageRbd.bind(this)}>
                       <RadioButton
                         value="STANDARD"
                         label="Standard"
@@ -481,23 +872,101 @@ export default class ReportSettings extends React.Component {
                         style={styles.radioButton}
                       />
                     </RadioButtonGroup>
-
                   </div>
 
                   <div style={styles.divFlexItem}>
                     <div style={styles.layouttxtStd}>Standard</div>
-                    <img src="images/standard_fp_layout.png" alt="standard" style={styles.layoutimg}/>
+                    <img src="images/standard_fp_layout.png" alt="standard" style={styles.layoutimgStd} onClick={this.handleFrontPageImg.bind(this, 'STANDARD')}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
                     <div style={styles.layouttxtTopLeft}>Top left</div>
-                    <img src="images/topleft_fp_layout.png" alt="topleft" style={styles.layoutimg}/>
+                    <img src="images/topleft_fp_layout.png" alt="topleft" style={styles.layoutimgTopLeft}  onClick={this.handleFrontPageImg.bind(this, 'TOP_LEFT')}/>
                   </div>
-
 
                 </div>
 
+          </div>
 
+          <div style={styles.wrapper}>
+
+                <h3 style={styles.heading}>Item style</h3>
+                <Divider style={styles.headinghr}/>
+
+                <div style={styles.divInlineWrapper}>
+
+                  <div style={styles.divFlexItem}>
+                    <RadioButtonGroup name="items_details_layout" valueSelected={this.state.formValues.items_details_layout} onChange={this.handleItemDetailsLayout.bind(this)}>
+                      <RadioButton
+                        value="STANDARD"
+                        label="Standard layout"
+                        style={styles.radioButton}
+                      />
+                      <RadioButton
+                        value="TABLE_ROWS"
+                        label="Table layout"
+                        style={styles.radioButton}
+                      />
+                    </RadioButtonGroup>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.itemlayouttxtStd}>Standard layout</div>
+                    <img src="images/items_details_layout_std.png" alt="standard" style={styles.itemlayoutimgStd} onClick={this.handleItemsLayoutImg.bind(this, 'STANDARD')}/>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.itemlayouttxtTable}>Table layout</div>
+                    <img src="images/items_details_layout_tbl.png" alt="table rows" style={styles.itemlayoutimgTbl}  onClick={this.handleItemsLayoutImg.bind(this, 'TABLE_ROWS')}/>
+                  </div>
+
+                </div>
+
+          </div>
+
+          <div style={styles.wrapper}>
+
+                <h3 style={styles.heading}>Photos layout at the end of report</h3>
+                <Divider style={styles.headinghr}/>
+
+                <div style={styles.divInlineWrapper}>
+
+                  <div style={styles.divFlexItem}>
+                    <RadioButtonGroup name="photo_collection_layout" valueSelected={this.state.formValues.photo_collection_layout} onChange={this.handlePhotoCollectionRbd.bind(this)}>
+                      <RadioButton
+                        value="2-COL"
+                        label="2 Columns"
+                        style={styles.radioButton}
+                      />
+                      <RadioButton
+                        value="3-COL"
+                        label="3 Columns"
+                        style={styles.radioButton}
+                      />
+                      <RadioButton
+                        value="4-COL"
+                        label="4 Columns"
+                        style={styles.radioButton}
+                      />
+                    </RadioButtonGroup>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.photocollectiontxt2c}>2 Columns</div>
+                    <img src="images/photo-collection-2-col.png" alt="2-col" style={styles.photocollectionimg2c} onClick={this.handlePhotoCollectionImg.bind(this, '2-COL')}/>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.photocollectiontxt3c}>3 Columns</div>
+                    <img src="images/photo-collection-3-col.png" alt="3-col" style={styles.photocollectionimg3c}  onClick={this.handlePhotoCollectionImg.bind(this, '3-COL')}/>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.photocollectiontxt4c}>4 Columns</div>
+                    <img src="images/photo-collection-4-col.png" alt="4-col" style={styles.photocollectionimg4c}  onClick={this.handlePhotoCollectionImg.bind(this, '4-COL')}/>
+                  </div>
+
+                </div>
 
           </div>
 
@@ -507,8 +976,8 @@ export default class ReportSettings extends React.Component {
                 <Divider style={styles.headinghr}/>
 
                 <h4>Cover page:</h4>
-                <TextField  hintText="Cover page" floatingLabelText="Cover page"
-                  fullWidth={true} name="coverpage" disabled={true} />
+                <TextField name="cover_page_text"  hintText="Cover page" floatingLabelText="Cover page" value={this.state.formValues.cover_page_text}
+                  fullWidth={true} name="coverpage" disabled={!this.state.coverpage_enable} onChange={this.handleCoverPagetxt.bind(this)}/>
 
           </div>
 
@@ -521,7 +990,7 @@ export default class ReportSettings extends React.Component {
                   <div style={styles.divFlexItem}>
 
                     <h4>Photos in item details:</h4>
-                    <RadioButtonGroup name="photosInclude" defaultSelected={this.state.formValues.photosInclude} onChange={this.handlePhotosInclude.bind(this)}>
+                    <RadioButtonGroup name="show_photos" valueSelected={this.state.formValues.show_photos} onChange={this.handleShow_photos.bind(this)}>
                       <RadioButton
                         value="ALL"
                         label="All photos"
@@ -538,14 +1007,17 @@ export default class ReportSettings extends React.Component {
                         style={styles.radioButtonwithtxt}
                       />
                     </RadioButtonGroup>
-                    <TextField style={styles.rdosubtxt} name="limitphotos" fullWidth={false} disabled={this.state.formValues.photosInclude != 'LIMIT'}/>
+
+                    { this.state.formValues.show_photos == 'LIMIT' &&
+                      <TextField style={styles.rdosubtxt} name="limitphotos" fullWidth={false} hintText="Number" onChange={this.handleShowPhotosLimit.bind(this)} value={this.state.formValues.show_photos_limit}/>
+                    }
 
                   </div>
 
 
                   <div style={styles.divFlexItem}>
                     <h4>Photos size:</h4>
-                    <RadioButtonGroup name="page-header-layout" defaultSelected="STANDARD">
+                    <RadioButtonGroup name="photo_size" valueSelected={this.state.formValues.photo_size} onChange={this.handlePhotoSize.bind(this)} >
                       <RadioButton
                         value="SMALL"
                         label="Small (64x64)"
@@ -574,13 +1046,16 @@ export default class ReportSettings extends React.Component {
                   <div style={styles.divFlexItem}>
                     <Checkbox
                       label="Date and time bottom of the image"
-                      style={styles.checkbox}
+                      style={styles.checkbox} onCheck={this.handleChkDTinclude.bind(this)} checked={this.state.formValues.show_photo_date_time==1? true: false}
                     />
                   </div>
 
                   <div style={styles.divFlexItem}>
+                    <div style={styles.footertxt}>Preview</div>
                     <img src="http://placehold.it/280x280" />
-                    <div style={styles.footertxt}>DD/MM/YYYY HH:mm</div>
+                    { this.state.formValues.show_photo_date_time == 1 &&
+                    <div style={styles.photofootertxt}>DD/MM/YYYY HH:mm</div>
+                    }
                   </div>
 
                 </div>
@@ -594,7 +1069,7 @@ export default class ReportSettings extends React.Component {
 
             <Checkbox
                label="Include in footer"
-               style={styles.checkbox}
+               style={styles.checkbox} checked={this.state.footer_enable} disabled={true}
              />
 
              <div style={styles.footerWarpper}>
@@ -610,7 +1085,7 @@ export default class ReportSettings extends React.Component {
 
                   <div style={styles.divFlexFooterItem}>
                     <TextField  hintText="copyright" floatingLabelText="copyright"
-                      fullWidth={false} name="copyright" disabled={false} />
+                      fullWidth={false} name="footer_text" disabled={!this.state.footer_enable}  onChange={this.handleFootertxt.bind(this)}/>
                   </div>
 
 
@@ -628,7 +1103,7 @@ export default class ReportSettings extends React.Component {
 
                 <div style={styles.divFlexItem}>
 
-                  <RadioButtonGroup name="page-header-layout" defaultSelected="STANDARD">
+                  <RadioButtonGroup name="mailing" valueSelected={this.state.formValues.mailing} onChange={this.handleMailing.bind(this)}>
                     <RadioButton
                       value="SELF"
                       label="Send from ProperyGround"
@@ -643,18 +1118,18 @@ export default class ReportSettings extends React.Component {
 
                 </div>
 
-                <div style={styles.divFlexItem}>
-
-                  <TextField  hintText="SMTP server" floatingLabelText="SMTP server"
-                    fullWidth={false} name="ex_mail_server" disabled={false} />
-                  <TextField  hintText="SMTP username" floatingLabelText="SMTP username"
-                      fullWidth={false} name="ex_mail_username" disabled={false} />
-                  <TextField  hintText="SMTP password" floatingLabelText="SMTP password"
-                        fullWidth={false} name="ex_mail_password" disabled={false} />
-                  <TextField  hintText="SMTP port" floatingLabelText="SMTP port"
-                        fullWidth={false} name="ex_mail_port" disabled={false} />
-
-                </div>
+                { this.state.formValues.mailing == 'EXTERNAL' &&
+                  <div style={styles.divFlexItem}>
+                    <TextField  hintText="SMTP server" floatingLabelText="SMTP server"
+                      fullWidth={false} name="ex_mail_server" disabled={false} onChange={this.handleMailServertxt.bind(this)}/>
+                    <TextField  hintText="SMTP username" floatingLabelText="SMTP username"
+                        fullWidth={false} name="ex_mail_username" disabled={false} onChange={this.handleMailServertxt.bind(this)}/>
+                    <TextField  hintText="SMTP password" floatingLabelText="SMTP password"
+                          fullWidth={false} name="ex_mail_password" disabled={false} onChange={this.handleMailServertxt.bind(this)}/>
+                    <TextField  hintText="SMTP port" floatingLabelText="SMTP port"
+                          fullWidth={false} name="ex_mail_port" disabled={false} onChange={this.handleMailServertxt.bind(this)}/>
+                  </div>
+                }
 
 
             </div>
@@ -667,13 +1142,13 @@ export default class ReportSettings extends React.Component {
             <Divider style={styles.headinghr}/>
 
             <Checkbox
-               label="Condition summeray"
-               style={styles.checkbox}
+               label="Condition summary"
+               style={styles.checkbox} onCheck={this.handleChkConSummary.bind(this)} defaultChecked={this.state.formValues.include_condition_summary == 1 ? true : false}
              />
 
              <Checkbox
                 label="Include singature block"
-                style={styles.checkbox}
+                style={styles.checkbox} onCheck={this.handleChkIncludeSing.bind(this)} defaultChecked={this.state.formValues.include_singatures ==  1 ? true : false}
               />
 
           </div>
@@ -683,7 +1158,7 @@ export default class ReportSettings extends React.Component {
 
               <RaisedButton label="Save"
                 style={styles.saveButton}
-                primary={true}/>
+                primary={true} onTouchTap={this.saveReportSettings.bind(this)}/>
 
           </div>
 
@@ -691,12 +1166,17 @@ export default class ReportSettings extends React.Component {
         </form>
 
 
-      <Snackbar
-        open={this.state.open}
-        message="Please fill fields..."
-        autoHideDuration={3000}
-        onRequestClose={this.handleRequestClose}
-      />
+        <Snackbar
+          open={this.state.showErrorSnack}
+          message="Please fill fields..."
+          autoHideDuration={3000}
+          onRequestClose={this.errhandleRequestClose.bind(this)} />
+
+        <Snackbar
+          open={this.state.showSuccessSnack}
+          message="Successfully updated..."
+          autoHideDuration={3000}
+          onRequestClose={this.successhandleRequestClose.bind(this)} />
 
       </PageBase>
     );
