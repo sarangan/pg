@@ -43,6 +43,7 @@ export default class ReportSettings extends React.Component {
         table_header_color: '#ffffff',
         front_page_layout: '',
         cover_page_text: '',
+        include_cover_page: 0,
         show_photos: '',
         show_photos_limit: '',
         photo_size: '',
@@ -109,6 +110,7 @@ export default class ReportSettings extends React.Component {
         table_header_color: (settings.table_header_color.length > 0)? settings.table_header_color: '#ffffff',
         front_page_layout: settings.front_page_layout,
         cover_page_text: settings.cover_page_text,
+        include_cover_page: settings.include_cover_page,
         show_photos: settings.show_photos,
         show_photos_limit: settings.show_photos_limit,
         photo_size: settings.photo_size,
@@ -122,8 +124,11 @@ export default class ReportSettings extends React.Component {
         include_singatures: settings.include_singatures
       };
 
+
+
       this.setState({
         formValues,
+        coverpage_enable: settings.include_cover_page == 1? true: false,
         startSending: false
       });
 
@@ -277,6 +282,17 @@ export default class ReportSettings extends React.Component {
     });
   }
 
+  //include_cover_page
+  handleIncludeCoverPage(event, isInputChecked){
+    let formValues = this.state.formValues;
+    formValues["include_cover_page"] = (isInputChecked== true? 1 : 0);
+    this.setState({
+      formValues,
+      coverpage_enable : isInputChecked
+    });
+  }
+
+
   // front page layout img click event
   handleFrontPageImg(type){
     let formValues = this.state.formValues;
@@ -427,21 +443,39 @@ export default class ReportSettings extends React.Component {
       limitTxt = 'block'
     }
 
-    let itemslayoutSTDColor = '#cccccc';
-    let itemslayoutTBLColor = '#cccccc';
-    let item_layout_Std_img_border = 'none';
-    let item_layout_Tbl_img_border = 'none';
-    if(this.state.formValues.items_details_layout == 'STANDARD'){
-      itemslayoutSTDColor = '#417505';
-      itemslayoutTBLColor = '#cccccc';
-      item_layout_Std_img_border = '2px dashed #417505';
-      item_layout_Tbl_img_border = 'none';
+    let itemslayoutS1Color = '#cccccc';
+    let itemslayoutS2Color = '#cccccc';
+    let itemslayoutS3Color = '#cccccc';
+    let item_layout_S1_img_border = 'none';
+    let item_layout_S2_img_border = 'none';
+    let item_layout_S3_img_border = 'none';
+
+    if(this.state.formValues.items_details_layout == 'STYLE 1'){
+      itemslayoutS1Color = '#417505';
+      itemslayoutS2Color = '#cccccc';
+      itemslayoutS3Color = '#cccccc';
+
+      item_layout_S1_img_border = '2px dashed #417505';
+      item_layout_S2_img_border = 'none';
+      item_layout_S3_img_border = 'none';
     }
-    else if(this.state.formValues.items_details_layout == 'TABLE_ROWS'){
-      itemslayoutSTDColor = '#cccccc';
-      itemslayoutTBLColor = '#417505';
-      item_layout_Tbl_img_border = '2px dashed #417505';
-      item_layout_Std_img_border = 'none';
+    else if(this.state.formValues.items_details_layout == 'STYLE 2'){
+      itemslayoutS1Color = '#cccccc';
+      itemslayoutS2Color = '#417505';
+      itemslayoutS3Color = '#cccccc';
+
+      item_layout_S2_img_border = '2px dashed #417505';
+      item_layout_S1_img_border = 'none';
+      item_layout_S3_img_border = 'none';
+    }
+    else if(this.state.formValues.items_details_layout == 'STYLE 3'){
+      itemslayoutS1Color = '#cccccc';
+      itemslayoutS2Color = '#cccccc';
+      itemslayoutS3Color = '#417505';
+
+      item_layout_S3_img_border = '2px dashed #417505';
+      item_layout_S1_img_border = 'none';
+      item_layout_S2_img_border = 'none';
     }
 
     let photocollection2cColor = '#cccccc';
@@ -534,11 +568,21 @@ export default class ReportSettings extends React.Component {
       },
       divInlineWrapper: {
         display: 'flex',
-        flexWrap: 'nowrap'
+        flexWrap: 'wrap'
       },
       divFlexItem:{
         marginRight: 50,
         minWidth: 200,
+        position: 'relative'
+      },
+      divInlineWrapperCover: {
+        display: 'flex',
+        flexWrap: 'wrap'
+      },
+      divFlexItemCoverTxt:{
+        marginRight: 50,
+        minWidth: 200,
+        width: 500,
         position: 'relative'
       },
       tableStyle: {
@@ -586,7 +630,6 @@ export default class ReportSettings extends React.Component {
       },
       divFlexFooterItem:{
         marginRight: 50,
-        minWidth: 200,
         position: 'relative',
         alignSelf: 'center'
       },
@@ -653,25 +696,35 @@ export default class ReportSettings extends React.Component {
         color: `${frontPageSelectionTOPLEFTColor}`,
         fontWeight: 700
       },
-      itemlayouttxtStd: {
-        color: `${itemslayoutSTDColor}`,
+      itemlayouttxtS1: {
+        color: `${itemslayoutS1Color}`,
         fontWeight: 700
       },
-      itemlayouttxtTable: {
-        color: `${itemslayoutTBLColor}`,
+      itemlayouttxtS2: {
+        color: `${itemslayoutS2Color}`,
         fontWeight: 700
       },
-      itemlayoutimgStd: {
+      itemlayouttxtS3: {
+        color: `${itemslayoutS3Color}`,
+        fontWeight: 700
+      },
+      itemlayoutimgS1: {
         width: 200,
         height: 'auto',
         cursor: 'pointer',
-        border: `${item_layout_Std_img_border}`
+        border: `${item_layout_S1_img_border}`
       },
-      itemlayoutimgTbl: {
+      itemlayoutimgS2: {
         width: 200,
         height: 'auto',
         cursor: 'pointer',
-        border: `${item_layout_Tbl_img_border}`
+        border: `${item_layout_S2_img_border}`
+      },
+      itemlayoutimgS3: {
+        width: 200,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${item_layout_S3_img_border}`
       },
       photocollectiontxt2c: {
         color: `${photocollection2cColor}`,
@@ -898,26 +951,36 @@ export default class ReportSettings extends React.Component {
                   <div style={styles.divFlexItem}>
                     <RadioButtonGroup name="items_details_layout" valueSelected={this.state.formValues.items_details_layout} onChange={this.handleItemDetailsLayout.bind(this)}>
                       <RadioButton
-                        value="STANDARD"
-                        label="Standard layout"
+                        value="STYLE 1"
+                        label="STYLE 1"
                         style={styles.radioButton}
                       />
                       <RadioButton
-                        value="TABLE_ROWS"
-                        label="Table layout"
+                        value="STYLE 2"
+                        label="STYLE 2"
+                        style={styles.radioButton}
+                      />
+                      <RadioButton
+                        value="STYLE 3"
+                        label="STYLE 3"
                         style={styles.radioButton}
                       />
                     </RadioButtonGroup>
                   </div>
 
                   <div style={styles.divFlexItem}>
-                    <div style={styles.itemlayouttxtStd}>Standard layout</div>
-                    <img src="images/items_details_layout_std.png" alt="standard" style={styles.itemlayoutimgStd} onClick={this.handleItemsLayoutImg.bind(this, 'STANDARD')}/>
+                    <div style={styles.itemlayouttxtS1}>STYLE 1</div>
+                    <img src="images/items_details_layout_std.png" alt="style 1" style={styles.itemlayoutimgS1} onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 1')}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
-                    <div style={styles.itemlayouttxtTable}>Table layout</div>
-                    <img src="images/items_details_layout_tbl.png" alt="table rows" style={styles.itemlayoutimgTbl}  onClick={this.handleItemsLayoutImg.bind(this, 'TABLE_ROWS')}/>
+                    <div style={styles.itemlayouttxtS2}>STYLE 2</div>
+                    <img src="images/items_details_layout_tbl.png" alt="style 2" style={styles.itemlayoutimgS2}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 2')}/>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.itemlayouttxtS3}>STYLE 3</div>
+                    <img src="images/items_details_layout_tbl.png" alt="style 3" style={styles.itemlayoutimgS3}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 3')}/>
                   </div>
 
                 </div>
@@ -975,9 +1038,23 @@ export default class ReportSettings extends React.Component {
                 <h3 style={styles.heading}>Cover page</h3>
                 <Divider style={styles.headinghr}/>
 
-                <h4>Cover page:</h4>
-                <TextField name="cover_page_text"  hintText="Cover page" floatingLabelText="Cover page" value={this.state.formValues.cover_page_text}
-                  fullWidth={true} name="coverpage" disabled={!this.state.coverpage_enable} onChange={this.handleCoverPagetxt.bind(this)}/>
+
+
+                <div style={styles.divInlineWrapperCover}>
+                  <div style={styles.divFlexItem}>
+                    <Checkbox
+                      label="Include cover page"
+                      style={styles.checkbox} onCheck={this.handleIncludeCoverPage.bind(this)} checked={this.state.formValues.include_cover_page==1? true: false}
+                    />
+                  </div>
+
+                  <div style={styles.divFlexItemCoverTxt}>
+
+                    <TextField name="cover_page_text"  hintText="Cover page" floatingLabelText="Cover page" value={this.state.formValues.cover_page_text}
+                    fullWidth={true} multiLine={true} name="coverpage" disabled={!this.state.coverpage_enable} onChange={this.handleCoverPagetxt.bind(this)}/>
+                  </div>
+
+              </div>
 
           </div>
 
