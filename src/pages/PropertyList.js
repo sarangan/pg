@@ -64,6 +64,12 @@ export default class PropertyList extends React.Component {
     return statusIcon;
   }
 
+  //generate report
+  generateReport(property_id){
+    console.log(property_id);
+    PropertyListActions.generateReport(property_id);
+  };
+
   render() {
 
     const styles = {
@@ -210,7 +216,7 @@ export default class PropertyList extends React.Component {
                 <TableHeaderColumn style={styles.columns.postalcode.header}>Postalcode</TableHeaderColumn>
                 <TableHeaderColumn style={styles.columns.created_date.header}>Created date</TableHeaderColumn>
                 <TableHeaderColumn style={styles.columns.status.header}>Status</TableHeaderColumn>
-                <TableHeaderColumn style={styles.columns.edit.header}>Edit</TableHeaderColumn>
+                <TableHeaderColumn style={styles.columns.edit.header}>Report</TableHeaderColumn>
                 <TableHeaderColumn style={styles.columns.view.header}>View</TableHeaderColumn>
               </TableRow>
 
@@ -237,14 +243,13 @@ export default class PropertyList extends React.Component {
 
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.edit.column}>
-                    <Link className="button" to="/addnewproperty">
                       <FloatingActionButton zDepth={0}
                                             mini={true}
                                             backgroundColor={grey200}
-                                            iconStyle={styles.editButton}>
+                                            iconStyle={styles.editButton} onTouchTap={()=>this.generateReport(item.property_id)}>
                         <ContentCreate  />
                       </FloatingActionButton>
-                    </Link>
+
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.view.column}>
                     <Link className="button" to={{ pathname: '/propertyroomlist', query: { property_id: item.property_id } }} >

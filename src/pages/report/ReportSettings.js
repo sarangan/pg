@@ -13,6 +13,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ColorPicker from '../../components/colorpicker/ColorPicker'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import Checkbox from 'material-ui/Checkbox';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import config from '../../config/config';
 
 import * as ReportSettingsActions from "../../actions/report/ReportSettingsActions";
@@ -55,7 +56,8 @@ export default class ReportSettings extends React.Component {
         mailing: '',
         include_condition_summary: 0,
         include_singatures: 0
-      }
+      },
+      report_settings_notes: null
     };
 
     this.getReportSettings = this.getReportSettings.bind(this);
@@ -129,14 +131,53 @@ export default class ReportSettings extends React.Component {
       this.setState({
         formValues,
         coverpage_enable: settings.include_cover_page == 1? true: false,
-        startSending: false
+        report_settings_notes: ReportSettingsStore.getSettingsNotes(),
+        startSending: false,
       });
+
 
     }
     else{
       this.setState({
         startSending: false
       });
+    }
+
+
+    if(this.state.report_settings_notes.length == 0 && this.state.report_settings_notes){
+
+      let general_notes = {
+        '1': "Check-in Report",
+        '2': "Check-out Report",
+        '3': "Inventory Report",
+        '4': "Inventory and Check-in Report",
+        '5': "Midterm Inspection Report",
+        '6': "Interim Report",
+        '7': "General Overview Report",
+        '8': "Condition Report"
+      };
+
+      let temp_notes = [];
+
+      for (var key in general_notes) {
+        if (general_notes.hasOwnProperty(key)) {
+
+          temp_notes.push(
+              {
+                report_settings_notes_id: '',
+                note_title: general_notes[key],
+                title: general_notes[key],
+                note: '',
+                included: 1
+              }
+          );
+        }
+      }
+
+      this.setState({
+        report_settings_notes: temp_notes
+      });
+
     }
 
   }
@@ -147,7 +188,7 @@ export default class ReportSettings extends React.Component {
       startSending: true
     });
     let formVars = this.state.formValues;
-    delete formVars["logo_url"]
+    delete formVars["logo_url"];
     ReportSettingsActions.updateReportSettings(formVars);
 
   }
@@ -446,34 +487,53 @@ export default class ReportSettings extends React.Component {
     let itemslayoutS1Color = '#cccccc';
     let itemslayoutS2Color = '#cccccc';
     let itemslayoutS3Color = '#cccccc';
+    let itemslayoutS4Color = '#cccccc';
     let item_layout_S1_img_border = 'none';
     let item_layout_S2_img_border = 'none';
     let item_layout_S3_img_border = 'none';
+    let item_layout_S4_img_border = 'none';
 
     if(this.state.formValues.items_details_layout == 'STYLE 1'){
       itemslayoutS1Color = '#417505';
       itemslayoutS2Color = '#cccccc';
       itemslayoutS3Color = '#cccccc';
+      itemslayoutS4Color = '#cccccc';
 
       item_layout_S1_img_border = '2px dashed #417505';
       item_layout_S2_img_border = 'none';
       item_layout_S3_img_border = 'none';
+      item_layout_S4_img_border = 'none';
     }
     else if(this.state.formValues.items_details_layout == 'STYLE 2'){
       itemslayoutS1Color = '#cccccc';
       itemslayoutS2Color = '#417505';
       itemslayoutS3Color = '#cccccc';
+      itemslayoutS4Color = '#cccccc';
 
       item_layout_S2_img_border = '2px dashed #417505';
       item_layout_S1_img_border = 'none';
       item_layout_S3_img_border = 'none';
+      item_layout_S4_img_border = 'none';
     }
     else if(this.state.formValues.items_details_layout == 'STYLE 3'){
       itemslayoutS1Color = '#cccccc';
       itemslayoutS2Color = '#cccccc';
       itemslayoutS3Color = '#417505';
+      itemslayoutS4Color = '#cccccc';
 
       item_layout_S3_img_border = '2px dashed #417505';
+      item_layout_S1_img_border = 'none';
+      item_layout_S2_img_border = 'none';
+      item_layout_S4_img_border = 'none';
+    }
+    else if(this.state.formValues.items_details_layout == 'STYLE 4'){
+      itemslayoutS1Color = '#cccccc';
+      itemslayoutS2Color = '#cccccc';
+      itemslayoutS4Color = '#417505';
+      itemslayoutS3Color = '#cccccc';
+
+      item_layout_S4_img_border = '2px dashed #417505';
+      item_layout_S3_img_border = 'none';
       item_layout_S1_img_border = 'none';
       item_layout_S2_img_border = 'none';
     }
@@ -568,7 +628,7 @@ export default class ReportSettings extends React.Component {
       },
       divInlineWrapper: {
         display: 'flex',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
       },
       divFlexItem:{
         marginRight: 50,
@@ -680,13 +740,15 @@ export default class ReportSettings extends React.Component {
         width: 150,
         height: 'auto',
         cursor: 'pointer',
-        border: `${front_page_layout_Std_img_border}`
+        border: `${front_page_layout_Std_img_border}`,
+        borderRadius: 5
       },
       layoutimgTopLeft: {
         width: 150,
         height: 'auto',
         cursor: 'pointer',
-        border: `${front_page_layout_topleft_img_border}`
+        border: `${front_page_layout_topleft_img_border}`,
+        borderRadius: 5
       },
       layouttxtStd: {
         color: `${frontPageSelectionSTDColor}`,
@@ -708,23 +770,41 @@ export default class ReportSettings extends React.Component {
         color: `${itemslayoutS3Color}`,
         fontWeight: 700
       },
+      itemlayouttxtS4: {
+        color: `${itemslayoutS4Color}`,
+        fontWeight: 700
+      },
       itemlayoutimgS1: {
         width: 200,
         height: 'auto',
         cursor: 'pointer',
-        border: `${item_layout_S1_img_border}`
+        border: `${item_layout_S1_img_border}`,
+        borderRadius: 5,
+        maxHeight: 200
       },
       itemlayoutimgS2: {
         width: 200,
         height: 'auto',
         cursor: 'pointer',
-        border: `${item_layout_S2_img_border}`
+        border: `${item_layout_S2_img_border}`,
+        borderRadius: 5,
+        maxHeight: 200
       },
       itemlayoutimgS3: {
         width: 200,
         height: 'auto',
         cursor: 'pointer',
-        border: `${item_layout_S3_img_border}`
+        border: `${item_layout_S3_img_border}`,
+        borderRadius: 5,
+        maxHeight: 200
+      },
+      itemlayoutimgS4: {
+        width: 200,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${item_layout_S4_img_border}`,
+        borderRadius: 5,
+        maxHeight: 200
       },
       photocollectiontxt2c: {
         color: `${photocollection2cColor}`,
@@ -766,6 +846,7 @@ export default class ReportSettings extends React.Component {
     else {
       isShowSaving = '';
     }
+
 
 
     return (
@@ -965,23 +1046,35 @@ export default class ReportSettings extends React.Component {
                         label="STYLE 3"
                         style={styles.radioButton}
                       />
+                      <RadioButton
+                        value="STYLE 4"
+                        label="STYLE 4"
+                        style={styles.radioButton}
+                      />
                     </RadioButtonGroup>
                   </div>
 
-                  <div style={styles.divFlexItem}>
-                    <div style={styles.itemlayouttxtS1}>STYLE 1</div>
-                    <img src="images/items_details_layout_std.png" alt="style 1" style={styles.itemlayoutimgS1} onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 1')}/>
-                  </div>
 
-                  <div style={styles.divFlexItem}>
-                    <div style={styles.itemlayouttxtS2}>STYLE 2</div>
-                    <img src="images/items_details_layout_tbl.png" alt="style 2" style={styles.itemlayoutimgS2}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 2')}/>
-                  </div>
+                    <div style={styles.divFlexItem}>
+                      <div style={styles.itemlayouttxtS1}>STYLE 1</div>
+                      <img src="images/report-item-style-1.jpg" alt="style 1" style={styles.itemlayoutimgS1} onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 1')}/>
+                    </div>
 
-                  <div style={styles.divFlexItem}>
-                    <div style={styles.itemlayouttxtS3}>STYLE 3</div>
-                    <img src="images/items_details_layout_tbl.png" alt="style 3" style={styles.itemlayoutimgS3}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 3')}/>
-                  </div>
+                    <div style={styles.divFlexItem}>
+                      <div style={styles.itemlayouttxtS2}>STYLE 2</div>
+                      <img src="images/report-item-style-2.jpg" alt="style 2" style={styles.itemlayoutimgS2}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 2')}/>
+                    </div>
+
+                    <div style={styles.divFlexItem}>
+                      <div style={styles.itemlayouttxtS3}>STYLE 3</div>
+                      <img src="images/report-item-style-3.jpg" alt="style 3" style={styles.itemlayoutimgS3}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 3')}/>
+                    </div>
+
+                    <div style={styles.divFlexItem}>
+                      <div style={styles.itemlayouttxtS4}>STYLE 4</div>
+                      <img src="images/report-item-style-4.jpg" alt="style 4" style={styles.itemlayoutimgS4}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 4')}/>
+                    </div>
+
 
                 </div>
 
@@ -1136,6 +1229,62 @@ export default class ReportSettings extends React.Component {
                   </div>
 
                 </div>
+
+          </div>
+
+          <div style={styles.wrapper}>
+
+              <h3 style={styles.heading}>General notes and guidance</h3>
+              <Divider style={styles.headinghr}/>
+
+              <div style={styles.divInlineWrapper}>
+
+                <Table
+                      height={'300px'}
+                      fixedHeader={true}
+                      selectable={true}
+                      multiSelectable={true}
+                    >
+                      <TableHeader
+                        displaySelectAll={false}
+                        adjustForCheckbox={true}
+                        enableSelectAll={false}
+                      >
+                        <TableRow>
+                          <TableHeaderColumn colSpan="3" tooltip="" style={{textAlign: 'left'}}>
+                            Include a custom notes section at the beginning of your report
+                          </TableHeaderColumn>
+                        </TableRow>
+
+                        <TableRow>
+                          <TableHeaderColumn tooltip="Page">Page</TableHeaderColumn>
+                          <TableHeaderColumn tooltip="Title">Title</TableHeaderColumn>
+                          <TableHeaderColumn tooltip="Open">Change</TableHeaderColumn>
+                        </TableRow>
+
+                      </TableHeader>
+
+                      <TableBody
+                        displayRowCheckbox={true}
+                        showRowHover={true}
+                      >
+
+                        { this.state.report_settings_notes &&
+                          this.state.report_settings_notes.map( (row, index) => (
+                            <TableRow key={index}>
+                              <TableRowColumn>{row.note_title}</TableRowColumn>
+                              <TableRowColumn>{row.title}</TableRowColumn>
+                              <TableRowColumn>Edit</TableRowColumn>
+                            </TableRow>
+                          ))
+                        }
+
+                      </TableBody>
+
+
+
+                    </Table>
+              </div>
 
           </div>
 

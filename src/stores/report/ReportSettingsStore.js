@@ -6,12 +6,17 @@ class ReportSettingsStore extends EventEmitter{
   constructor(){
     super();
     this.report_settings = {};
+    this.report_settings_notes = null;
     this.updateStatusSettings = null;
     this.uploadLogoStatus = null;
   }
 
   getSettings() {
     return this.report_settings;
+  }
+
+  getSettingsNotes(){
+    return this.report_settings_notes;
   }
 
   getUpdateStatus(){
@@ -27,7 +32,9 @@ class ReportSettingsStore extends EventEmitter{
     switch (action.type) {
 
       case "GET_REPORT_SETTINGS": {
-        this.report_settings =  action.data.report_settings;
+        console.log(action.data.data);
+        this.report_settings =  action.data.data.report_settings;
+        this.report_settings_notes = action.data.data.report_settings_notes;
         this.updateStatusSettings = null;
         this.uploadLogoStatus = null;
         this.emit("change");

@@ -29,3 +29,26 @@ export function fetchPropList() {
         });
 
 }
+
+export function generateReport(property_id) {
+
+  var url = config.REPORT_ENDPOINT_URL + 'generatereport';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': loginauth.AUTHTOKEN
+           },
+          data: {
+            property_id
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}
