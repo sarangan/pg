@@ -60,16 +60,34 @@ export function generateReport(property_id) {
                // These URLs will no longer resolve as the data backing
                // the URL has been freed."
                window.navigator.msSaveBlob(blob, filename);
+
+               console.log('blob');
+
             }
             else {
-               var blobURL = window.URL.createObjectURL(blob);
-               var tempLink = document.createElement('a');
-               tempLink.href = blobURL;
-               tempLink.setAttribute('download', filename);
-               tempLink.setAttribute('target', '_blank');
-               document.body.appendChild(tempLink);
-               tempLink.click();
-               document.body.removeChild(tempLink);
+
+              console.log('url');
+
+              var element = document.createElement('a');
+              element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent(response));
+              element.setAttribute('download', filename);
+
+              element.style.display = 'none';
+              document.body.appendChild(element);
+
+              element.click();
+
+              document.body.removeChild(element);
+
+
+              //  var blobURL = window.URL.createObjectURL(blob);
+              //  var tempLink = document.createElement('a');
+              //  tempLink.href = blobURL;
+              //  tempLink.setAttribute('download', filename);
+              //  tempLink.setAttribute('target', '_blank');
+              //  document.body.appendChild(tempLink);
+              //  tempLink.click();
+              //  document.body.removeChild(tempLink);
              }
 
 
