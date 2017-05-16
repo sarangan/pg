@@ -35,14 +35,14 @@ export function generateReport(property_id) {
 
   var url = config.REPORT_ENDPOINT_URL + 'generatereport';
   axios({
-          method: 'post',
+          method: 'get',
           url: url,
-          headers: {
-             'Authorization': loginauth.AUTHTOKEN
-           },
-          data: {
-            property_id
-          },
+          // headers: {
+          //    'Authorization': loginauth.AUTHTOKEN
+          //  },
+          // data: {
+          //   property_id
+          // },
           responseType:'stream'
         })
         .then(function (response) {
@@ -68,26 +68,26 @@ export function generateReport(property_id) {
 
               console.log('url');
 
-              var element = document.createElement('a');
-              element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent(response));
-              element.setAttribute('download', filename);
+              // var element = document.createElement('a');
+              // element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent(response));
+              // element.setAttribute('download', filename);
+              //
+              // element.style.display = 'none';
+              // document.body.appendChild(element);
+              //
+              // element.click();
+              //
+              // document.body.removeChild(element);
 
-              element.style.display = 'none';
-              document.body.appendChild(element);
 
-              element.click();
-
-              document.body.removeChild(element);
-
-
-              //  var blobURL = window.URL.createObjectURL(blob);
-              //  var tempLink = document.createElement('a');
-              //  tempLink.href = blobURL;
-              //  tempLink.setAttribute('download', filename);
-              //  tempLink.setAttribute('target', '_blank');
-              //  document.body.appendChild(tempLink);
-              //  tempLink.click();
-              //  document.body.removeChild(tempLink);
+               var blobURL = window.URL.createObjectURL(blob);
+               var tempLink = document.createElement('a');
+               tempLink.href = blobURL;
+               tempLink.setAttribute('download', filename);
+               tempLink.setAttribute('target', '_blank');
+               document.body.appendChild(tempLink);
+               tempLink.click();
+               document.body.removeChild(tempLink);
              }
 
 
