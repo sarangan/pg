@@ -37,13 +37,13 @@ export function generateReport(property_id) {
   axios({
           method: 'get',
           url: url,
-          // headers: {
-          //    'Authorization': loginauth.AUTHTOKEN
-          //  },
-          // data: {
-          //   property_id
-          // },
-          responseType:'stream'
+          headers: {
+             'Authorization': loginauth.AUTHTOKEN
+           },
+          data: {
+            property_id
+          },
+          responseType:'blob'
         })
         .then(function (response) {
           console.log(response);
@@ -52,7 +52,23 @@ export function generateReport(property_id) {
           let filename = "report.pdf";
           let mime = 'application/octet-stream';
 
+          var reader = new window.FileReader();
+        	reader.readAsDataURL(response.data);
+        	reader.onload = function() {
 
+        	    var imageDataUrl = reader.result;
+              //var blobURL = window.URL.createObjectURL(blob);
+              var tempLink = document.createElement('a');
+              tempLink.href = imageDataUrl;
+              tempLink.setAttribute('download', filename);
+              tempLink.setAttribute('target', '_blank');
+              document.body.appendChild(tempLink);
+              tempLink.click();
+              document.body.removeChild(tempLink);
+
+        	}
+
+            /*
             var blob = new Blob([data], {type: mime || 'application/octet-stream'});
             if (typeof window.navigator.msSaveBlob !== 'undefined') {
                // IE workaround for "HTML7007: One or more blob URLs were
@@ -68,18 +84,6 @@ export function generateReport(property_id) {
 
               console.log('url');
 
-              // var element = document.createElement('a');
-              // element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent(response));
-              // element.setAttribute('download', filename);
-              //
-              // element.style.display = 'none';
-              // document.body.appendChild(element);
-              //
-              // element.click();
-              //
-              // document.body.removeChild(element);
-
-
                var blobURL = window.URL.createObjectURL(blob);
                var tempLink = document.createElement('a');
                tempLink.href = blobURL;
@@ -89,6 +93,7 @@ export function generateReport(property_id) {
                tempLink.click();
                document.body.removeChild(tempLink);
              }
+             */
 
 
 
