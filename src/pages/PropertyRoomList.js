@@ -97,6 +97,7 @@ export default class PropertyRoomList extends React.Component {
         report_date: null,
         description: '',
         image_url: '',
+        logo_img: null
       },
       general_conditions:{
         gen_list: []
@@ -314,7 +315,8 @@ export default class PropertyRoomList extends React.Component {
       report_type: property_details.report_type,
       report_date:  Date.parse(property_details.report_date)? new Date(property_details.report_date ): null,
       description:  (property_details.description)? property_details.description : '',
-      image_url: property_details.image_url
+      image_url: property_details.image_url,
+      logo_img:  null,
     };
 
     this.setState({
@@ -372,20 +374,41 @@ export default class PropertyRoomList extends React.Component {
     let property_info = this.state.property_info;
     let msg = '';
 
+    console.log(property_info.logo_img );
+
     if( (property_info.address_1.trim().length == 0 ) || (property_info.postalcode.trim().length == 0) ){
       this.setState({showErrorSnack: true  });
     }
     else{
+      if(property_info.logo_img !== null){
+        PropertyActions.updatePropertyWithImg(this.state.property_id, this.state.property_info);
+        this.setState({
+          startSending: true
+        });
+      }
+      else{
+        PropertyActions.updateProperty(this.state.property_id, this.state.property_info);
+        this.setState({
+          startSending: true
+        });
+      }
 
-      PropertyActions.updateProperty(this.state.property_id, this.state.property_info);
 
-      this.setState({
-        startSending: true
-      });
 
     }
 
     event.preventDefault();
+  }
+
+  uploadPropertyLogo(file){
+
+    console.log('updating the image file');
+    let property_info = this.state.property_info;
+    property_info['logo_img'] = file;
+    this.setState({
+        property_info: property_info
+    });
+
   }
 
 
@@ -1074,9 +1097,9 @@ export default class PropertyRoomList extends React.Component {
 
       right_div = <AddProperty address_1={this.state.property_info.address_1} address_2={this.state.property_info.address_2}
         city={this.state.property_info.city} postalcode={this.state.property_info.postalcode}
-        report_type={this.state.property_info.report_type} report_date={this.state.property_info.report_date} description={this.state.property_info.description}
+        report_type={this.state.property_info.report_type} report_date={this.state.property_info.report_date} description={this.state.property_info.description} image_url={this.state.property_info.image_url}
         handleInputChange={this.propinfo_handleInputChange} handleDateChange = {this.propinfo_handleDateChange} handleSubmit={this.propinfo_handleSubmit}  handleSelectChange={this.propinfo_handleSelectChange}
-        title={this.state.formTitle} show_cancel={false} />
+        title={this.state.formTitle} show_cancel={false} uploadfile={this.uploadPropertyLogo.bind(this)} property_id={this.state.property_id}/>
     }
     else if(this.state.sidebarState == 'GEN'){
       right_div = <Generalconditionlist list={this.state.general_conditions.gen_list} title={this.state.formTitle}

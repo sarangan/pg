@@ -143,7 +143,7 @@ export default class PhotoWarpper extends React.Component {
             {this.props.photos && this.props.photos.map((photo) => (
               <div style={styles.img_container}
                 key={photo.photo_id} >
-                <PhotoItem image_url={config.SERVER_IMAGE_PATH + photo.file_name} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}
+                <PhotoItem image_url={config.SERVER_IMAGE_PATH + photo.property_id + '/' + '600_' + (photo.file_name.substr(0, photo.file_name.lastIndexOf('.')) || photo.file_name) + '.jpg'} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}
                 photo_id={photo.photo_id}  photoDelete={this.props.photoDelete} disableDrag={this.props.disableDrag}/>
               </div>
             ))}

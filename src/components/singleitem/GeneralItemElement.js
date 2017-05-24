@@ -39,7 +39,7 @@ export default class GeneralItemElement extends React.Component {
       voices_content.push(
 
         <AudioPlayer key={this.props.voices[i].prop_sub_feedback_general_id}
-          filename={this.props.voices[i].file_name} />
+          filename={this.props.voices[i].file_name} property_id={this.props.voices[i].property_id} />
 
       );
     }

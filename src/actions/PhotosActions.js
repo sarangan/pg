@@ -130,7 +130,7 @@ export function uploadPhoto(property_id, file, sub_id, type, master_id){
     type: type
   };
 
-  var formData = new FormData();
+  let formData = new FormData();
   formData.append("property_id", property_id);
   formData.append("item_id", sub_id);
   formData.append("parent_id", master_id);

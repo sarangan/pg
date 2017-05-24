@@ -31,6 +31,7 @@ export default class AddNewProperty extends React.Component {
        report_date: null,
        description: '',
        image_url: '',
+       logo_img: null,
        open: false
      };
 
@@ -55,6 +56,14 @@ export default class AddNewProperty extends React.Component {
 
     this.setState({
       status: PropertyStore.getAddStatus()
+    });
+
+  }
+
+  uploadfile(file){
+    console.log('updating the image file');
+    this.setState({
+      logo_img: file
     });
 
   }
@@ -87,7 +96,13 @@ export default class AddNewProperty extends React.Component {
       else{
 
         console.log(this.state);
-        PropertyActions.addProperty(this.state);
+        if(this.state.logo_img){
+          //we got something
+          PropertyActions.addPropertyWithImg(this.state);
+        }
+        else{
+          PropertyActions.addProperty(this.state);
+        }
 
         this.setState({
           startSending: true,
@@ -160,8 +175,8 @@ export default class AddNewProperty extends React.Component {
           {isShowSaving}
 
           <AddProperty address_1={this.state.address_1} address_2={this.state.address_2} handleInputChange={this.handleInputChange} city={this.state.city} postalcode={this.state.postalcode}
-            report_type={this.state.report_type} handleSelectChange={this.handleSelectChange} report_date={this.state.report_date} description={this.state.description}
-            handleDateChange = {this.handleDateChange} handleSubmit={this.handleSubmit}  show_cancel={true}/>
+            report_type={this.state.report_type} handleSelectChange={this.handleSelectChange} report_date={this.state.report_date} description={this.state.description} image_url={this.state.image_url}
+            handleDateChange = {this.handleDateChange} handleSubmit={this.handleSubmit}  show_cancel={true} uploadfile={this.uploadfile.bind(this)} property_id=""/>
 
         <Snackbar
           open={this.state.open}

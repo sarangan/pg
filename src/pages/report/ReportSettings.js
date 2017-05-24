@@ -104,7 +104,7 @@ export default class ReportSettings extends React.Component {
 
       let formValues = {
         report_id: settings.report_id,
-        logo_url: (settings.logo_url.length > 0)? config.SERVER_IMAGE_PATH + settings.logo_url: 'images/property-ground-logo.png',
+        logo_url: (settings.logo_url.length > 0)? config.SERVER_RPT_IMAGE_PATH + '300_' + settings.logo_url: 'images/property-ground-logo.png',
         base_color: (settings.base_color.length > 0)? settings.base_color: '#2196f3',
         page_header_layout: settings.page_header_layout,
         page_header_color: (settings.page_header_color.length > 0)? settings.page_header_color: '#2196f3',

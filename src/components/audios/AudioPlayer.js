@@ -29,7 +29,7 @@ export default class AudioPlayer extends React.Component {
 
       <div>
         <audio controls>
-          <source src={ config.SERVER_PATH + this.props.filename} type="audio/mpeg" />
+          <source src={ config.SERVER_IMAGE_PATH +  this.props.property_id +  '/' + this.props.filename} type="audio/mpeg" />
             <Subheader inset={false}>Your browser does not support the audio player.</Subheader>
         </audio>
       </div>
