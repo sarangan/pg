@@ -13,6 +13,7 @@ import FileFolder from 'material-ui/svg-icons/file/folder';
 import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ActionSort from 'material-ui/svg-icons/content/sort';
+import SignIcon from 'material-ui/svg-icons/editor/border-color';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
@@ -20,6 +21,11 @@ import LinearProgress from 'material-ui/LinearProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
+import Delete from 'material-ui/svg-icons/action/delete';
+import Edit from 'material-ui/svg-icons/content/create';
+import ContentCopy from 'material-ui/svg-icons/content/content-copy';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
 
 import * as PropertyRoomListActions from "../actions/PropertyRoomListActions";
@@ -57,6 +63,11 @@ import PhotosStore from "../stores/PhotosStore";
 //audios
 import * as AudiosActions from "../actions/AudiosActions";
 import AudiosStore from "../stores/AudiosStore";
+
+//singatures
+import SignatureList from '../components/signatures/SignatureList';
+import * as SingatureActions from "../actions/SingatureActions";
+import SignatureStore from "../stores/SignatureStore";
 
 //-----------------------------master item sorting -------------------------
 
@@ -114,17 +125,26 @@ export default class PropertyRoomList extends React.Component {
       },
       photos: [],
       voices: [],
+      signatures: {sign_id: '', comment: '', tenant_url: '', lanlord_url: '', clerk_url: ''},
       sidebarState: 'PROP',
       startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
       formTitle: 'Update Property info',
       master_id: '',
-      enableSort : false
+      enableSort : false,
+      showDelMasterItemdlg: false,
+      showRenameMasterItemdlg: false,
+      showCopyMasterItemdlg: false,
+      dlgMaster_id : '',
+      master_item_re_name: '',
     };
 
+    //master item
     this.getRoomList = this.getRoomList.bind(this);
     PropertyRoomListActions.fetchRoomList(property_id);
+    this.getMasterItemUpdateStatus = this.getMasterItemUpdateStatus.bind(this);
+    this.getMasterItemCopyStatus = this.getMasterItemCopyStatus.bind(this);
 
     //property info
     this.getProperty = this.getProperty.bind(this);
@@ -174,10 +194,17 @@ export default class PropertyRoomList extends React.Component {
 
     //audios
     this.getVoices = this.getVoices.bind(this);
+
+    //singatures
+    this.getSingatures = this.getSingatures.bind(this);
+    this.getSingaturesUpdateStatus = this.getSingaturesUpdateStatus.bind(this);
+    this.hanldeSignTxtChange = this.hanldeSignTxtChange.bind(this);
   }
 
   componentWillMount(){
     PropertyRoomListStore.on("change", this.getRoomList);
+    PropertyRoomListStore.on("change", this.getMasterItemUpdateStatus);
+    PropertyRoomListStore.on("change", this.getMasterItemCopyStatus);
 
     PropertyStore.on("change", this.getProperty);
     PropertyStore.on("change", this.getPropUpdateStatus);
@@ -200,10 +227,15 @@ export default class PropertyRoomList extends React.Component {
     PhotosStore.on("change", this.getPhotoUploadStatus);
 
     AudiosStore.on("change", this.getVoices);
+
+    SignatureStore.on("change", this.getSingatures);
+    SignatureStore.on("change", this.getSingaturesUpdateStatus);
   }
 
   componentWillUnmount(){
     PropertyRoomListStore.removeListener("change", this.getRoomList);
+    PropertyRoomListStore.removeListener("change", this.getMasterItemUpdateStatus);
+    PropertyRoomListStore.removeListener("change", this.getMasterItemCopyStatus);
 
     PropertyStore.removeListener("change", this.getProperty);
     PropertyStore.removeListener("change", this.getPropUpdateStatus);
@@ -226,14 +258,9 @@ export default class PropertyRoomList extends React.Component {
     PhotosStore.removeListener("change", this.getPhotoUploadStatus);
 
     AudiosStore.removeListener("change", this.getVoices);
-  }
 
-  getRoomList(){
-
-    this.setState({
-      roomlist: PropertyRoomListStore.getRoomList()
-    });
-
+    SignatureStore.removeListener("change", this.getSingatures);
+    SignatureStore.removeListener("change", this.getSingaturesUpdateStatus);
   }
 
   //error snack close
@@ -258,6 +285,19 @@ export default class PropertyRoomList extends React.Component {
       })
   }
 
+
+  /*
+  * MASTER ITEMS-----------------------------------------------------START-------------------------------------------------------
+  *
+  */
+
+  getRoomList(){
+
+    this.setState({
+      roomlist: PropertyRoomListStore.getRoomList()
+    });
+
+  }
 
   onSortEnd = ({oldIndex, newIndex}) => {
 
@@ -294,6 +334,95 @@ export default class PropertyRoomList extends React.Component {
     }
 
   };
+
+
+  copyRoom(){
+
+    if(this.state.dlgMaster_id){
+
+      if(this.state.master_item_re_name){
+        PropertyRoomListActions.copymasteritem(this.state.property_id, this.state.dlgMaster_id, this.state.master_item_re_name);
+        this.setState({
+          startSending: true
+        });
+      }else{
+        this.setState({
+          showErrorSnack: true
+        });
+      }
+    }
+
+  }
+
+  getMasterItemCopyStatus(){
+    let status = PropertyRoomListStore.getMasterItemCopyStatus();
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false,
+        dlgMaster_id: '',
+        master_item_re_name: ''
+      });
+
+      //PropertyRoomListActions.fetchRoomList(this.state.property_id);
+
+    }
+  }
+
+
+  deleteMasterItem(master_id){
+
+    if(master_id){
+      let data = {
+        'status' : 0
+      }
+
+      PropertyRoomListActions.updatemasteritem(this.state.property_id, master_id, data);
+      this.setState({
+        startSending: true
+      });
+
+    }
+  }
+
+  renameMasterItem(){
+
+    if(this.state.dlgMaster_id){
+      let data = {
+        'name' : this.state.master_item_re_name
+      }
+      if(this.state.master_item_re_name){
+        PropertyRoomListActions.updatemasteritem(this.state.property_id, this.state.dlgMaster_id, data);
+        this.setState({
+          startSending: true
+        });
+      }else{
+        this.setState({
+          showErrorSnack: true
+        });
+      }
+    }
+  }
+
+  getMasterItemUpdateStatus(){
+    let status = PropertyRoomListStore.getMasterItemUpdateStatus();
+    if(status){
+      this.setState({
+        showSuccessSnack: true,
+        startSending: false,
+        dlgMaster_id: '',
+        master_item_re_name: ''
+      });
+
+      PropertyRoomListActions.fetchRoomList(this.state.property_id);
+
+    }
+  }
+
+  /*
+  * MASTER ITEMS-----------------------------------------------------END-------------------------------------------------------
+  *
+  */
 
 
   /*
@@ -965,6 +1094,175 @@ export default class PropertyRoomList extends React.Component {
   *
   */
 
+  /*
+  *SINGATURE ------------------------------------------------START------------------------------------------------------
+  *
+  */
+
+  //get singatures
+    getSingatures(){
+      let signatures = SignatureStore.getSingatures();
+
+      console.log(signatures);
+
+      if(signatures){
+        this.setState({
+          signatures
+        });
+      }
+      this.setState({
+        startSending: false
+      });
+    }
+
+    singatures_handleSubmit(){
+      let signatures = this.state.signatures;
+
+
+        SingatureActions.updateSingatures(this.state.property_id, signatures);
+
+        this.setState({
+          startSending: true
+        });
+
+
+      event.preventDefault();
+    }
+
+    getSingaturesUpdateStatus(){
+
+      let status = SignatureStore.getUpdateStatus();
+
+      if(status){
+        this.setState({
+          showSuccessSnack: true,
+          startSending: false
+        });
+      }
+    }
+
+    handleClearCanvas(type){
+      let signatures = this.state.signatures;
+      if(type == "TENANT"){
+        signatures['tenant_url'] = '';
+      }
+      else if(type == "LANLORD"){
+        signatures['lanlord_url'] = '';
+      }
+      else if(type == "CLERK"){
+        signatures['clerk_url'] = '';
+      }
+
+      this.setState({
+        signatures
+      });
+    }
+
+    handleSaveCanvas(type, dataimg){
+      let signatures = this.state.signatures;
+      if(type == "TENANT"){
+        signatures['tenant_url'] = dataimg;
+      }
+      else if(type == "LANLORD"){
+        signatures['lanlord_url'] = dataimg;
+      }
+      else if(type == "CLERK"){
+        signatures['clerk_url'] = dataimg;
+      }
+
+      this.setState({
+        signatures
+      });
+
+    }
+
+    hanldeSignTxtChange(event){
+      const target = event.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const name = target.name;
+
+      let signatures = this.state.signatures;
+      signatures['comment'] = value;
+      this.setState({
+          signatures
+      });
+    }
+
+  /*
+  *SINGATURE ------------------------------------------------END------------------------------------------------------
+  *
+  */
+
+  /* --------------------- Dialog settings START------------------------*/
+  handleChangeMasterRename = (event) => {
+    this.setState({
+      master_item_re_name: event.target.value,
+    });
+  };
+
+  handleMasterDelDlgOpen(master_id){
+    this.setState({
+        showDelMasterItemdlg: true,
+        dlgMaster_id: master_id
+    });
+  };
+
+  handleMasterDelDlgClose = () => {
+    this.setState({showDelMasterItemdlg: false,
+      dlgMaster_id: ''
+    });
+  };
+
+  handleMasterDelDlgOk(){
+    this.setState({showDelMasterItemdlg: false});
+    this.deleteMasterItem(this.state.dlgMaster_id);
+  }
+
+
+  handleMasterRenameDlgOpen(master_id, master_name){
+    this.setState({
+        showRenameMasterItemdlg: true,
+        dlgMaster_id: master_id,
+        master_item_re_name: master_name
+    });
+  };
+
+  handleMasterRenameDlgClose = () => {
+    this.setState({
+      showRenameMasterItemdlg: false,
+      dlgMaster_id: '',
+      master_item_re_name: ''
+    });
+  };
+
+  handleMasterRenameDlgOk(){
+    this.setState({showRenameMasterItemdlg: false});
+    this.renameMasterItem();
+  }
+
+
+  handleMasterCopyDlgOpen(master_id, master_name){
+    this.setState({
+        showCopyMasterItemdlg: true,
+        dlgMaster_id: master_id,
+        master_item_re_name: master_name + "_1"
+    });
+  };
+
+  handleMasterCopyDlgClose = () => {
+    this.setState({
+      showCopyMasterItemdlg: false,
+      dlgMaster_id: '',
+      master_item_re_name: ''
+    });
+  };
+
+  handleMasterCopyDlgOk(){
+    this.setState({showCopyMasterItemdlg: false});
+    this.copyRoom();
+  }
+  /* --------------------- Dialog settings END------------------------*/
+
   //handles sidebar items click
   sidebarClick = (id, title, item_id) => {
 
@@ -1029,6 +1327,14 @@ export default class PropertyRoomList extends React.Component {
       PhotosActions.fetchPhotosItem(this.state.property_id, item_id);
 
     }
+    else if (id == 'SIG') {
+      this.setState({
+        startSending: true
+      });
+
+      SingatureActions.fetchSingatures(this.state.property_id);
+
+    }
 
   }
 
@@ -1062,24 +1368,51 @@ export default class PropertyRoomList extends React.Component {
         marginRight: 10,
         position: 'relative',
         marginTop: 5
+      },
+      dialog: {
+        width: 350
       }
     };
 
-    const iconButtonElement = (
-      <IconButton
-        touch={true}
-        tooltip="more"
-        tooltipPosition="bottom-left">
-        <MoreVertIcon color={grey400} />
-      </IconButton>
-    );
+    const del_modal_actions = [
+      <FlatButton
+        label="No"
+        primary={true}
+        onTouchTap={this.handleMasterDelDlgClose}
+      />,
+      <FlatButton
+        label="Yes"
+        primary={true}
+        onTouchTap={this.handleMasterDelDlgOk.bind(this)}
+      />,
+    ];
 
-    const rightIconMenu = (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>Copy</MenuItem>
-        <MenuItem>Delete</MenuItem>
-      </IconMenu>
-    );
+    const rename_modal_actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleMasterRenameDlgClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleMasterRenameDlgOk.bind(this)}
+      />,
+    ];
+
+    const copy_modal_actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleMasterCopyDlgClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleMasterCopyDlgOk.bind(this)}
+      />,
+    ];
+
 
     let isShowSaving = null;
     if (this.state.startSending &&  this.state.startSending == true  ) {
@@ -1122,11 +1455,31 @@ export default class PropertyRoomList extends React.Component {
         photos={this.state.photos} photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} master_id={this.state.master_id}
         />
     }
+    else if(this.state.sidebarState == 'SIG'){
+
+      right_div = <SignatureList list={this.state.signatures} title={this.state.formTitle} handleSubmit={this.singatures_handleSubmit.bind(this)} clearCanvas={this.handleClearCanvas.bind(this)}
+        saveCanvas={this.handleSaveCanvas.bind(this)} commentTxtChange={this.hanldeSignTxtChange}/>
+     }
 
     let sidebaritems = [];
+    const iconButtonElement = (
+      <IconButton
+        touch={true}
+        tooltip="more"
+        tooltipPosition="bottom-left">
+        <MoreVertIcon color={grey400} />
+      </IconButton>
+    );
 
     for(let i=0, l = this.state.roomlist.length; i < l; i++){
       let item = this.state.roomlist[i];
+      let rightIconMenu = (
+        <IconMenu iconButtonElement={iconButtonElement}>
+          <MenuItem primaryText="Make a copy" leftIcon={<ContentCopy />}  onTouchTap={this.handleMasterCopyDlgOpen.bind(this, item.prop_master_id, item.name ) } />
+          <MenuItem primaryText="Rename" leftIcon={<Edit />} onTouchTap={this.handleMasterRenameDlgOpen.bind(this, item.prop_master_id, item.name)} />
+          <MenuItem primaryText="Remove" leftIcon={<Delete />} onTouchTap={this.handleMasterDelDlgOpen.bind(this, item.prop_master_id)} />
+        </IconMenu>
+      );
 
       sidebaritems.push(
         <ListItem key={item.prop_master_id}
@@ -1178,6 +1531,11 @@ export default class PropertyRoomList extends React.Component {
 
                                 {sidebaritems}
 
+                                <ListItem
+                                  leftAvatar={<Avatar icon={<SignIcon />} backgroundColor={blue500} />}
+                                  primaryText="Signatures"
+                                  secondaryText="" onClick={this.sidebarClick.bind(this, 'SIG', 'Signatures list', '')}/>
+
                             </List>
                           </div> ;
 
@@ -1222,6 +1580,46 @@ export default class PropertyRoomList extends React.Component {
           </div>
 
         </div>
+
+        <Dialog
+          actions={del_modal_actions}
+          modal={false}
+          open={this.state.showDelMasterItemdlg}
+          onRequestClose={this.handleMasterDelDlgClose}
+          contentStyle ={styles.dialog}
+        >
+          Are you sure do you want to delete this room?
+        </Dialog>
+
+        <Dialog
+          actions={rename_modal_actions}
+          modal={false}
+          open={this.state.showRenameMasterItemdlg}
+          onRequestClose={this.handleMasterRenameDlgClose}
+          contentStyle ={styles.dialog}
+        >
+          <TextField
+            hintText="Room name"
+            value={this.state.master_item_re_name}
+            floatingLabelText="Rename name"
+            onChange={this.handleChangeMasterRename}
+          />
+        </Dialog>
+
+        <Dialog
+          actions={copy_modal_actions}
+          modal={false}
+          open={this.state.showCopyMasterItemdlg}
+          onRequestClose={this.handleMasterCopyDlgClose}
+          contentStyle ={styles.dialog}
+        >
+          <TextField
+            hintText="Room name"
+            value={this.state.master_item_re_name}
+            floatingLabelText="Room name"
+            onChange={this.handleChangeMasterRename}
+          />
+        </Dialog>
 
         <Snackbar
           open={this.state.showErrorSnack}
