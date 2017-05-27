@@ -29,20 +29,22 @@ class PropertyRoomListStore extends EventEmitter {
 
       case "GET_ROOMLIST": {
         this.roomlist = action.data.roomlist;
+        this.copyMasterItemStatus = null;
+        this.updateMasterItemStatus = null;
         this.emit("change");
         break;
       }
       case "UPDATE_MASTERITEM": {
         this.updateMasterItemStatus = action.data.status == 1? true: false;
         this.copyMasterItemStatus = null;
-        this.roomlist  = [];
+        //this.roomlist  = [];
         this.emit("change");
         break;
       }
       case "COPY_MASTERITEM": {
         this.copyMasterItemStatus = action.data.status == 1? true: false;
         this.updateMasterItemStatus = null;
-        this.roomlist = [];
+        //this.roomlist = [];
         this.emit("change");
         break;
       }

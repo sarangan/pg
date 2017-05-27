@@ -364,7 +364,7 @@ export default class PropertyRoomList extends React.Component {
         master_item_re_name: ''
       });
 
-      //PropertyRoomListActions.fetchRoomList(this.state.property_id);
+      PropertyRoomListActions.fetchRoomList(this.state.property_id);
 
     }
   }
@@ -772,7 +772,8 @@ export default class PropertyRoomList extends React.Component {
       this.setState({showErrorSnack: true  });
     }
     else{
-
+      console.log('update full sub items');
+      console.log(sub_list);
       SubItemsActions.updateSubItems(this.state.property_id, sub_items['master_id'], sub_list, sub_items['gen_comment'] );
 
       this.setState({
@@ -1473,9 +1474,19 @@ export default class PropertyRoomList extends React.Component {
 
     for(let i=0, l = this.state.roomlist.length; i < l; i++){
       let item = this.state.roomlist[i];
+      let copy_room_menu = '';
+      if(item.com_type == 'SUB' && item.option == 'NUM'  ){
+        copy_room_menu = <MenuItem primaryText="Make a copy" leftIcon={<ContentCopy />}  onTouchTap={this.handleMasterCopyDlgOpen.bind(this, item.prop_master_id, item.name ) } />;
+      }
+      else{
+        copy_room_menu = '';
+      }
+
       let rightIconMenu = (
         <IconMenu iconButtonElement={iconButtonElement}>
-          <MenuItem primaryText="Make a copy" leftIcon={<ContentCopy />}  onTouchTap={this.handleMasterCopyDlgOpen.bind(this, item.prop_master_id, item.name ) } />
+          {
+            copy_room_menu
+          }
           <MenuItem primaryText="Rename" leftIcon={<Edit />} onTouchTap={this.handleMasterRenameDlgOpen.bind(this, item.prop_master_id, item.name)} />
           <MenuItem primaryText="Remove" leftIcon={<Delete />} onTouchTap={this.handleMasterDelDlgOpen.bind(this, item.prop_master_id)} />
         </IconMenu>

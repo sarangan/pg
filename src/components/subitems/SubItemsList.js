@@ -144,6 +144,7 @@ export default class SubItemsList extends React.Component {
         );
       }
       else{
+
         let gen_data = {
           comment : this.props.generalcomment.comment,
           item_id : item.prop_subitem_id
