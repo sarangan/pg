@@ -12,6 +12,7 @@ import Template from "./pages/template/Template";
 
 import ReportSettings from "./pages/report/ReportSettings";
 
+
 export default (
   <Route>
     <Route path="/" component={Layout}>
@@ -25,5 +26,6 @@ export default (
 
       <Route path="/reportsettings" component={ReportSettings} />
     </Route>
+
   </Route>
 );
