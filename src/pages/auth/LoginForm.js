@@ -6,8 +6,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
-import StarIcon from 'material-ui/svg-icons/action/grade';
-import {pinkA200} from 'material-ui/styles/colors';
+import ExtIcon from 'material-ui/svg-icons/action/extension';
+import {teal200} from 'material-ui/styles/colors';
 import { Link } from "react-router";
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -25,7 +25,8 @@ export default class LoginForm extends React.Component{
       showErrorSnack: false,
       username: '',
       password:'',
-      isLogin: false
+      isLogin: false,
+      errMessage: ''
     };
 
     //property info
@@ -79,17 +80,28 @@ export default class LoginForm extends React.Component{
     if(status){
       this.setState({
         showSuccessSnack: true,
+        showErrorSnack: false,
         startSending: false,
         isLogin: true
       });
-
-      console.log('fucking login success');
-
-
+      console.log('login success');
+    }
+    else{
+      let lgerr = LoginStore.getLoginError();
+      if(lgerr){
+        this.setState({
+          startSending: false,
+          isLogin: false,
+          showSuccessSnack: false,
+          showErrorSnack: true,
+          errMessage: lgerr
+        })
+      }
     }
   }
 
-  handleLogin(){
+  handleLogin(event){
+
     if(this.state.username && this.state.password){
 
       this.setState({
@@ -104,8 +116,12 @@ export default class LoginForm extends React.Component{
         showErrorSnack: true,
         showSuccessSnack: false,
         startSending: false,
+        errMessage: 'Please fill fields...'
       });
     }
+
+    event.preventDefault();
+
   }
 
 
@@ -124,11 +140,13 @@ export default class LoginForm extends React.Component{
         display: 'flex',
         justifyContent: 'center',
         padding: 60,
+        flexWrap: 'wrap'
       },
       leftContent: {
         backgroundColor: '#ffffff',
         flexBasis: '50%',
-        marginRight: 60
+        marginRight: 60,
+        minWidth: 300
       },
       loginForm: {
         display: 'flex',
@@ -142,7 +160,7 @@ export default class LoginForm extends React.Component{
       loginlogo: {
         width: '100%',
         textAlign: 'center',
-        marginBottom: 60
+        marginBottom: 40
       },
       title:{
         fontSize: 48,
@@ -151,7 +169,8 @@ export default class LoginForm extends React.Component{
       },
       rightContent: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        minWidth: 300
       },
       login_des_img:{
         marginTop: 50,
@@ -160,17 +179,26 @@ export default class LoginForm extends React.Component{
         width: '100%'
       },
       logo: {
-        width: 150,
+        width: 111,
         height: 'auto'
       },
       subtitle:{
-        fontSize: 24,
+        fontSize: 18,
         color: '#0088CC',
         MarginBottom: 20,
         marginTop: 20,
       },
       items: {
         marginTop: 20
+      },
+      ListItem:{
+        marginBottom: 3
+      },
+      ListItemTxt: {
+        marginLeft: 12,
+        color: '#6f6f6f',
+        fontSize: 12,
+        verticalAlign: 'super'
       },
       topHeader:{
         backgroundImage: 'url(images/pg_background_login.jpg)',
@@ -191,9 +219,15 @@ export default class LoginForm extends React.Component{
         flexDirection: 'column'
       },
       toptinytxt: {
-        color: '#7d7c7c',
+        color: '#b9b7b7',
         fontSize: 16,
         textTransform: 'uppercase',
+      },
+      loginsubtxt: {
+        color: '#6f6f6f',
+        fontSize: 12,
+        cursor: 'pointer',
+        marginBottom: 10
       },
       topheadertxt: {
         fontSize: 48,
@@ -209,6 +243,16 @@ export default class LoginForm extends React.Component{
         paddingLeft: 10,
         color: '#0a65b9',
         cursor: 'pointer'
+      },
+      loginerrtxt: {
+        color: '#FF5722',
+        fontSize: 12,
+        fontWeight: 700,
+        marginTop: 5,
+        marginBottom: 5
+      },
+      progressWrapper: {
+        width: '100%'
       },
       tblProgress: {
         margin: '20px auto',
@@ -262,14 +306,14 @@ export default class LoginForm extends React.Component{
                       <img src="images/property-ground-logo.png" style={styles.logo} />
                     </div>
 
-                    <div>
+                    <div style={styles.progressWrapper}>
                         {isShowSaving}
                     </div>
 
                     <div style={styles.title}>
                       Sign in
                     </div>
-                    <form>
+                    <form name="loginForm" onSubmit={this.handleLogin.bind(this)}>
 
                       <TextField
                           hintText="Enter your Username or Email"
@@ -288,13 +332,14 @@ export default class LoginForm extends React.Component{
                         />
 
                         <br/>
-                        <br/><br/>
-                        <RaisedButton label="Login" primary={true} onTouchTap={this.handleLogin.bind(this)}/>
-
+                        <br/>
+                        <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
+                        <br/>
+                        <RaisedButton type="submit" label="Login" primary={true}/>
                         <br/>
                         <br/>
-                        <div style={styles.toptinytxt}>Forgot password?</div>
-                        <div style={styles.toptinytxt}>Don't have an account yet?</div>
+                        <div style={styles.loginsubtxt}>Forgot password?</div>
+                        <div style={styles.loginsubtxt}>Don't have an account yet?</div>
 
                     </form>
                   </div>
@@ -307,16 +352,14 @@ export default class LoginForm extends React.Component{
                   Property marketing made simple by PropertyGround
                 </div>
                 <div style={styles.items}>
-                  <List>
-                    <ListItem primaryText="Property Photography" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="Floorplans" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="360° Virtual Tours" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="EPC" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="Elevated Photography" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="Inventory" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="Property Videos" leftIcon={<StarIcon color={pinkA200}/>} />
-                    <ListItem primaryText="Property Brochures" leftIcon={<StarIcon color={pinkA200}/>} />
-                  </List>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Photography</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Floorplans</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>360° Virtual Tours</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>EPC</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Elevated Photography</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Inventory</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Videos</span></div>
+                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Brochures</span></div>
                 </div>
 
               </div>
@@ -326,13 +369,13 @@ export default class LoginForm extends React.Component{
 
         <Snackbar
           open={this.state.showErrorSnack}
-          message="Please fill fields..."
+          message= {this.state.errMessage}
           autoHideDuration={3000}
           onRequestClose={this.errhandleRequestClose.bind(this)} />
 
         <Snackbar
           open={this.state.showSuccessSnack}
-          message="Welcome to PropertyGround dashboard..."
+          message="Welcome to PropertyGround!"
           autoHideDuration={3000}
           onRequestClose={this.successhandleRequestClose.bind(this)} />
 

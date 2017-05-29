@@ -322,5 +322,19 @@ export default StyleSheet.create({
         "borderWidth": "11px 0 0 11px",
         "borderStyle": "solid",
         "borderColor": "white transparent transparent #920035"
+    },
+    "icon-animate": {
+        "WebkitTransition": "-webkit-transform 600ms ease-in-out",
+        "MozTransition": "-webkit-transform 600ms ease-in-out",
+        "MsTransition": "-webkit-transform 600ms ease-in-out",
+        "OTransition": "-webkit-transform 600ms ease-in-out",
+        "transition": "transform 600ms ease-in-out"
+    },
+    "icon-animate:hover": {
+        "WebkitTransform": "scale(1.3)",
+        "MozTransform": "scale(1.3)",
+        "MsTransform": "scale(1.3)",
+        "OTransform": "scale(1.3)",
+        "transform": "scale(1.3)"
     }
 });

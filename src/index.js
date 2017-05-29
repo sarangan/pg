@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router, hashHistory } from "react-router";
 import routes from './routes';
 import './index.css';
+import loginauth from './auth/loginauth';
 import Login from "./pages/auth/LoginForm";
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -13,7 +14,7 @@ try {
 }
 
 const app = document.getElementById('root');
-const login = false;
+const login = loginauth.ISLOGIN;
 
 let content = null;
 if(login == false){

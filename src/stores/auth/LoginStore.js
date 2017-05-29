@@ -7,10 +7,15 @@ class LoginStore extends EventEmitter {
     super();
     this.isLogin = false;
     this.userDetails = {};
+    this.loginerr  = '';
   }
 
   getLoginStatus() {
     return this.isLogin;
+  }
+
+  getLoginError(){
+    return this.loginerr;
   }
 
   getUserDetails() {
@@ -39,8 +44,21 @@ class LoginStore extends EventEmitter {
               };
               this.userDetails = userDetails;
               this.isLogin = true;
+              this.loginerr  = '';
 
               loginauth["AUTHTOKEN"] = 'Bearer ' + action.data.token;
+              loginauth["ISLOGIN"] =  true;
+              loginauth["USER"] =  userDetails;
+              
+
+          }
+          else{
+            this.userDetails = {};
+            this.isLogin = false;
+            this.loginerr  = '';
+            if(action.data.hasOwnProperty('err')){
+              this.loginerr  = action.data.err;
+            }
 
           }
           this.emit("change");
