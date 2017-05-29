@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import ReactDOM from 'react-dom';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -85,6 +86,14 @@ export default class LoginForm extends React.Component{
         isLogin: true
       });
       console.log('login success');
+
+
+        //browserHistory.replace("/propertylist");
+        browserHistory.push('/propertylist')
+       //var Router = require('react-router');
+      // Router.browserHistory.push('/dashboard');
+
+       //Router.transitionTo('/propertylist');
     }
     else{
       let lgerr = LoginStore.getLoginError();
@@ -270,134 +279,130 @@ export default class LoginForm extends React.Component{
       isShowSaving = '';
     }
 
-    let login = <MuiThemeProvider>
+    //let login = ;
 
-      <div style={styles.wrapper}>
-
-        <div style={styles.topHeader}>
-          <div style={styles.secondWrapper}>
-
-            <div style={styles.topheadercontents}>
-              <div style={styles.toptinytxt}>
-                sign in
-              </div>
-              <div style={styles.topheadertxt}>
-                Login to your account
-              </div>
-              <div style={styles.singuptxt}>
-                DON'T HAVE AN ACCOUNT YET? <span style={styles.registertxt}>SIGN UP HERE</span>
-              </div>
-
-            </div>
-
-            </div>
-        </div>
-
-
-        <div style={styles.secondWrapper}>
-
-            <div style={styles.content}>
-
-              <Paper zDepth={1} style={styles.leftContent}>
-
-                  <div style={styles.loginForm}>
-
-                    <div  style={styles.loginlogo}>
-                      <img src="images/property-ground-logo.png" style={styles.logo} />
-                    </div>
-
-                    <div style={styles.progressWrapper}>
-                        {isShowSaving}
-                    </div>
-
-                    <div style={styles.title}>
-                      Sign in
-                    </div>
-                    <form name="loginForm" onSubmit={this.handleLogin.bind(this)}>
-
-                      <TextField
-                          hintText="Enter your Username or Email"
-                          floatingLabelText="Username / Email"
-                          name="username"
-                          value={this.state.username}
-                          onChange={this.hanldeUserTxtChange.bind(this)}
-                        />
-                        <TextField
-                          hintText="Enter your password"
-                          floatingLabelText="Password"
-                          type="password"
-                          name="password"
-                          value={this.state.password}
-                          onChange={this.hanldePassTxtChange.bind(this)}
-                        />
-
-                        <br/>
-                        <br/>
-                        <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
-                        <br/>
-                        <RaisedButton type="submit" label="Login" primary={true}/>
-                        <br/>
-                        <br/>
-                        <div style={styles.loginsubtxt}>Forgot password?</div>
-                        <div style={styles.loginsubtxt}>Don't have an account yet?</div>
-
-                    </form>
-                  </div>
-
-              </Paper>
-
-              <div style={styles.rightContent}>
-                <img src="images/login_img.png" style={styles.login_des_img} />
-                <div style={styles.subtitle}>
-                  Property marketing made simple by PropertyGround
-                </div>
-                <div style={styles.items}>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Photography</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Floorplans</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>360° Virtual Tours</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>EPC</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Elevated Photography</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Inventory</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Videos</span></div>
-                  <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Brochures</span></div>
-                </div>
-
-              </div>
-            </div>
-
-        </div>
-
-        <Snackbar
-          open={this.state.showErrorSnack}
-          message= {this.state.errMessage}
-          autoHideDuration={3000}
-          onRequestClose={this.errhandleRequestClose.bind(this)} />
-
-        <Snackbar
-          open={this.state.showSuccessSnack}
-          message="Welcome to PropertyGround!"
-          autoHideDuration={3000}
-          onRequestClose={this.successhandleRequestClose.bind(this)} />
-
-
-      </div>
-    </MuiThemeProvider>;
-
-    let wrapper = null;
-    if(this.state.isLogin != true){
-      wrapper = login;
-    }
-    else{
-      wrapper = this.props.temprouter;
-    }
+    // let wrapper = null;
+    // if(this.state.isLogin != true){
+    //   wrapper = login;
+    // }
+    // else{
+    //   wrapper = this.props.temprouter;
+    // }
 
     return(
 
-      <div>
-        {wrapper}
-      </div>
+      <MuiThemeProvider>
+
+        <div style={styles.wrapper}>
+
+          <div style={styles.topHeader}>
+            <div style={styles.secondWrapper}>
+
+              <div style={styles.topheadercontents}>
+                <div style={styles.toptinytxt}>
+                  sign in
+                </div>
+                <div style={styles.topheadertxt}>
+                  Login to your account
+                </div>
+                <div style={styles.singuptxt}>
+                  DON'T HAVE AN ACCOUNT YET? <span style={styles.registertxt}>SIGN UP HERE</span>
+                </div>
+
+              </div>
+
+              </div>
+          </div>
 
 
+          <div style={styles.secondWrapper}>
+
+              <div style={styles.content}>
+
+                <Paper zDepth={1} style={styles.leftContent}>
+
+                    <div style={styles.loginForm}>
+
+                      <div  style={styles.loginlogo}>
+                        <img src="images/property-ground-logo.png" style={styles.logo} />
+                      </div>
+
+                      <div style={styles.progressWrapper}>
+                          {isShowSaving}
+                      </div>
+
+                      <div style={styles.title}>
+                        Sign in
+                      </div>
+                      <form name="loginForm" onSubmit={this.handleLogin.bind(this)}>
+
+                        <TextField
+                            hintText="Enter your Username or Email"
+                            floatingLabelText="Username / Email"
+                            name="username"
+                            value={this.state.username}
+                            onChange={this.hanldeUserTxtChange.bind(this)}
+                          />
+                          <TextField
+                            hintText="Enter your password"
+                            floatingLabelText="Password"
+                            type="password"
+                            name="password"
+                            value={this.state.password}
+                            onChange={this.hanldePassTxtChange.bind(this)}
+                          />
+
+                          <br/>
+                          <br/>
+                          <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
+                          <br/>
+                          <RaisedButton type="submit" label="Login" primary={true}/>
+                          <br/>
+                          <br/>
+                          <div style={styles.loginsubtxt}>Forgot password?</div>
+                          <div style={styles.loginsubtxt}>Don't have an account yet?</div>
+
+                      </form>
+                    </div>
+
+                </Paper>
+
+                <div style={styles.rightContent}>
+                  <img src="images/login_img.png" style={styles.login_des_img} />
+                  <div style={styles.subtitle}>
+                    Property marketing made simple by PropertyGround
+                  </div>
+                  <div style={styles.items}>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Photography</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Floorplans</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>360° Virtual Tours</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>EPC</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Elevated Photography</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Inventory</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Videos</span></div>
+                    <div style={styles.ListItem}><ExtIcon color={teal200} className="icon-animate"/> <span style={styles.ListItemTxt}>Property Brochures</span></div>
+                  </div>
+
+                </div>
+              </div>
+
+          </div>
+
+          <Snackbar
+            open={this.state.showErrorSnack}
+            message= {this.state.errMessage}
+            autoHideDuration={3000}
+            onRequestClose={this.errhandleRequestClose.bind(this)} />
+
+          <Snackbar
+            open={this.state.showSuccessSnack}
+            message="Welcome to PropertyGround!"
+            autoHideDuration={3000}
+            onRequestClose={this.successhandleRequestClose.bind(this)} />
+
+
+        </div>
+      </MuiThemeProvider>
 
     );
 

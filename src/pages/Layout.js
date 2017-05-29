@@ -8,6 +8,7 @@ import LeftDrawer from '../components/layout/LeftDrawer';
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 
 import {blue500} from 'material-ui/styles/colors';
+import loginauth from '../auth/loginauth';
 
 class Layout extends React.Component {
 
@@ -31,7 +32,7 @@ class Layout extends React.Component {
     }
 
   render() {
-    
+
     let { navDrawerOpen } = this.state;
     const paddingLeftDrawerOpen = 236;
 
@@ -52,23 +53,31 @@ class Layout extends React.Component {
       }
     });
 
+    let content = <div>{this.props.children}</div>;
+    if(loginauth.ISLOGIN){
+        content = <MuiThemeProvider muiTheme={muiTheme}>
+                    <div>
+                      <Header styles={styles.header}
+                              handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}/>
+
+                        <LeftDrawer navDrawerOpen={navDrawerOpen}
+                                    username="User Admin"/>
+
+                        <div style={styles.container}>
+                          {this.props.children}
+                        </div>
+
+                    </div>
+                </MuiThemeProvider>;
+    }
+    else{
+      content = <div>{this.props.children}</div>;
+    }
+
     return (
-
-        <MuiThemeProvider muiTheme={muiTheme}>
-          <div>
-            <Header styles={styles.header}
-                    handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}/>
-
-              <LeftDrawer navDrawerOpen={navDrawerOpen}
-                          username="User Admin"/>
-
-              <div style={styles.container}>
-                {this.props.children}
-              </div>
-
-          </div>
-      </MuiThemeProvider>
-
+      <div>
+        {content}
+      </div>
     );
   }
 }
