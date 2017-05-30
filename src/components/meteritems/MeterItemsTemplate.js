@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import SingleItemElementTemplate from '../singleitem/SingleItemElementTemplate';
 import {blue100, lightGreen500, blue500, pink400, yellow400} from 'material-ui/styles/colors';
 import TextField from 'material-ui/TextField';

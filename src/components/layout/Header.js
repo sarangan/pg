@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import { browserHistory } from 'react-router';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -8,10 +9,33 @@ import Menu from 'material-ui/svg-icons/navigation/menu';
 import ViewModule from 'material-ui/svg-icons/action/view-module';
 import {white} from 'material-ui/styles/colors';
 
+import * as LoginAuthActions from "../../actions/auth/LoginAuthActions";
+import LoginStore from "../../stores/auth/LoginStore";
 
 export default class Header extends React.Component {
   constructor() {
     super();
+
+    this.getLogoutStatus = this.getLogoutStatus.bind(this);
+  }
+
+  componentWillMount(){
+    LoginStore.on("change", this.getLogoutStatus);
+  }
+
+  componentWillUnmount(){
+    LoginStore.on("change", this.getLogoutStatus);
+  }
+
+  signout(){
+    LoginAuthActions.logout();
+  }
+
+  getLogoutStatus(){
+    let logout = LoginStore.getLogoutStatus();
+    if(logout){
+        browserHistory.push('/login')
+    }
   }
 
   render() {
@@ -66,7 +90,7 @@ export default class Header extends React.Component {
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
-                    <MenuItem primaryText="Sign out"/>
+                    <MenuItem primaryText="Sign out" onTouchTap={this.signout.bind(this)} />
                   </IconMenu>
                 </div>
               }

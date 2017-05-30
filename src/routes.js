@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
-
 import Layout from './pages/Layout';
 import Settings from "./pages/Settings";
 import PropertyList from "./pages/PropertyList";
@@ -10,6 +9,8 @@ import PropertyRoomList from "./pages/PropertyRoomList";
 import Template from "./pages/template/Template";
 import ReportSettings from "./pages/report/ReportSettings";
 import Login from "./pages/auth/LoginForm";
+import Signup from "./pages/auth/Signup";
+
 import loginauth from './auth/loginauth';
 
 
@@ -30,6 +31,7 @@ export default (
     <Route path="/" component={Layout}>
       <IndexRoute component={Settings} onEnter={ authenticate }></IndexRoute>
       <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
       <Route path="/dashboard" component={Settings} onEnter={ authenticate }/>
       <Route path="/propertylist" component={PropertyList} onEnter={ authenticate }/>
       <Route path="/addnewproperty" component={AddNewProperty} onEnter={ authenticate }/>

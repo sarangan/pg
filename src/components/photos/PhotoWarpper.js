@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import config from '../../config/config';
 import PhotoItem from './PhotoItem';
 import Dropzone from 'react-dropzone';

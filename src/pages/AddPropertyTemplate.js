@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import {Link} from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import PageBase from '../components/layout/PageBase';
@@ -248,6 +248,6 @@ export default class AddPropertyTemplate extends React.Component {
 
 }
 
-AddPropertyTemplate.contextTypes = {
-  router: PropTypes.object.isRequired
-};
+// AddPropertyTemplate.contextTypes = {
+//   router: PropTypes.object.isRequired
+// };

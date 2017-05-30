@@ -336,5 +336,100 @@ export default StyleSheet.create({
         "MsTransform": "scale(1.3)",
         "OTransform": "scale(1.3)",
         "transform": "scale(1.3)"
+    },
+    "app-img-wrapper": {
+        "width": "100%",
+        "overflow": "hidden",
+        "position": "relative"
+    },
+    "app-img-wrapper img": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
+        "position": "relative",
+        "top": 0,
+        "width": "100%",
+        "left": 0
+    },
+    "app-img-wrapper ovrly": {
+        "position": "absolute",
+        "background": "rgba(0, 0, 0, 0.5)",
+        "height": "100%",
+        "left": 0,
+        "top": 0,
+        "width": "100%",
+        "opacity": 0,
+        "WebkitTransition": "all 0.3s",
+        "MozTransition": "all 0.3s",
+        "OTransition": "all 0.3s",
+        "transition": "all 0.3s"
+    },
+    "app-img-wrapper buttons": {
+        "position": "absolute",
+        "top": "50%",
+        "left": "50%",
+        "WebkitTransform": "translate(-50%, -50%)",
+        "MozTransform": "translate(-50%, -50%)",
+        "MsTransform": "translate(-50%, -50%)",
+        "OTransform": "translate(-50%, -50%)",
+        "transform": "translate(-50%, -50%)"
+    },
+    "app-img-wrapper buttons fa": {
+        "WebkitTransform": "scale(0)",
+        "MozTransform": "scale(0)",
+        "MsTransform": "scale(0)",
+        "OTransform": "scale(0)",
+        "transform": "scale(0)",
+        "opacity": 0,
+        "background": "rgb(256, 256, 256)",
+        "WebkitBoxShadow": "0 0 1px rgba(0, 0, 0, 0.3)",
+        "MozBoxShadow": "0 0 1px rgba(0, 0, 0, 0.3)",
+        "boxShadow": "0 0 1px rgba(0, 0, 0, 0.3)",
+        "WebkitBorderRadius": "50%",
+        "MozBorderRadius": "50%",
+        "borderRadius": "50%",
+        "display": "inline-block",
+        "lineHeight": 40,
+        "fontSize": 16,
+        "textAlign": "center",
+        "textDecoration": "none",
+        "width": 40,
+        "height": 40,
+        "marginTop": 0,
+        "marginRight": 1,
+        "marginBottom": 0,
+        "marginLeft": 1,
+        "color": "rgba(50, 50, 50, 0.9)",
+        "WebkitTransition": "all 0.3s cubic-bezier(0, 1.135, 0.73, 1.405)",
+        "MozTransition": "all 0.3s cubic-bezier(0, 1.135, 0.73, 1.405)",
+        "OTransition": "all 0.3s cubic-bezier(0, 1.135, 0.73, 1.405)",
+        "transition": "all 0.3s cubic-bezier(0, 1.135, 0.73, 1.405)"
+    },
+    "app-img-wrapper buttons link-apple": {
+        "WebkitTransitionDelay": "0.1s",
+        "MozTransitionDelay": "0.1s",
+        "MsTransitionDelay": "0.1s",
+        "transitionDelay": "0.1s"
+    },
+    "app-img-wrapper buttons fa-icon": {
+        "paddingTop": 5,
+        "width": 25,
+        "height": "auto"
+    },
+    "app-img-wrapper:hover buttons fa": {
+        "WebkitTransform": "scale(1)",
+        "MozTransform": "scale(1)",
+        "MsTransform": "scale(1)",
+        "OTransform": "scale(1)",
+        "transform": "scale(1)",
+        "opacity": 1
+    },
+    "app-img-wrapper:hover ovrly": {
+        "opacity": 1
     }
 });

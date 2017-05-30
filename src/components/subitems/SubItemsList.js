@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import RaisedButton from 'material-ui/RaisedButton';
 import SingleItemElement from '../singleitem/SingleItemElement';
 import GeneralItemElement from '../singleitem/GeneralItemElement';

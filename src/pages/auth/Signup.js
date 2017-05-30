@@ -8,14 +8,14 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
 import ExtIcon from 'material-ui/svg-icons/action/extension';
-import {teal200} from 'material-ui/styles/colors';
+import {teal200, orange500} from 'material-ui/styles/colors';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 
 import * as LoginAuthActions from "../../actions/auth/LoginAuthActions";
 import LoginStore from "../../stores/auth/LoginStore";
 
-export default class LoginForm extends React.Component{
+export default class Signup extends React.Component{
 
   constructor(props){
     super(props);
@@ -23,20 +23,28 @@ export default class LoginForm extends React.Component{
       showSuccessSnack: false,
       startSending: false,
       showErrorSnack: false,
-      username: '',
-      password:'',
-      errMessage: ''
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      contact: '',
+      company_name: '',
+      address: '',
+      telephone: '',
+      errMessage: '',
+      validateErr: ''
     };
 
-    this.getLoginStatus = this.getLoginStatus.bind(this);
+    this.getRegisterStatus = this.getRegisterStatus.bind(this);
   }
 
   componentWillMount(){
-    LoginStore.on("change", this.getLoginStatus);
+    LoginStore.on("change", this.getRegisterStatus);
   }
 
   componentWillUnmount(){
-    LoginStore.removeListener("change", this.getLoginStatus);
+    LoginStore.removeListener("change", this.getRegisterStatus);
   }
 
   //error snack close
@@ -54,27 +62,19 @@ export default class LoginForm extends React.Component{
     });
   };
 
-  hanldeUserTxtChange(event){
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-    this.setState({
-        username: value
-    });
-  }
+  hanldeTxtChange(event){
+     const target = event.target;
+     const value = target.type === 'checkbox' ? target.checked : target.value;
+     const name = target.name;
 
-  hanldePassTxtChange(event){
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-    this.setState({
-        password: value
-    });
+     this.setState({
+       [name]: value
+     });
   }
 
 
-  getLoginStatus(){
-    let status = LoginStore.getLoginStatus();
+  getRegisterStatus(){
+    let status = LoginStore.getRegisterStatus();
     if(status){
       this.setState({
         showSuccessSnack: true,
@@ -82,11 +82,11 @@ export default class LoginForm extends React.Component{
         startSending: false,
         isLogin: true
       });
-      console.log('login success');
-      browserHistory.push('/propertylist')
+      console.log('registration success');
+      browserHistory.push('/login')
     }
     else{
-      let lgerr = LoginStore.getLoginError();
+      let lgerr = LoginStore.getRegisterError();
       if(lgerr){
         this.setState({
           startSending: false,
@@ -99,17 +99,52 @@ export default class LoginForm extends React.Component{
     }
   }
 
-  handleLogin(event){
+  handleSignup(event){
     event.preventDefault();
     event.stopPropagation();
 
-    if(this.state.username && this.state.password){
+    if(this.state.email && this.state.password && this.state.confirmPassword && this.state.company_name && this.state.first_name ){
 
-      this.setState({
-        startSending: true,
-      });
+      let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      LoginAuthActions.authenticate(this.state.username, this.state.password);
+      if(this.state.password !== this.state.confirmPassword){
+        this.setState({
+          showErrorSnack: true,
+          showSuccessSnack: false,
+          startSending: false,
+          errMessage: 'Password doesn\'t match',
+          validateErr: ''
+        });
+      }
+      else if(!re.test( this.state.email ) ){
+        this.setState({
+          showErrorSnack: true,
+          showSuccessSnack: false,
+          startSending: false,
+          errMessage: 'Invalid email address!',
+          validateErr: ''
+        });
+      }
+      else{
+        this.setState({
+          startSending: true,
+        });
+        let data = {
+          first_name: this.state.first_name,
+          last_name: this.state.last_name,
+          email: this.state.email,
+          password: this.state.password,
+          confirmPassword: this.state.confirmPassword,
+          contact: this.state.contact,
+          company_name: this.state.company_name,
+          address: this.state.address,
+          telephone: this.state.telephone
+        };
+        LoginAuthActions.register(data);
+        
+      }
+
+
 
     }
     else{
@@ -117,7 +152,8 @@ export default class LoginForm extends React.Component{
         showErrorSnack: true,
         showSuccessSnack: false,
         startSending: false,
-        errMessage: 'Please fill fields...'
+        errMessage: 'Please fill fields...',
+        validateErr: 'This field is required'
       });
     }
 
@@ -176,8 +212,8 @@ export default class LoginForm extends React.Component{
         alignItems: 'flex-start',
         paddingTop: 50,
         paddingBottom: 70,
-        paddingLeft: 60,
-        paddingRight: 60,
+        paddingLeft: 30,
+        paddingRight: 10,
       },
       loginlogo: {
         width: '100%',
@@ -280,6 +316,18 @@ export default class LoginForm extends React.Component{
       tblProgress: {
         margin: '20px auto',
         textAlign: 'center'
+      },
+      underlineStyle: {
+        borderColor: orange500,
+      },
+      divider: {
+        marginTop: 1,
+        marginBottom: 5
+      },
+      comapnyheader:{
+        marginTop: 30,
+        color: '#15b993',
+        fontSize: 18
       }
 
 
@@ -304,9 +352,9 @@ export default class LoginForm extends React.Component{
               <img src="images/property-ground-logo.png" style={styles.toplogo} />
             </a>
             <div>
-              <a href="http://propertyground.com/" target="_blank" style={styles.menulink}>HOME</a>
-              <a href="http://www.propertyground.com/services/" target="_blank" style={styles.menulink}>PRICING</a>
-              <a href="http://www.propertyground.com/member/" target="_blank" style={styles.menulink}>MEMBER</a>
+            <a href="http://propertyground.com/" target="_blank" style={styles.menulink}>HOME</a>
+            <a href="http://www.propertyground.com/services/" target="_blank" style={styles.menulink}>PRICING</a>
+            <a href="http://www.propertyground.com/member/" target="_blank" style={styles.menulink}>MEMBER</a>
             </div>
           </div>
 
@@ -315,13 +363,13 @@ export default class LoginForm extends React.Component{
 
               <div style={styles.topheadercontents}>
                 <div style={styles.toptinytxt}>
-                  sign in
+                  sign up
                 </div>
                 <div style={styles.topheadertxt}>
-                  Login to your account
+                  Sign up with PropertyGround
                 </div>
                 <div style={styles.singuptxt}>
-                  DON'T HAVE AN ACCOUNT YET? <Link to="signup"><span style={styles.registertxt}>SIGN UP HERE</span></Link>
+                  ALREADY HAVE AN ACCOUNT? <Link to="login"><span style={styles.registertxt}>SIGN IN HERE</span></Link>
                 </div>
 
               </div>
@@ -346,34 +394,101 @@ export default class LoginForm extends React.Component{
                           {isShowSaving}
                       </div>
 
-                          <form name="loginForm" onSubmit={this.handleLogin.bind(this)}>
+                          <form name="signupform" onSubmit={this.handleSignup.bind(this)}>
                             <div style={styles.title}>
-                              Sign in
+                              Register
                             </div>
 
                             <TextField
-                                hintText="Enter your Username or Email"
-                                floatingLabelText="Username / Email"
-                                name="username"
-                                value={this.state.username}
-                                onChange={this.hanldeUserTxtChange.bind(this)}
+                                hintText="Enter your first name"
+                                floatingLabelText="First name"
+                                name="first_name"
+                                value={this.state.first_name}
+                                fullWidth={false}
+                                onChange={this.hanldeTxtChange.bind(this)}
+                                errorText={this.state.validateErr}
+                                underlineFocusStyle={styles.underlineStyle}
                               />
                               <TextField
-                                hintText="Enter your password"
+                                  hintText="Enter your last name"
+                                  floatingLabelText="Last name"
+                                  name="last_name"
+                                  fullWidth={false}
+                                  value={this.state.last_name}
+                                  onChange={this.hanldeTxtChange.bind(this)}
+                                />
+                                <TextField
+                                    hintText="Enter email address"
+                                    floatingLabelText="Email"
+                                    name="email"
+                                    value={this.state.email}
+                                    onChange={this.hanldeTxtChange.bind(this)}
+                                    errorText={this.state.validateErr}
+                                    underlineFocusStyle={styles.underlineStyle}
+                                  />
+                              <TextField
+                                hintText="Create a password"
                                 floatingLabelText="Password"
                                 type="password"
                                 name="password"
                                 value={this.state.password}
-                                onChange={this.hanldePassTxtChange.bind(this)}
+                                onChange={this.hanldeTxtChange.bind(this)}
+                                errorText={this.state.validateErr}
+                                underlineFocusStyle={styles.underlineStyle}
                               />
-                              <br/><br/>
+                              <TextField
+                                hintText="Confirm your password"
+                                floatingLabelText="Confirm password"
+                                type="password"
+                                name="confirmPassword"
+                                value={this.state.confirmPassword}
+                                onChange={this.hanldeTxtChange.bind(this)}
+                                errorText={this.state.validateErr}
+                                underlineFocusStyle={styles.underlineStyle}
+                              />
+                              <TextField
+                                hintText="Contact"
+                                floatingLabelText="Contact"
+                                name="contact"
+                                value={this.state.contact}
+                                onChange={this.hanldeTxtChange.bind(this)}
+                              />
+
+                              <div style={styles.comapnyheader}>
+                                Company details
+                              </div>
+                              <Divider style={styles.divider} />
+
+
+                              <TextField
+                                  hintText="Enter your Company name"
+                                  floatingLabelText="Company name"
+                                  name="company_name"
+                                  value={this.state.company_name}
+                                  onChange={this.hanldeTxtChange.bind(this)}
+                                  errorText={this.state.validateErr}
+                                  underlineFocusStyle={styles.underlineStyle}
+                                />
+                                <TextField
+                                    hintText="Enter your Company address"
+                                    floatingLabelText="Company address"
+                                    name="address"
+                                    value={this.state.address}
+                                    onChange={this.hanldeTxtChange.bind(this)}
+                                  />
+                                  <TextField
+                                      hintText="Enter your Company telephone"
+                                      floatingLabelText="Company telephone"
+                                      name="telephone"
+                                      value={this.state.telephone}
+                                      onChange={this.hanldeTxtChange.bind(this)}
+                                    />
+                              <br/>
                               <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
                               <br/>
-                              <RaisedButton type="submit" label="Login" primary={true}/>
+                              <RaisedButton type="submit" label="Sign up" primary={true}/>
                               <br/><br/>
-                              <div style={styles.loginsubtxt}>Forgot password?</div>
-                              <div><Link to="signup" style={styles.loginsubtxt}>Don't have an account yet?</Link></div>
-
+                              <div><Link to="login" style={styles.loginsubtxt}>Already have an account?</Link></div>
                           </form>
 
                     </div>
@@ -416,7 +531,7 @@ export default class LoginForm extends React.Component{
 
           <Snackbar
             open={this.state.showSuccessSnack}
-            message="Welcome to PropertyGround!"
+            message="Welcome to PropertyGround! Please login to access your dashboard"
             autoHideDuration={3000}
             onRequestClose={this.successhandleRequestClose.bind(this)} />
 

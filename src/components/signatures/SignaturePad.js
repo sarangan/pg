@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import Signature_pad from 'signature_pad';
 import IconButton from 'material-ui/IconButton';
 import ClearIcon from 'material-ui/svg-icons/editor/format-clear';

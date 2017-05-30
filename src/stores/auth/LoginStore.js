@@ -8,6 +8,9 @@ class LoginStore extends EventEmitter {
     this.isLogin = false;
     this.userDetails = {};
     this.loginerr  = '';
+    this.isLogout = false;
+    this.registererr  = '';
+    this.registerAccountStatus = false;
   }
 
   getLoginStatus() {
@@ -20,6 +23,18 @@ class LoginStore extends EventEmitter {
 
   getUserDetails() {
     return this.userDetails;
+  }
+
+  getLogoutStatus(){
+    return this.isLogout;
+  }
+
+  getRegisterStatus(){
+    return this.registerAccountStatus;
+  }
+
+  getRegisterError(){
+    return this.registererr;
   }
 
   handleActions(action) {
@@ -49,21 +64,71 @@ class LoginStore extends EventEmitter {
               loginauth["AUTHTOKEN"] = 'Bearer ' + action.data.token;
               loginauth["ISLOGIN"] =  true;
               loginauth["USER"] =  userDetails;
-              
+
+              let pgauth = {
+                token: 'Bearer ' + action.data.token,
+                isLogin: true,
+                user: userDetails
+              };
+              sessionStorage.removeItem('pgauth');
+              sessionStorage.setItem('pgauth', JSON.stringify(pgauth) ); // store to session store
 
           }
           else{
             this.userDetails = {};
             this.isLogin = false;
             this.loginerr  = '';
+
+            sessionStorage.removeItem('pgauth');
             if(action.data.hasOwnProperty('err')){
               this.loginerr  = action.data.err;
             }
-
           }
+          this.isLogout = false;
+          this.registererr  = '';
+          this.registerAccountStatus =  false;
           this.emit("change");
           break;
 
+      }
+      case "LOGOUT": {
+        if(action.data.status){
+          this.userDetails = {};
+          this.isLogin = false;
+          this.loginerr  = '';
+          this.isLogout = true;
+          loginauth["AUTHTOKEN"] = "";
+          loginauth["ISLOGIN"] =  false;
+          loginauth["USER"] =  {};
+          this.registererr  = '';
+          this.registerAccountStatus =  false;
+          sessionStorage.removeItem('pgauth');
+        }
+        this.emit("change");
+        break;
+      }
+
+      case "SIGNUP":{
+
+        if(action.data.status == 1){
+          this.registerAccountStatus =  true;
+          this.registererr = '';
+        }
+        else{
+          this.registererr  = action.data.text;
+          this.registerAccountStatus =  false;
+
+          this.userDetails = {};
+          this.isLogin = false;
+          this.loginerr  = '';
+          this.isLogout = true;
+          loginauth["AUTHTOKEN"] = "";
+          loginauth["ISLOGIN"] =  false;
+          loginauth["USER"] =  {};
+          sessionStorage.removeItem('pgauth');
+        }
+        this.emit('change');
+        break;
       }
 
     }

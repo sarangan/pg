@@ -29,3 +29,35 @@ export function authenticate(username, password) {
         });
 
 }
+
+export function logout(){
+  sessionStorage.removeItem('pgauth');
+  dispatcher.dispatch({
+    type: "LOGOUT",
+    data: {status: 1},
+  });
+}
+
+export function register(data) {
+
+  var url = config.SERVER_ENDPOINT_URL + 'auth/register';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+           },
+          data: data
+        })
+        .then(function (response) {
+          console.log(response);
+          dispatcher.dispatch({
+            type: "SIGNUP",
+            data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}

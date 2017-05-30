@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import Chip from 'material-ui/Chip';
 import {blue100, lightGreen500, blue500, pink400} from 'material-ui/styles/colors';
 import TextField from 'material-ui/TextField';
