@@ -32,10 +32,11 @@ export function fetchPropList() {
 
 export function generateReport(property_id) {
 
+  console.log(property_id);
 
   var url = config.REPORT_ENDPOINT_URL + 'generatereport';
   axios({
-          method: 'get',
+          method: 'post',
           url: url,
           headers: {
              'Authorization': loginauth.AUTHTOKEN
