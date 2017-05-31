@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router";
 import Divider from 'material-ui/Divider';
 import PageBase from '../../components/layout/PageBase';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -7,11 +6,11 @@ import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dropzone from 'react-dropzone';
-import ReactDOMServer from 'react-dom/server';
 import CircularProgress from 'material-ui/CircularProgress';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ColorPicker from '../../components/colorpicker/ColorPicker'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import FlatButton from 'material-ui/FlatButton';
 import Checkbox from 'material-ui/Checkbox';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import config from '../../config/config';
@@ -57,7 +56,17 @@ export default class ReportSettings extends React.Component {
         include_condition_summary: 0,
         include_singatures: 0
       },
-      report_settings_notes: null
+      report_settings_notes: null,
+      frontPageSelectionS1Color : '#cccccc',
+      frontPageSelectionS2Color : '#cccccc',
+      frontPageSelectionS3Color : '#cccccc',
+      front_page_layout_S1_img_border : 'none',
+      front_page_layout_s2_img_border : 'none',
+      front_page_layout_s3_img_border : 'none',
+      showNoteEdit: false,
+      temp_notes: '',
+      temp_title: '',
+      temp_note_id: ''
     };
 
     this.getReportSettings = this.getReportSettings.bind(this);
@@ -127,13 +136,15 @@ export default class ReportSettings extends React.Component {
       };
 
 
-
       this.setState({
         formValues,
         coverpage_enable: settings.include_cover_page == 1? true: false,
         report_settings_notes: ReportSettingsStore.getSettingsNotes(),
         startSending: false,
       });
+
+
+      this.updateFrontPageStyles();
 
 
     }
@@ -168,9 +179,10 @@ export default class ReportSettings extends React.Component {
                 note_title: general_notes[key],
                 title: general_notes[key],
                 note: '',
-                included: 1
+                included: 0
               }
           );
+
         }
       }
 
@@ -182,6 +194,104 @@ export default class ReportSettings extends React.Component {
 
   }
 
+  //close general note box
+  handleNotePageClose(event){
+
+    let report_settings_notes = this.state.report_settings_notes;
+    report_settings_notes[this.state.temp_note_id]['title'] = this.state.temp_title;
+    report_settings_notes[this.state.temp_note_id]['note'] = this.state.temp_notes;
+
+    this.setState({
+      report_settings_notes: report_settings_notes,
+      temp_note_id: '',
+      temp_title: '',
+      temp_notes: '',
+      showNoteEdit: false
+    });
+
+  }
+
+  //general page title text change
+  handleNotePageTxt(event, value){
+    this.setState({
+      temp_notes: value
+    });
+  }
+
+  //general page note change
+  handleTitlePageTxt(event, value){
+    this.setState({
+      temp_title: value
+    });
+  }
+
+  //open general note box
+  handleNotePageOpen(id, title, notes){
+
+    this.setState({
+      showNoteEdit: true,
+      temp_note_id: id,
+      temp_title: title,
+      temp_notes: notes,
+    });
+  }
+
+  //open cancle edit
+  handleNotePageCancel(){
+
+    this.setState({
+      showNoteEdit: false,
+      temp_note_id: '',
+      temp_title: '',
+      temp_notes: '',
+    });
+  }
+
+
+  updateFrontPageStyles(){
+    if(this.state.formValues.front_page_layout == 'TEMPLATE 1'){
+      this.setState({frontPageSelectionS1Color: '#417505'});
+      this.setState({frontPageSelectionS2Color: '#cccccc'});
+      this.setState({frontPageSelectionS3Color : '#cccccc'});
+      this.setState({front_page_layout_S1_img_border : '2px dashed #417505'});
+      this.setState({front_page_layout_s2_img_border : 'none'});
+      this.setState({front_page_layout_s3_img_border : 'none'});
+    }
+    else if(this.state.formValues.front_page_layout == 'TEMPLATE 2'){
+      this.setState({frontPageSelectionS1Color : '#cccccc'});
+      this.setState({frontPageSelectionS2Color : '#417505'});
+      this.setState({frontPageSelectionS3Color : '#cccccc'});
+      this.setState({front_page_layout_S1_img_border : 'none'});
+      this.setState({front_page_layout_s2_img_border : '2px dashed #417505'});
+      this.setState({front_page_layout_s3_img_border : 'none'});
+    }
+    else if(this.state.formValues.front_page_layout == 'TEMPLATE 3'){
+      this.setState({frontPageSelectionS1Color : '#cccccc'});
+      this.setState({frontPageSelectionS2Color : '#cccccc'});
+      this.setState({frontPageSelectionS3Color : '#417505'});
+      this.setState({front_page_layout_S1_img_border : 'none'});
+      this.setState({front_page_layout_s2_img_border : 'none'});
+      this.setState({front_page_layout_s3_img_border : '2px dashed #417505'});
+    }
+
+  }
+
+  handleChkGeneralNotes(index){
+
+    let report_settings_notes = this.state.report_settings_notes;
+    if(report_settings_notes[index]['included'] == 1){
+      report_settings_notes[index]['included'] = 0;
+    }
+    else{
+      report_settings_notes[index]['included'] = 1;
+    }
+
+    this.setState({
+      report_settings_notes: report_settings_notes
+    });
+
+  }
+
   saveReportSettings(){
 
     this.setState({
@@ -189,7 +299,7 @@ export default class ReportSettings extends React.Component {
     });
     let formVars = this.state.formValues;
     delete formVars["logo_url"];
-    ReportSettingsActions.updateReportSettings(formVars);
+    ReportSettingsActions.updateReportSettings(formVars, this.state.report_settings_notes);
 
   }
 
@@ -284,6 +394,7 @@ export default class ReportSettings extends React.Component {
     this.setState({
       formValues
     });
+    this.updateFrontPageStyles();
   }
 
   //photos include in items details
@@ -341,6 +452,7 @@ export default class ReportSettings extends React.Component {
     this.setState({
       formValues
     });
+    this.updateFrontPageStyles();
   }
 
   //item details layout
@@ -460,23 +572,6 @@ export default class ReportSettings extends React.Component {
     }
     else if(this.state.formValues.page_header_layout == 'BORDER_BOTTOM'){
       base_color = '#ffffff';
-    }
-
-    let frontPageSelectionSTDColor = '#cccccc';
-    let frontPageSelectionTOPLEFTColor = '#cccccc';
-    let front_page_layout_Std_img_border = 'none';
-    let front_page_layout_topleft_img_border = 'none';
-    if(this.state.formValues.front_page_layout == 'STANDARD'){
-      frontPageSelectionSTDColor = '#417505';
-      frontPageSelectionTOPLEFTColor = '#cccccc';
-      front_page_layout_Std_img_border = '2px dashed #417505';
-      front_page_layout_topleft_img_border = 'none';
-    }
-    else if(this.state.formValues.front_page_layout == 'TOP_LEFT'){
-      frontPageSelectionSTDColor = '#cccccc';
-      frontPageSelectionTOPLEFTColor = '#417505';
-      front_page_layout_topleft_img_border = '2px dashed #417505';
-      front_page_layout_Std_img_border = 'none';
     }
 
     let limitTxt = 'none';
@@ -736,28 +831,6 @@ export default class ReportSettings extends React.Component {
       headerStyleSubHeader: {
         color: `${this.state.formValues.page_header_color}`
       },
-      layoutimgStd: {
-        width: 150,
-        height: 'auto',
-        cursor: 'pointer',
-        border: `${front_page_layout_Std_img_border}`,
-        borderRadius: 5
-      },
-      layoutimgTopLeft: {
-        width: 150,
-        height: 'auto',
-        cursor: 'pointer',
-        border: `${front_page_layout_topleft_img_border}`,
-        borderRadius: 5
-      },
-      layouttxtStd: {
-        color: `${frontPageSelectionSTDColor}`,
-        fontWeight: 700
-      },
-      layouttxtTopLeft: {
-        color: `${frontPageSelectionTOPLEFTColor}`,
-        fontWeight: 700
-      },
       itemlayouttxtS1: {
         color: `${itemslayoutS1Color}`,
         fontWeight: 700
@@ -775,36 +848,32 @@ export default class ReportSettings extends React.Component {
         fontWeight: 700
       },
       itemlayoutimgS1: {
-        width: 200,
+        width: 150,
         height: 'auto',
         cursor: 'pointer',
         border: `${item_layout_S1_img_border}`,
         borderRadius: 5,
-        maxHeight: 200
       },
       itemlayoutimgS2: {
-        width: 200,
+        width: 150,
         height: 'auto',
         cursor: 'pointer',
         border: `${item_layout_S2_img_border}`,
         borderRadius: 5,
-        maxHeight: 200
       },
       itemlayoutimgS3: {
-        width: 200,
+        width: 150,
         height: 'auto',
         cursor: 'pointer',
         border: `${item_layout_S3_img_border}`,
         borderRadius: 5,
-        maxHeight: 200
       },
       itemlayoutimgS4: {
-        width: 200,
+        width: 150,
         height: 'auto',
         cursor: 'pointer',
         border: `${item_layout_S4_img_border}`,
         borderRadius: 5,
-        maxHeight: 200
       },
       photocollectiontxt2c: {
         color: `${photocollection2cColor}`,
@@ -835,9 +904,41 @@ export default class ReportSettings extends React.Component {
         height: 'auto',
         cursor: 'pointer',
         border: `${photocollection_4c_img_border}`
+      },
+      frontPageSelectionS1Color: {
+         color: `${this.state.frontPageSelectionS1Color}`
+      },
+      front_page_layout_S1_img_border: {
+         width: 150,
+         height: 'auto',
+         cursor: 'pointer',
+         border: `${this.state.front_page_layout_S1_img_border}`,
+         borderRadius: 5
+      },
+      frontPageSelectionS2Color: {
+         color: `${this.state.frontPageSelectionS2Color}`
+      },
+      front_page_layout_S2_img_border: {
+         width: 150,
+         height: 'auto',
+         cursor: 'pointer',
+         border: `${this.state.front_page_layout_s2_img_border}`,
+         borderRadius: 5
+      },
+      frontPageSelectionS3Color: {
+         color: `${this.state.frontPageSelectionS3Color}`
+      },
+
+      front_page_layout_S3_img_border: {
+         width: 150,
+         height: 'auto',
+         cursor: 'pointer',
+         border: `${this.state.front_page_layout_s3_img_border}`,
+         borderRadius: 5
       }
 
     };
+
 
     let isShowSaving = null;
     if (this.state.startSending &&  this.state.startSending == true  ) {
@@ -891,12 +992,11 @@ export default class ReportSettings extends React.Component {
           </div>
 
           <div style={styles.wrapper}>
+              <h3 style={styles.heading}>Base color settings</h3>
+              <Divider style={styles.headinghr}/>
 
-                <h3 style={styles.heading}>Base color settings</h3>
-                <Divider style={styles.headinghr}/>
-
-                <h4>Select your base color:</h4>
-                <ColorPicker changeColor={this.changeColor.bind(this)} type="BASECOLOR" defaultColor={this.state.formValues.base_color}/>
+              <h4>Select your base color:</h4>
+              <ColorPicker changeColor={this.changeColor.bind(this)} type="BASECOLOR" defaultColor={this.state.formValues.base_color}/>
           </div>
 
           <div style={styles.wrapper}>
@@ -993,29 +1093,42 @@ export default class ReportSettings extends React.Component {
 
                 <div style={styles.divInlineWrapper}>
 
-                  <div style={styles.divFlexItem}>
-                    <RadioButtonGroup name="front_page_layout" valueSelected={this.state.formValues.front_page_layout} onChange={this.handleFrontPageRbd.bind(this)}>
-                      <RadioButton
-                        value="STANDARD"
-                        label="Standard"
-                        style={styles.radioButton}
-                      />
-                      <RadioButton
-                        value="TOP_LEFT"
-                        label="Top left"
-                        style={styles.radioButton}
-                      />
-                    </RadioButtonGroup>
+                  <div style={{width: '100%', marginBottom: 20 }}>
+                    <div style={styles.divFlexItem}>
+                      <RadioButtonGroup name="front_page_layout" valueSelected={this.state.formValues.front_page_layout} onChange={this.handleFrontPageRbd.bind(this)}>
+                        <RadioButton
+                          value="TEMPLATE 1"
+                          label="TEMPLATE 1"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="TEMPLATE 2"
+                          label="TEMPLATE 2"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="TEMPLATE 3"
+                          label="TEMPLATE 3"
+                          style={styles.radioButton}
+                        />
+
+                      </RadioButtonGroup>
+                    </div>
                   </div>
 
                   <div style={styles.divFlexItem}>
-                    <div style={styles.layouttxtStd}>Standard</div>
-                    <img src="images/standard_fp_layout.png" alt="standard" style={styles.layoutimgStd} onClick={this.handleFrontPageImg.bind(this, 'STANDARD')}/>
+                    <div style={styles.frontPageSelectionS1Color}>TEMPLATE 1</div>
+                    <img src="images/FR_STYLE_1.jpg" alt="FR_STYLE_1" style={styles.front_page_layout_S1_img_border} onClick={this.handleFrontPageImg.bind(this, 'TEMPLATE 1')}/>
                   </div>
 
                   <div style={styles.divFlexItem}>
-                    <div style={styles.layouttxtTopLeft}>Top left</div>
-                    <img src="images/topleft_fp_layout.png" alt="topleft" style={styles.layoutimgTopLeft}  onClick={this.handleFrontPageImg.bind(this, 'TOP_LEFT')}/>
+                    <div style={styles.frontPageSelectionS2Color}>TEMPLATE 2</div>
+                    <img src="images/FR_STYLE_2.jpg" alt="FR_STYLE_2" style={styles.front_page_layout_S2_img_border} onClick={this.handleFrontPageImg.bind(this, 'TEMPLATE 2')}/>
+                  </div>
+
+                  <div style={styles.divFlexItem}>
+                    <div style={styles.frontPageSelectionS3Color}>TEMPLATE 3</div>
+                    <img src="images/FR_STYLE_3.jpg" alt="FR_STYLE_3" style={styles.front_page_layout_S3_img_border} onClick={this.handleFrontPageImg.bind(this, 'TEMPLATE 3')}/>
                   </div>
 
                 </div>
@@ -1029,29 +1142,31 @@ export default class ReportSettings extends React.Component {
 
                 <div style={styles.divInlineWrapper}>
 
-                  <div style={styles.divFlexItem}>
-                    <RadioButtonGroup name="items_details_layout" valueSelected={this.state.formValues.items_details_layout} onChange={this.handleItemDetailsLayout.bind(this)}>
-                      <RadioButton
-                        value="STYLE 1"
-                        label="STYLE 1"
-                        style={styles.radioButton}
-                      />
-                      <RadioButton
-                        value="STYLE 2"
-                        label="STYLE 2"
-                        style={styles.radioButton}
-                      />
-                      <RadioButton
-                        value="STYLE 3"
-                        label="STYLE 3"
-                        style={styles.radioButton}
-                      />
-                      <RadioButton
-                        value="STYLE 4"
-                        label="STYLE 4"
-                        style={styles.radioButton}
-                      />
-                    </RadioButtonGroup>
+                  <div style={{width: '100%', marginBottom: 20 }}>
+                    <div style={styles.divFlexItem}>
+                      <RadioButtonGroup name="items_details_layout" valueSelected={this.state.formValues.items_details_layout} onChange={this.handleItemDetailsLayout.bind(this)}>
+                        <RadioButton
+                          value="STYLE 1"
+                          label="STYLE 1"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="STYLE 2"
+                          label="STYLE 2"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="STYLE 3"
+                          label="STYLE 3"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="STYLE 4"
+                          label="STYLE 4"
+                          style={styles.radioButton}
+                        />
+                      </RadioButtonGroup>
+                    </div>
                   </div>
 
 
@@ -1087,24 +1202,26 @@ export default class ReportSettings extends React.Component {
 
                 <div style={styles.divInlineWrapper}>
 
-                  <div style={styles.divFlexItem}>
-                    <RadioButtonGroup name="photo_collection_layout" valueSelected={this.state.formValues.photo_collection_layout} onChange={this.handlePhotoCollectionRbd.bind(this)}>
-                      <RadioButton
-                        value="2-COL"
-                        label="2 Columns"
-                        style={styles.radioButton}
-                      />
-                      <RadioButton
-                        value="3-COL"
-                        label="3 Columns"
-                        style={styles.radioButton}
-                      />
-                      <RadioButton
-                        value="4-COL"
-                        label="4 Columns"
-                        style={styles.radioButton}
-                      />
-                    </RadioButtonGroup>
+                  <div style={{width: '100%', marginBottom: 20 }}>
+                    <div style={styles.divFlexItem}>
+                      <RadioButtonGroup name="photo_collection_layout" valueSelected={this.state.formValues.photo_collection_layout} onChange={this.handlePhotoCollectionRbd.bind(this)}>
+                        <RadioButton
+                          value="2-COL"
+                          label="2 Columns"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="3-COL"
+                          label="3 Columns"
+                          style={styles.radioButton}
+                        />
+                        <RadioButton
+                          value="4-COL"
+                          label="4 Columns"
+                          style={styles.radioButton}
+                        />
+                      </RadioButtonGroup>
+                    </div>
                   </div>
 
                   <div style={styles.divFlexItem}>
@@ -1200,7 +1317,7 @@ export default class ReportSettings extends React.Component {
                       />
                       <RadioButton
                         value="LARGE"
-                        label="Large (280x280)"
+                        label="Large (300x300)"
                         style={styles.radioButton}
                       />
                     </RadioButtonGroup>
@@ -1222,7 +1339,7 @@ export default class ReportSettings extends React.Component {
 
                   <div style={styles.divFlexItem}>
                     <div style={styles.footertxt}>Preview</div>
-                    <img src="http://placehold.it/280x280" />
+                    <img src="http://placehold.it/300x300" />
                     { this.state.formValues.show_photo_date_time == 1 &&
                     <div style={styles.photofootertxt}>DD/MM/YYYY HH:mm</div>
                     }
@@ -1239,15 +1356,14 @@ export default class ReportSettings extends React.Component {
 
               <div style={styles.divInlineWrapper}>
 
+                {!this.state.showNoteEdit &&
                 <Table
                       height={'300px'}
                       fixedHeader={true}
-                      selectable={true}
-                      multiSelectable={true}
                     >
                       <TableHeader
                         displaySelectAll={false}
-                        adjustForCheckbox={true}
+                        adjustForCheckbox={false}
                         enableSelectAll={false}
                       >
                         <TableRow>
@@ -1265,25 +1381,59 @@ export default class ReportSettings extends React.Component {
                       </TableHeader>
 
                       <TableBody
-                        displayRowCheckbox={true}
+                        displayRowCheckbox={false}
                         showRowHover={true}
                       >
 
                         { this.state.report_settings_notes &&
                           this.state.report_settings_notes.map( (row, index) => (
                             <TableRow key={index}>
-                              <TableRowColumn>{row.note_title}</TableRowColumn>
+                              <TableRowColumn>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
+                                    <Checkbox
+                                     label=""
+                                     style={{marginRight: 10, display: 'inline', width: '30%'}} onCheck={this.handleChkGeneralNotes.bind(this, index)} defaultChecked={row.included == 1 ? true : false}
+                                   />
+                                   <div>
+                                     <span>{row.note_title}</span>
+                                   </div>
+                                </div>
+
+
+
+                          </TableRowColumn>
                               <TableRowColumn>{row.title}</TableRowColumn>
-                              <TableRowColumn>Edit</TableRowColumn>
+                              <TableRowColumn><FlatButton label="Edit" secondary={true} onTouchTap={this.handleNotePageOpen.bind(this, index, row.title,  row.note )}/></TableRowColumn>
                             </TableRow>
                           ))
                         }
 
                       </TableBody>
+                  </Table>
+                }
+                {this.state.showNoteEdit &&
+                  <div >
+                    <div style={{width: '100%', padding: 20, position: 'relative'}}>
+                      <TextField
+                        hintText="Title" floatingLabelText="Title"
+                        value={this.state.temp_title}
+                        onChange={this.handleTitlePageTxt.bind(this)}
+                      />
+                      <TextField hintText="Notes" floatingLabelText="Notes" value={this.state.temp_notes}
+                      fullWidth={true} multiLine={true} name="Notes" onChange={this.handleNotePageTxt.bind(this)} rows={2} rowsMax={4}/>
+                    <div style={{textAlign: 'right', width: '100%' }}>
+                      <RaisedButton label="Cancel" style={{marginTop: 15, marginRight: 10}} onTouchTap={this.handleNotePageCancel.bind(this)} />
+                      <RaisedButton label="Ok" primary={true} style={{marginTop: 15}} onTouchTap={this.handleNotePageClose.bind(this)} />
+                    </div>
 
 
+                    </div>
 
-                    </Table>
+                  </div>
+
+                }
+
+
               </div>
 
           </div>

@@ -27,7 +27,7 @@ export function fetchReportSettings() {
 
 }
 
-export function updateReportSettings(report_settings) {
+export function updateReportSettings(report_settings, report_settings_notes) {
 
   var url = config.REPORT_ENDPOINT_URL + 'updateReportSettings';
   axios({
@@ -37,11 +37,11 @@ export function updateReportSettings(report_settings) {
              'Authorization': loginauth.AUTHTOKEN
            },
            data:{
-             report_settings
+             report_settings,
+             report_settings_notes
            }
         })
         .then(function (response) {
-          console.log(response.data);
           dispatcher.dispatch({
             type: "UPDATE_REPORT_SETTINGS",
             data: response.data,
@@ -71,7 +71,6 @@ export function uploadReportLogo(file){
           data: formData
         })
         .then(function (response) {
-          console.log(response);
           dispatcher.dispatch({
             type: "UPLOAD_REPORT_LOGO",
             data: response.data
