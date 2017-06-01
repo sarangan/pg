@@ -91,7 +91,7 @@ export function updateDragDrop(photo_id, item_id){
 
 
 export function deletePhoto(photo_id){
-
+  console.log(photo_id);
   var url =  config.ENDPOINT_URL + 'photodelete';
   axios({
           method: 'post',

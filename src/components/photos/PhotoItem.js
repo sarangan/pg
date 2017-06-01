@@ -72,7 +72,8 @@ export default class PhotoItem extends React.Component {
       img: {
         width: 150,
         height: 'auto',
-        background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)'
+        background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)',
+        minHeight: 130
       },
       removeBtn: {
         position: 'absolute',
