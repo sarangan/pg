@@ -3,8 +3,9 @@ import { Link } from "react-router";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentCreate from 'material-ui/svg-icons/content/create';
-import Playbtn from 'material-ui/svg-icons/av/play-arrow';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import ReportDownload from 'material-ui/svg-icons/file/file-download';
+import Playbtn from 'material-ui/svg-icons/av/play-arrow';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 
@@ -247,7 +248,7 @@ export default class PropertyList extends React.Component {
                                             mini={true}
                                             backgroundColor={grey200}
                                             iconStyle={styles.editButton} onTouchTap={()=>this.generateReport(item.property_id)}>
-                        <ContentCreate  />
+                        <ReportDownload  />
                       </FloatingActionButton>
 
                   </TableRowColumn>
@@ -257,7 +258,7 @@ export default class PropertyList extends React.Component {
                                             mini={true}
                                             backgroundColor={grey200}
                                             iconStyle={styles.viewButton}>
-                        <Playbtn />
+                        <ContentCreate />
                       </FloatingActionButton>
                     </Link>
                   </TableRowColumn>
