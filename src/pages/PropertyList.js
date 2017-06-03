@@ -48,9 +48,18 @@ export default class PropertyList extends React.Component {
 
   getList() {
 
-    this.setState({
-      list: PropertyListStore.getList()
-    });
+    let list = PropertyListStore.getList();
+    if(list){
+      this.setState({
+        list: list
+      });
+    }
+    else{
+      this.setState({
+        list: []
+      });
+    }
+
   }
 
 
@@ -183,8 +192,10 @@ export default class PropertyList extends React.Component {
         }
     };
 
+    console.log(this.state.list);
+
       let isShowLoading = null;
-       if (this.state.list.length > 0 ) {
+       if (this.state.list.length >= 0 || this.state.list ) {
          isShowLoading = '';
        } else {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;

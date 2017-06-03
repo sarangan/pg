@@ -737,7 +737,7 @@ export default class ReportSettings extends React.Component {
       divFlexItemCoverTxt:{
         marginRight: 50,
         minWidth: 200,
-        width: 500,
+        width: '100%',
         position: 'relative'
       },
       tableStyle: {
@@ -1301,7 +1301,7 @@ export default class ReportSettings extends React.Component {
 
                   </div>
 
-
+                  {false &&
                   <div style={styles.divFlexItem}>
                     <h4>Photos size:</h4>
                     <RadioButtonGroup name="photo_size" valueSelected={this.state.formValues.photo_size} onChange={this.handlePhotoSize.bind(this)} >
@@ -1323,6 +1323,7 @@ export default class ReportSettings extends React.Component {
                     </RadioButtonGroup>
 
                   </div>
+                }
 
                 </div>
 

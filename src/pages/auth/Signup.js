@@ -11,6 +11,8 @@ import ExtIcon from 'material-ui/svg-icons/action/extension';
 import {teal200, orange500} from 'material-ui/styles/colors';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 import * as LoginAuthActions from "../../actions/auth/LoginAuthActions";
 import LoginStore from "../../stores/auth/LoginStore";
@@ -33,7 +35,8 @@ export default class Signup extends React.Component{
       address: '',
       telephone: '',
       errMessage: '',
-      validateErr: ''
+      validateErr: '',
+        showdialog: false,
     };
 
     this.getRegisterStatus = this.getRegisterStatus.bind(this);
@@ -75,15 +78,17 @@ export default class Signup extends React.Component{
 
   getRegisterStatus(){
     let status = LoginStore.getRegisterStatus();
-    if(status){
+    console.log(status);
+    if(status == true){
       this.setState({
         showSuccessSnack: true,
         showErrorSnack: false,
         startSending: false,
-        isLogin: true
+        isLogin: true,
+        showdialog: true
       });
       console.log('registration success');
-      browserHistory.push('/login')
+      //browserHistory.push('/login')
     }
     else{
       let lgerr = LoginStore.getRegisterError();
@@ -99,9 +104,46 @@ export default class Signup extends React.Component{
     }
   }
 
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
+  handleDialogOpen = () => {
+    this.setState({showdialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({showdialog: false});
+  };
+
+  handleDialogOk =() => {
+    this.setState({showdialog: false});
+    browserHistory.push('/login');
+  }
+
+  checkPwd(str) {
+    if (str.length < 6) {
+        return("password too short, must be minimum 6 charecters");
+    } else if (str.length > 50) {
+        return("password too long, try something you can remember");
+    } else if (str.search(/\d/) == -1) {
+        return("Password must have atlest one number");
+    } else if (str.search(/[a-zA-Z]/) == -1) {
+        return("Password must have atleast one letter");
+    } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) != -1) {
+        return("Invalid password charecters used");
+    }
+    return("OK");
+}
+
+
   handleSignup(event){
     event.preventDefault();
     event.stopPropagation();
+
+    let passvalid = this.checkPwd(this.state.password);
 
     if(this.state.email && this.state.password && this.state.confirmPassword && this.state.company_name && this.state.first_name ){
 
@@ -125,6 +167,17 @@ export default class Signup extends React.Component{
           validateErr: ''
         });
       }
+      else if( passvalid != 'OK' ){
+
+        this.setState({
+          showErrorSnack: true,
+          showSuccessSnack: false,
+          startSending: false,
+          errMessage: passvalid,
+          validateErr: ''
+        });
+
+      }
       else{
         this.setState({
           startSending: true,
@@ -140,8 +193,9 @@ export default class Signup extends React.Component{
           address: this.state.address,
           telephone: this.state.telephone
         };
+        console.log(data);
         LoginAuthActions.register(data);
-        
+
       }
 
 
@@ -328,6 +382,9 @@ export default class Signup extends React.Component{
         marginTop: 30,
         color: '#15b993',
         fontSize: 18
+      },
+      dialog: {
+        width: 300
       }
 
 
@@ -340,6 +397,15 @@ export default class Signup extends React.Component{
     else {
       isShowSaving = '';
     }
+
+    const modal_actions = [
+
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDialogOk}
+      />,
+    ];
 
     return(
 
@@ -535,6 +601,15 @@ export default class Signup extends React.Component{
             autoHideDuration={3000}
             onRequestClose={this.successhandleRequestClose.bind(this)} />
 
+            <Dialog
+              actions={modal_actions}
+              modal={false}
+              open={this.state.showdialog}
+              onRequestClose={this.handleDialogClose}
+              contentStyle ={styles.dialog}
+            >
+              Welcome to PropertyGround! Please login to access your dashboard
+            </Dialog>
 
         </div>
       </MuiThemeProvider>

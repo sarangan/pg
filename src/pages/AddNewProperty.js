@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Link} from 'react-router';
+import {Link, browserHistory} from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
@@ -11,6 +11,8 @@ import PageBase from '../components/layout/PageBase';
 import uitl from '../utils/utils.js'
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 import AddProperty from '../components/addproperty/AddProperty';
 
@@ -32,7 +34,10 @@ export default class AddNewProperty extends React.Component {
        description: '',
        image_url: '',
        logo_img: null,
-       open: false
+       open: false,
+       showSuccessSnack: false,
+      showErrorSnack: false,
+      showdialog: false,
      };
 
      this.getStatus = this.getStatus.bind(this);
@@ -54,9 +59,30 @@ export default class AddNewProperty extends React.Component {
   getStatus() {
     console.log('property get status');
 
+    let status = PropertyStore.getAddStatus();
+
     this.setState({
-      status: PropertyStore.getAddStatus()
+      status: status,
     });
+
+    if (status &&  status['status'] == 1  ) {
+      this.setState({
+        showErrorSnack: false,
+        showSuccessSnack: true,
+        startSending: false,
+        showdialog: true
+      });
+
+
+      //browserHistory.push('/addpropertytemplate?property_id=' + status['property_id'] );
+    }
+    else{
+      this.setState({
+        showErrorSnack: true,
+        showSuccessSnack: false,
+        startSending: false,
+      });
+    }
 
   }
 
@@ -87,6 +113,21 @@ export default class AddNewProperty extends React.Component {
     //     router: React.PropTypes.object
     // };
 
+    //error snack close
+    errhandleRequestClose = () => {
+      this.setState({
+        showErrorSnack: false,
+      });
+    };
+
+    //error snack success
+    successhandleRequestClose = () => {
+      this.setState({
+        showSuccessSnack: false,
+        startSending: false
+      });
+    };
+
   handleSubmit(){
     console.log('submit');
 
@@ -94,7 +135,9 @@ export default class AddNewProperty extends React.Component {
         this.setState({status: 2, open: true  });
       }
       else{
-
+        this.setState({
+          startSending: true,
+        });
         console.log(this.state);
         if(this.state.logo_img){
           //we got something
@@ -104,9 +147,7 @@ export default class AddNewProperty extends React.Component {
           PropertyActions.addProperty(this.state);
         }
 
-        this.setState({
-          startSending: true,
-        });
+
       }
 
     event.preventDefault();
@@ -128,6 +169,18 @@ export default class AddNewProperty extends React.Component {
     });
   };
 
+  handleDialogOpen = () => {
+    this.setState({showdialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({showdialog: false});
+  };
+
+  handleDialogOk =() => {
+    this.setState({showdialog: false});
+    browserHistory.push('/addpropertytemplate?property_id=' + this.state.status['property_id'] );
+  }
 
   render() {
 
@@ -147,6 +200,9 @@ export default class AddNewProperty extends React.Component {
        tblProgress: {
          margin: '50px auto',
          textAlign: 'center'
+       },
+       dialog: {
+         width: 300
        }
 
      };
@@ -161,11 +217,21 @@ export default class AddNewProperty extends React.Component {
 
       if (this.state.status &&  this.state.status['status'] == 1  ) {
         isShowSaving = '';
-        this.context.router.replace('/addpropertytemplate?property_id=' + this.state.status['property_id'] );
+        //browserHistory.push('/addpropertytemplate?property_id=' + this.state.status['property_id'] );
+        //this.context.router.replace('/addpropertytemplate?property_id=' + this.state.status['property_id'] );
       }
       else if(this.state.status &&  this.state.status == 2){
         isShowSaving = <div className="warning-cls">Could not save the data, Please verify your data before save</div>;
       }
+
+      const modal_actions = [
+
+        <FlatButton
+          label="Ok"
+          primary={true}
+          onTouchTap={this.handleDialogOk}
+        />,
+      ];
 
 
     return (
@@ -184,6 +250,28 @@ export default class AddNewProperty extends React.Component {
           autoHideDuration={3000}
           onRequestClose={this.handleRequestClose}
         />
+
+        <Snackbar
+          open={this.state.showErrorSnack}
+          message= "Something went wrong..."
+          autoHideDuration={3000}
+          onRequestClose={this.errhandleRequestClose.bind(this)} />
+
+        <Snackbar
+          open={this.state.showSuccessSnack}
+          message="Successfully updated!"
+          autoHideDuration={3000}
+          onRequestClose={this.successhandleRequestClose.bind(this)} />
+
+          <Dialog
+            actions={modal_actions}
+            modal={false}
+            open={this.state.showdialog}
+            onRequestClose={this.handleDialogClose}
+            contentStyle ={styles.dialog}
+          >
+            Successfully updated
+          </Dialog>
 
         </PageBase>
 

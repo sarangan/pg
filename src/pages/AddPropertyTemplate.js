@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import {Link} from 'react-router';
+import {Link, browserHistory} from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import PageBase from '../components/layout/PageBase';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
-
+import Snackbar from 'material-ui/Snackbar';
 import uitl from '../utils/utils.js'
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 import * as PropertyTemplateActions from "../actions/PropertyTemplateActions";
 import PropertyTemplateStore from "../stores/PropertyTemplateStore";
@@ -23,7 +25,10 @@ export default class AddPropertyTemplate extends React.Component {
             property_id: property_id,
             template: [],
             nums: [],
-            options: []
+            options: [],
+            showSuccessSnack: false,
+           showErrorSnack: false,
+           showdialog: false,
         };
 
         this.getTemplate = this.getTemplate.bind(this);
@@ -82,12 +87,45 @@ export default class AddPropertyTemplate extends React.Component {
         PropertyTemplateStore.removeListener("change", this.getStatus);
       }
 
+
+      handleDialogOpen = () => {
+        this.setState({showdialog: true});
+      };
+
+      handleDialogClose = () => {
+        this.setState({showdialog: false});
+      };
+
+      handleDialogOk =() => {
+        this.setState({showdialog: false});
+        browserHistory.push('/propertylist');
+      }
+
       getStatus() {
         console.log('property get status');
-
+        let status = PropertyTemplateStore.getSaveTemplate();
         this.setState({
-          status: PropertyTemplateStore.getSaveTemplate()
+          status: status
         });
+
+        if (status &&  status == 1  ) {
+           //this.context.router.replace('/propertylist' );
+           this.setState({
+             showErrorSnack: false,
+             showSuccessSnack: true,
+             startSending: false,
+             showdialog: true
+           });
+
+           //browserHistory.push('/propertylist');
+        }
+        else{
+          this.setState({
+            showErrorSnack: true,
+            showSuccessSnack: false,
+            startSending: false,
+          });
+        }
 
       }
 
@@ -134,6 +172,21 @@ export default class AddPropertyTemplate extends React.Component {
         event.preventDefault();
       }
 
+      //error snack close
+      errhandleRequestClose = () => {
+        this.setState({
+          showErrorSnack: false,
+        });
+      };
+
+      //error snack success
+      successhandleRequestClose = () => {
+        this.setState({
+          showSuccessSnack: false,
+          startSending: false
+        });
+      };
+
     render() {
 
       const styles = {
@@ -158,9 +211,21 @@ export default class AddPropertyTemplate extends React.Component {
         tblProgress: {
           margin: '50px auto',
           textAlign: 'center'
+        },
+        dialog: {
+          width: 300
         }
 
       };
+
+      const modal_actions = [
+
+        <FlatButton
+          label="Ok"
+          primary={true}
+          onTouchTap={this.handleDialogOk}
+        />,
+      ];
 
       let numList = [];
       let optList = [];
@@ -194,7 +259,8 @@ export default class AddPropertyTemplate extends React.Component {
 
        if (this.state.status &&  this.state.status == 1  ) {
           isShowSaving = <div className="saving-cls">Successfully saved...!</div>;
-          this.context.router.replace('/propertylist' );
+          //this.context.router.replace('/propertylist' );
+          //browserHistory.push('/propertylist');
        }
        else if(this.state.status &&  this.state.status == 2){
          isShowSaving = <div className="warning-cls">Could not save the data, Please verify your data before save</div>;
@@ -234,6 +300,28 @@ export default class AddPropertyTemplate extends React.Component {
 
             </div>
 
+
+            <Snackbar
+              open={this.state.showErrorSnack}
+              message= "Something went wrong..."
+              autoHideDuration={3000}
+              onRequestClose={this.errhandleRequestClose.bind(this)} />
+
+            <Snackbar
+              open={this.state.showSuccessSnack}
+              message="Welcome to PropertyGround!"
+              autoHideDuration={3000}
+              onRequestClose={this.successhandleRequestClose.bind(this)} />
+
+              <Dialog
+                actions={modal_actions}
+                modal={false}
+                open={this.state.showdialog}
+                onRequestClose={this.handleDialogClose}
+                contentStyle ={styles.dialog}
+              >
+                Successfully updated
+              </Dialog>
 
 
           </form>

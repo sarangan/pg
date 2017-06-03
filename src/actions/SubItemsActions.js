@@ -18,6 +18,7 @@ export function fetchSubitemslist(property_id, prop_master_id) {
           }
         })
         .then(function (response) {
+          console.log(response);
           dispatcher.dispatch({
             type: "GET_SUBITEMSLIST",
             data: response.data,
