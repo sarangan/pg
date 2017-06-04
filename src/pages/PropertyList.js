@@ -12,6 +12,10 @@ import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 import {pink500, grey200, grey500, amber100, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import RaisedButton from 'material-ui/RaisedButton';
+import BackIcon from 'material-ui/svg-icons/image/navigate-before';
+import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
@@ -34,7 +38,9 @@ export default class PropertyList extends React.Component {
         multiSelectable: false,
         enableSelectAll: false,
         deselectOnClickaway: true,
-        showCheckboxes: false
+        showCheckboxes: false,
+        page : 1,
+        templist: []
       };
   }
 
@@ -49,14 +55,17 @@ export default class PropertyList extends React.Component {
   getList() {
 
     let list = PropertyListStore.getList();
+    let pageno = list.length >= 10? 10: list.length;
     if(list){
       this.setState({
-        list: list
+        list: list,
+        templist: list.slice(0, pageno)
       });
     }
     else{
       this.setState({
-        list: []
+        list: [],
+        templist: []
       });
     }
 
@@ -78,6 +87,35 @@ export default class PropertyList extends React.Component {
   generateReport(property_id){
     console.log(property_id);
     PropertyListActions.generateReport(property_id);
+  };
+
+  navigate = (nextpage) => {
+
+    let total_pages = Math.ceil( this.state.list.length / 10);
+    let page = this.state.page + nextpage;
+
+    if(page <= 0 ){
+      page = 1;
+    }
+
+    if(page >= total_pages ){
+      page = total_pages;
+    }
+
+    let cursorstate = (page-1) * 10;
+    let lastindex = cursorstate + 10;
+    if(lastindex >= this.state.list.length){
+      lastindex = this.state.list.length + 1;
+    }
+
+
+
+    this.setState({
+      templist : this.state.list.slice( cursorstate,  lastindex ),
+      page : page
+    });
+
+
   };
 
   render() {
@@ -189,6 +227,10 @@ export default class PropertyList extends React.Component {
         tblProgress: {
           margin: '50px auto',
           textAlign: 'center'
+        },
+        navbtn: {
+          width: 30,
+          marginRight: 10
         }
     };
 
@@ -239,7 +281,7 @@ export default class PropertyList extends React.Component {
                 showRowHover={this.state.showRowHover}
                 stripedRows={this.state.stripedRows} >
 
-              {this.state.list.map(item =>
+              {this.state.templist.map(item =>
                 <TableRow key={item.property_id}>
                   <TableRowColumn style={styles.columns.address.column}>{item.address_1 +  ' ' +  item.address_2}</TableRowColumn>
                   <TableRowColumn style={styles.columns.city.column}>{item.city}</TableRowColumn>
@@ -277,6 +319,19 @@ export default class PropertyList extends React.Component {
               )}
             </TableBody>
           </Table>
+
+           <Toolbar style={{marginTop: 10, marginBottom: 20}}>
+             <ToolbarGroup>
+               <ToolbarTitle text={"Results found: " + (this.state.list? this.state.list.length.toString() : '0') } />
+               <ToolbarSeparator style={{marginRight: 10}}/>
+               <ToolbarTitle text={"Page: " + (this.state.page) }  />
+               </ToolbarGroup>
+               <ToolbarGroup lastChild={true}>
+
+                <RaisedButton icon={<BackIcon />} primary={true} onTouchTap={()=>this.navigate(-1) }/>
+                <RaisedButton icon={<ForwardIcon />} primary={true} style={styles.navbtn} onTouchTap={()=>this.navigate(1) }/>
+             </ToolbarGroup>
+           </Toolbar>
 
           {isShowLoading}
 
