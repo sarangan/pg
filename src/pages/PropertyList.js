@@ -306,14 +306,27 @@ export default class PropertyList extends React.Component {
 
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.view.column}>
-                    <Link className="button" to={{ pathname: '/propertyroomlist', query: { property_id: item.property_id } }} >
-                      <FloatingActionButton zDepth={0}
-                                            mini={true}
-                                            backgroundColor={grey200}
-                                            iconStyle={styles.viewButton}>
-                        <ContentCreate />
-                      </FloatingActionButton>
-                    </Link>
+                    { item.total_rooms > 0 &&
+                      <Link className="button" to={{ pathname: '/propertyroomlist', query: { property_id: item.property_id } }} >
+                        <FloatingActionButton zDepth={0}
+                                              mini={true}
+                                              backgroundColor={grey200}
+                                              iconStyle={styles.viewButton}>
+                          <ContentCreate />
+                        </FloatingActionButton>
+                      </Link>
+                    }
+                    { item.total_rooms == 0 &&
+                      <Link className="button" to={{ pathname: '/addpropertytemplate', query: { property_id: item.property_id } }} >
+                        <FloatingActionButton zDepth={0}
+                                              mini={true}
+                                              backgroundColor={grey200}
+                                              iconStyle={styles.viewButton}>
+                          <ContentCreate />
+                        </FloatingActionButton>
+                      </Link>
+                    }
+
                   </TableRowColumn>
                 </TableRow>
               )}
