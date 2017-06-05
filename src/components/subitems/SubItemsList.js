@@ -140,7 +140,7 @@ export default class SubItemsList extends React.Component {
             key={item.prop_subitem_id}
             photos={sub_photos[item.prop_subitem_id]} on_drop={this.handleDrop.bind(this)} on_drag={this.handleDrag.bind(this)} dragging={this.state.dragging}
             on_drag_start={this.handleDragStart.bind(this)} item_id={item.prop_subitem_id} photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}
-            releaseDragging={this.handleReleaseDragging.bind(this)}/>
+            releaseDragging={this.handleReleaseDragging.bind(this)} showprogress={this.props.showprogress}/>
         );
       }
       else{
@@ -153,7 +153,7 @@ export default class SubItemsList extends React.Component {
         generalItem = <GeneralItemElement data={gen_data} title={item.item_name} handleInputChange={this.props.handleInputChange} key={item.prop_subitem_id} photos={gen_photos}
         on_drag={this.handleDrag.bind(this)} on_drop={this.handleDrop.bind(this)} on_drag_start={this.handleDragStart.bind(this)}  photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}
         voices={this.props.voices}
-        releaseDragging={this.handleReleaseDragging.bind(this)} />
+        releaseDragging={this.handleReleaseDragging.bind(this)} showprogress={this.props.showprogress} />
       }
 
 

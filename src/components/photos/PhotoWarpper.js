@@ -29,8 +29,18 @@ export default class PhotoWarpper extends React.Component {
 
       if(this.props.photos &&  nextProps.photos){
 
-        if( (this.props.photos.length != nextProps.photos.length) && (nextProps.photos.length > 0)  ){
+        // console.log('-----------------');
+        // console.log(this.props.photos.length);
+        // console.log(nextProps.photos.length);
+        // console.log('-----------------');
 
+        if( (this.props.photos.length != nextProps.photos.length) && (nextProps.photos.length > 0)  ){
+          console.log('satisfy ');
+          this.setState({
+            uploading: false
+          });
+        }
+        else if( nextProps.showprogress == false ){
           this.setState({
             uploading: false
           });

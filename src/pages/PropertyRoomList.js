@@ -1444,16 +1444,18 @@ export default class PropertyRoomList extends React.Component {
     else if(this.state.sidebarState == 'SUB'){
       right_div = <SubItemsList generalcomment={this.state.sub_items.gen_comment} list={this.state.sub_items.list} voices={this.state.sub_items.voices} title={this.state.formTitle}
         handleInputChange={this.subItems_handleInputChange} handleSubmit={this.subItems_handleSubmit} photos={this.state.photos} dragDropPhoto={this.handleDargDropPhoto.bind(this)}
-        photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} voices={this.state.voices}/>
+        photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} voices={this.state.voices} showprogress={this.state.startSending} />
     }
     else if(this.state.sidebarState == 'ITEM'){
       right_div = <SingleItem title={this.state.formTitle} data={this.state.single_item} handleInputChange={this.singleItem_handleInputChange} handleSubmit={this.singleItem_handleSubmit}
          photos={this.state.photos} photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} master_id={this.state.master_id}
+         showprogress={this.state.startSending}
         />
     }
     else if(this.state.sidebarState == 'METER'){
       right_div = <MeterItems list={this.state.meter_items.meter_list} handleInputChange={this.meterItems_handleInputChange} handleSubmit={this.meterItems_handleSubmit}
         photos={this.state.photos} photoDelete={this.handlePhotoDelete.bind(this)} photoUpload={this.handleUploadPhoto.bind(this)} master_id={this.state.master_id}
+        showprogress={this.state.startSending}
         />
     }
     else if(this.state.sidebarState == 'SIG'){
