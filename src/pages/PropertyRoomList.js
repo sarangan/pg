@@ -812,8 +812,7 @@ export default class PropertyRoomList extends React.Component {
   //get single item from api
   getSingleItem(){
       let single_item = SingleItemStore.getItem();
-      //console.log(single_item);
-      let temp = {
+      let temp_single_item = {
         reading_value: '',
         option: '',
         description: '',
@@ -821,22 +820,27 @@ export default class PropertyRoomList extends React.Component {
         prop_feedback_id: ''
       };
 
-      // if(single_item){
-      //
-      //   let temp = {
-      //     reading_value: '',
-      //     option: (single_item.hasOwnProperty('option') )?single_item.option:'',
-      //     description: (single_item.hasOwnProperty('description') )?single_item.description:'',
-      //     comment: (single_item.hasOwnProperty('comment') )? single_item.comment: '',
-      //     prop_feedback_id: (single_item.hasOwnProperty('prop_feedback_id') ) ? single_item.prop_feedback_id : ''
-      //   };
-      //
-      // }
+      if(single_item){
+
+        if(Object.keys(single_item).length === 0 && single_item.constructor === Object){
+
+        }
+        else{
+          temp_single_item = {
+            reading_value: '',
+            option: (single_item.hasOwnProperty('option') )?single_item.option:'',
+            description: (single_item.hasOwnProperty('description') )?single_item.description:'',
+            comment: (single_item.hasOwnProperty('comment') )? single_item.comment: '',
+            prop_feedback_id: (single_item.hasOwnProperty('prop_feedback_id') ) ? single_item.prop_feedback_id : ''
+          };
+        }
+
+      }
 
       //console.log(temp);
 
       this.setState({
-         single_item: single_item,
+         single_item: temp_single_item,
          startSending: false
       });
       //this.forceUpdate();

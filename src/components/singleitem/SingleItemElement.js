@@ -84,6 +84,16 @@ export default class SingleItemElement extends React.Component {
       </div>
     }
     else if( (this.props.type == 'ITEM')  ||  (this.props.type == 'SUB') ){
+      let defaultSelected = '';
+      // if(this.props.data){
+      //   if(Object.keys(this.props.data).length === 0 && this.props.data.constructor === Object){
+      //     if(this.props.data.hasOwnProperty('option')){
+      //       defaultSelected = this.props.data.option?this.props.data.option:'';
+      //     }
+      //   }
+      // }
+
+
       meterorItem= <div>
                       <h4>Condition:</h4>
                       <RadioButtonGroup name={ this.props.type == 'ITEM'? 'option' : this.props.data.item_id +';'+ 'option'} defaultSelected={this.props.data.option} valueSelected={String(this.props.data.option).toUpperCase()} className="clear-float" onChange={this.props.handleInputChange}>
