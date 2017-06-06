@@ -108,6 +108,10 @@ export default class ReportSettings extends React.Component {
   getReportSettings(){
 
     let settings = ReportSettingsStore.getSettings();
+    
+    this.setState({
+      report_settings_notes: ReportSettingsStore.getSettingsNotes()
+    });
 
     if(typeof settings != 'undefined'){
 
@@ -139,7 +143,6 @@ export default class ReportSettings extends React.Component {
       this.setState({
         formValues,
         coverpage_enable: settings.include_cover_page == 1? true: false,
-        report_settings_notes: ReportSettingsStore.getSettingsNotes(),
         startSending: false,
       });
 
@@ -153,6 +156,8 @@ export default class ReportSettings extends React.Component {
         startSending: false
       });
     }
+
+
 
 
     if(this.state.report_settings_notes.length == 0 || !this.state.report_settings_notes){
