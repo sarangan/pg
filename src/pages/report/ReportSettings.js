@@ -155,7 +155,7 @@ export default class ReportSettings extends React.Component {
     }
 
 
-    if(this.state.report_settings_notes.length == 0 && this.state.report_settings_notes){
+    if(this.state.report_settings_notes.length == 0 || !this.state.report_settings_notes){
 
       let general_notes = {
         '1': "Check-in Report",
