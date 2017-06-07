@@ -222,6 +222,13 @@ export default class GeneralconditionTemplate extends React.Component {
        saveButton: {
          marginLeft: 5,
          marginRight: 10
+       },
+       genblock: {
+         boxShadow: 'rgba(0, 0, 0, 0.118) 0px 1px 6px, rgba(0, 0, 0, 0.118) 0px 1px 4px',
+         borderRadius: 2,
+         padding: 10,
+         marginBottom: 30,
+         marginTop: 20,
        }
 
 
@@ -282,7 +289,7 @@ export default class GeneralconditionTemplate extends React.Component {
         generalItemCollection.push(item);
 
           item_list.push(
-            <div key={item.com_general_id} className="gen-list">
+            <div key={item.com_general_id} className="gen-list" style={styles.genblock}>
               <IconMenu className="vertbtn"
                   iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                   anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -294,7 +301,6 @@ export default class GeneralconditionTemplate extends React.Component {
 
                 <GeneralChipElement chipData={item.options.split(';')} title ={item.item_name} genid={item.com_general_id} handleGeneralChipDelete={this.props.handleGeneralChipDelete} addNewOpt={this.props.addNewOpt}/>
 
-            <Divider />
             </div>
           );
 

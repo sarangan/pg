@@ -108,7 +108,7 @@ export default class ReportSettings extends React.Component {
   getReportSettings(){
 
     let settings = ReportSettingsStore.getSettings();
-    
+
     this.setState({
       report_settings_notes: ReportSettingsStore.getSettingsNotes()
     });
@@ -956,7 +956,7 @@ export default class ReportSettings extends React.Component {
 
 
     return (
-      <PageBase title="Report settings" navigation="Home / Report settings">
+      <PageBase title="Report settings" navigation="">
 
         {isShowSaving}
 

@@ -236,7 +236,7 @@ export default class AddNewProperty extends React.Component {
 
     return (
 
-        <PageBase title="Add New Property" navigation="Home / Add New Property">
+        <PageBase title="Add New Property" navigation="">
 
           {isShowSaving}
 

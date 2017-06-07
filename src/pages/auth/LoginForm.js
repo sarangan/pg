@@ -83,7 +83,7 @@ export default class LoginForm extends React.Component{
         isLogin: true
       });
       console.log('login success');
-      browserHistory.push('/propertylist')
+      browserHistory.push('/dashboard')
     }
     else{
       let lgerr = LoginStore.getLoginError();

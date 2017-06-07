@@ -6,7 +6,9 @@ import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router';
 import Avatar from 'material-ui/Avatar';
 import HomeIcon from 'material-ui/svg-icons/action/home';
-import PropertyListIcon from 'material-ui/svg-icons/action/account-balance';
+import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import PropertyListIcon from 'material-ui/svg-icons/social/location-city';
+import PropertyAddIcon from 'material-ui/svg-icons/action/account-balance';
 import TemplateIcon from 'material-ui/svg-icons/av/web';
 import ReportIcon from 'material-ui/svg-icons/editor/insert-drive-file';
 
@@ -18,9 +20,10 @@ export default class LeftDrawer extends React.Component {
 
     this.menus = [ {text: 'Home', icon: <HomeIcon/>,  link: '/'  },
                   {text: 'Property List', icon: <PropertyListIcon/>,  link: 'propertylist'  },
+                  {text: 'Add new property', icon: <PropertyAddIcon/>,  link: 'addnewproperty'  },
                   {text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  },
                   {text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings'  },
-                  {text: 'Settings', icon: <HomeIcon/>,  link: '/'  }
+                  {text: 'Settings', icon: <SettingsIcon/>,  link: '/'  }
               ];
 
   }
@@ -39,6 +42,7 @@ export default class LeftDrawer extends React.Component {
            backgroundColor: blue600,
            paddingLeft: 40,
            height: 56,
+           fontWeight: 700
          },
          menuItem: {
            color: '#757575',
@@ -61,8 +65,12 @@ export default class LeftDrawer extends React.Component {
              paddingTop: 12,
              display: 'block',
              color: 'white',
-             fontWeight: 300,
-             textShadow: '1px 1px #444'
+             fontWeight: 500,
+             textShadow: '1px 1px #444',
+             maxWidth: 150,
+             overflow: 'hidden',
+             textOverflow: 'ellipsis',
+             whiteSpace: 'nowrap'
            }
          }
        };
@@ -72,10 +80,10 @@ export default class LeftDrawer extends React.Component {
            docked={true}
            open={navDrawerOpen}>
              <div style={styles.logo}>
-              { new Date().toDateString()}
+               PropertyGround
              </div>
              <div style={styles.avatar.div}>
-               <Avatar src="http://www.material-ui.com/images/uxceo-128.jpg"
+               <Avatar src="images/user.png"
                        size={50}
                        style={styles.avatar.icon}/>
                <span style={styles.avatar.span}>{this.props.username}</span>

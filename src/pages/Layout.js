@@ -9,6 +9,7 @@ import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 
 import {blue500} from 'material-ui/styles/colors';
 import loginauth from '../auth/loginauth';
+import MyPath from '../utils/settings';
 
 class Layout extends React.Component {
 
@@ -58,10 +59,10 @@ class Layout extends React.Component {
         content = <MuiThemeProvider muiTheme={muiTheme}>
                     <div>
                       <Header styles={styles.header}
-                              handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}/>
+                              handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)} com_path={MyPath.PATH}/>
 
                         <LeftDrawer navDrawerOpen={navDrawerOpen}
-                                    username="User Admin"/>
+                                    username={loginauth.USER.first_name + ' ' + loginauth.USER.last_name }/>
 
                         <div style={styles.container}>
                           {this.props.children}

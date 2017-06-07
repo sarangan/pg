@@ -82,7 +82,7 @@ export default class SingleItemElementTemplate extends React.Component {
 
   render() {
 
-    const styles = {
+     const styles = {
       deletebtn:{
         color: yellow400
       },
@@ -94,6 +94,7 @@ export default class SingleItemElementTemplate extends React.Component {
       },
       addTextContainer: {
         paddingLeft: 20,
+
       },
       dialog: {
         width: 350

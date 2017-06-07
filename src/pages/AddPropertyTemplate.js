@@ -269,7 +269,7 @@ export default class AddPropertyTemplate extends React.Component {
 
       return(
 
-        <PageBase title="New Inventory" navigation="Home / New Inventory">
+        <PageBase title="New Inventory" navigation="">
 
           {isShowSaving}
 

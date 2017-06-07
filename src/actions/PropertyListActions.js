@@ -104,3 +104,30 @@ export function generateReport(property_id) {
         });
 
 }
+
+export function fetchRecent() {
+
+  var url = config.ENDPOINT_URL + 'recentprops';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': loginauth.AUTHTOKEN
+           },
+          data: {
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+
+          dispatcher.dispatch({
+            type: "GET_PROPERTYRECENT",
+            data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}

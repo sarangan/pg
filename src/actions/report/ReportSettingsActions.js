@@ -42,6 +42,7 @@ export function updateReportSettings(report_settings, report_settings_notes) {
            }
         })
         .then(function (response) {
+          console.log(response);
           dispatcher.dispatch({
             type: "UPDATE_REPORT_SETTINGS",
             data: response.data,

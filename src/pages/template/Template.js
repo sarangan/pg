@@ -26,7 +26,10 @@ import FlatButton from 'material-ui/FlatButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
 import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'react-sortable-hoc';
-
+import Delete from 'material-ui/svg-icons/action/delete';
+import Edit from 'material-ui/svg-icons/content/create';
+import EnableIcon from 'material-ui/svg-icons/action/visibility';
+import DisableIcon from 'material-ui/svg-icons/action/visibility-off';
 
 import * as TemplateListActions from "../../actions/template/TemplateListActions";
 import TemplateListStore from "../../stores/template/TemplateListStore";
@@ -99,7 +102,12 @@ export default class Template extends React.Component {
       dialog: false,
       addNewItem: '',
       itemType: 'ITEM',
-      enableSort: false
+      enableSort: false,
+      showDelMasterItemdlg: false,
+      showRenameMasterItemdlg: false,
+      showCopyMasterItemdlg: false,
+      dlgMaster_id : '',
+      master_item_re_name: '',
     };
 
     GeneralconditionTemplateActions.getGeneralConditionsTemplate();
@@ -921,6 +929,54 @@ export default class Template extends React.Component {
   *
   */
 
+  /* --------------------- Dialog settings START------------------------*/
+  handleChangeMasterRename = (event) => {
+    this.setState({
+      master_item_re_name: event.target.value,
+    });
+  };
+
+  handleMasterDelDlgOpen(master_id){
+    this.setState({
+        showDelMasterItemdlg: true,
+        dlgMaster_id: master_id
+    });
+  };
+
+  handleMasterDelDlgClose = () => {
+    this.setState({showDelMasterItemdlg: false,
+      dlgMaster_id: ''
+    });
+  };
+
+  handleMasterDelDlgOk(){
+    this.setState({showDelMasterItemdlg: false});
+    this.handleDeleteMasterItem(this.state.dlgMaster_id);
+  }
+
+
+  handleMasterRenameDlgOpen(master_id, master_name){
+    this.setState({
+        showRenameMasterItemdlg: true,
+        dlgMaster_id: master_id,
+        master_item_re_name: master_name
+    });
+  };
+
+  handleMasterRenameDlgClose = () => {
+    this.setState({
+      showRenameMasterItemdlg: false,
+      dlgMaster_id: '',
+      master_item_re_name: ''
+    });
+  };
+
+  handleMasterRenameDlgOk(){
+    this.setState({showRenameMasterItemdlg: false});
+    this.handleUpdateMasterItem(this.state.dlgMaster_id, this.state.master_item_re_name, 'name');
+  }
+    /* --------------------- Dialog settings START------------------------*/
+
   handleDialogOpen = () => {
     this.setState({dialog: true});
   };
@@ -1151,7 +1207,7 @@ export default class Template extends React.Component {
       optAdd:{
         marginTop: 10,
         marginBottom: 10,
-        width: '95%'
+        width: '61%'
       },
       dialog: {
         width: 350
@@ -1201,6 +1257,32 @@ export default class Template extends React.Component {
           />
     ];
 
+    const del_modal_actions = [
+      <FlatButton
+        label="No"
+        primary={true}
+        onTouchTap={this.handleMasterDelDlgClose}
+      />,
+      <FlatButton
+        label="Yes"
+        primary={true}
+        onTouchTap={this.handleMasterDelDlgOk.bind(this)}
+      />,
+    ];
+
+    const rename_modal_actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleMasterRenameDlgClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleMasterRenameDlgOk.bind(this)}
+      />,
+    ];
+
     const iconButtonElement = (
       <IconButton
         touch={true}
@@ -1210,12 +1292,7 @@ export default class Template extends React.Component {
       </IconButton>
     );
 
-    const rightIconMenu = (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Delete</MenuItem>
-      </IconMenu>
-    );
+
 
     let isShowSaving = null;
     if (this.state.startSending &&  this.state.startSending == true  ) {
@@ -1279,9 +1356,23 @@ export default class Template extends React.Component {
       let item = this.state.templatelist[i];
 
       let mycolor = teal200;
+      let statusTxt = 'Disable';
+      let statusIcon = <DisableIcon />;
+      let statusVar = (item.status == 1)?true:false;
       if(item.status != 1){
         mycolor = yellow600;
+        statusTxt = 'Enable';
+        statusIcon = <EnableIcon />;
       }
+
+
+      let rightIconMenu = (
+        <IconMenu iconButtonElement={iconButtonElement}>
+          <MenuItem primaryText="Rename" leftIcon={<Edit />} onTouchTap={this.handleMasterRenameDlgOpen.bind(this, item.com_master_id, item.item_name)} />
+          <MenuItem primaryText="Delete" leftIcon={<Delete />} onTouchTap={this.handleMasterDelDlgOpen.bind(this, item.com_master_id)} />
+          <MenuItem primaryText={statusTxt} leftIcon={statusIcon} onTouchTap={this.handleUpdateMasterItem.bind(this, item.com_master_id, !statusVar , 'status' )} />
+        </IconMenu>
+      );
 
       sidebaritems.push(
         <ListItem key={item.com_master_id}
@@ -1365,7 +1456,7 @@ export default class Template extends React.Component {
           <div style={styles.buttonsrtl}>
                <FlatButton
                  onClick={this.handleEnableSort.bind(this)}
-                 label="Back"
+                 label="Done"
                  primary={true}
                />
 
@@ -1376,7 +1467,7 @@ export default class Template extends React.Component {
     </div>;
 
     return(
-      <PageBase title="Room List Template" navigation="Home / Template / Room list Template">
+      <PageBase title="Room List Template" navigation="">
 
         <div className="control-wrapper-container">
 
@@ -1408,6 +1499,32 @@ export default class Template extends React.Component {
           </div>
 
         </div>
+
+        <Dialog
+          actions={del_modal_actions}
+          modal={false}
+          open={this.state.showDelMasterItemdlg}
+          onRequestClose={this.handleMasterDelDlgClose}
+          contentStyle ={styles.dialog}
+        >
+          Are you sure do you want to delete this item?
+        </Dialog>
+
+        <Dialog
+          actions={rename_modal_actions}
+          modal={false}
+          open={this.state.showRenameMasterItemdlg}
+          onRequestClose={this.handleMasterRenameDlgClose}
+          contentStyle ={styles.dialog}
+        >
+          <TextField
+            hintText="Room name"
+            value={this.state.master_item_re_name}
+            floatingLabelText="Rename item"
+            onChange={this.handleChangeMasterRename}
+          />
+        </Dialog>
+
 
         <Snackbar
           open={this.state.showErrorSnack}

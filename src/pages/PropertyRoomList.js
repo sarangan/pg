@@ -1573,7 +1573,7 @@ export default class PropertyRoomList extends React.Component {
 
 
     return(
-      <PageBase title="Room List" navigation="Home / Property / Room list">
+      <PageBase title="Room List" navigation="">
 
         <div className="control-wrapper-container">
 
@@ -1605,7 +1605,7 @@ export default class PropertyRoomList extends React.Component {
           onRequestClose={this.handleMasterDelDlgClose}
           contentStyle ={styles.dialog}
         >
-          Are you sure do you want to delete this room?
+          Are you sure do you want to delete this item?
         </Dialog>
 
         <Dialog
@@ -1618,7 +1618,7 @@ export default class PropertyRoomList extends React.Component {
           <TextField
             hintText="Room name"
             value={this.state.master_item_re_name}
-            floatingLabelText="Rename name"
+            floatingLabelText="Rename item"
             onChange={this.handleChangeMasterRename}
           />
         </Dialog>

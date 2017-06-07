@@ -124,8 +124,8 @@ export default class PropertyList extends React.Component {
         floatingActionButton: {
           margin: 0,
           top: 'auto',
-          right: 20,
-          bottom: 20,
+          right: 50,
+          bottom: 50,
           left: 'auto',
           position: 'fixed',
         },
@@ -246,7 +246,7 @@ export default class PropertyList extends React.Component {
 
     return (
 
-      <PageBase title="Property List" navigation="Home / Property List">
+      <PageBase title="Property List" navigation="">
 
           <Link to="/addnewproperty">
             <FloatingActionButton style={styles.floatingActionButton}  iconStyle={{backgroundColor: pink500}}>
