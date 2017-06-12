@@ -36,7 +36,7 @@ export default class Signup extends React.Component{
       telephone: '',
       errMessage: '',
       validateErr: '',
-        showdialog: false,
+      showdialog: false,
     };
 
     this.getRegisterStatus = this.getRegisterStatus.bind(this);

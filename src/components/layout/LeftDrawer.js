@@ -11,6 +11,7 @@ import PropertyListIcon from 'material-ui/svg-icons/social/location-city';
 import PropertyAddIcon from 'material-ui/svg-icons/action/account-balance';
 import TemplateIcon from 'material-ui/svg-icons/av/web';
 import ReportIcon from 'material-ui/svg-icons/editor/insert-drive-file';
+import UsersIcon from 'material-ui/svg-icons/social/people';
 
 
 export default class LeftDrawer extends React.Component {
@@ -23,6 +24,7 @@ export default class LeftDrawer extends React.Component {
                   {text: 'Add new property', icon: <PropertyAddIcon/>,  link: 'addnewproperty'  },
                   {text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  },
                   {text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings'  },
+                  {text: 'Users', icon: <UsersIcon/>,  link: 'users'  },
                   {text: 'Settings', icon: <SettingsIcon/>,  link: '/'  }
               ];
 

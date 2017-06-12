@@ -40,7 +40,8 @@ export default class PropertyList extends React.Component {
         deselectOnClickaway: true,
         showCheckboxes: false,
         page : 1,
-        templist: []
+        templist: [],
+        showProgress: true
       };
   }
 
@@ -59,13 +60,15 @@ export default class PropertyList extends React.Component {
     if(list){
       this.setState({
         list: list,
-        templist: list.slice(0, pageno)
+        templist: list.slice(0, pageno),
+        showProgress: false
       });
     }
     else{
       this.setState({
         list: [],
-        templist: []
+        templist: [],
+        showProgress: false
       });
     }
 
@@ -107,8 +110,6 @@ export default class PropertyList extends React.Component {
     if(lastindex >= this.state.list.length){
       lastindex = this.state.list.length + 1;
     }
-
-
 
     this.setState({
       templist : this.state.list.slice( cursorstate,  lastindex ),
@@ -237,7 +238,7 @@ export default class PropertyList extends React.Component {
     console.log(this.state.list);
 
       let isShowLoading = null;
-       if (this.state.list.length >= 0 || this.state.list ) {
+       if (this.state.showProgress == false ) {
          isShowLoading = '';
        } else {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;
@@ -280,6 +281,7 @@ export default class PropertyList extends React.Component {
                 deselectOnClickaway={this.state.deselectOnClickaway}
                 showRowHover={this.state.showRowHover}
                 stripedRows={this.state.stripedRows} >
+
 
               {this.state.templist.map(item =>
                 <TableRow key={item.property_id}>
@@ -332,7 +334,7 @@ export default class PropertyList extends React.Component {
               )}
             </TableBody>
           </Table>
-
+          {isShowLoading}
            <Toolbar style={{marginTop: 10, marginBottom: 20}}>
              <ToolbarGroup>
                <ToolbarTitle text={"Results found: " + (this.state.list? this.state.list.length.toString() : '0') } />
@@ -346,7 +348,7 @@ export default class PropertyList extends React.Component {
              </ToolbarGroup>
            </Toolbar>
 
-          {isShowLoading}
+
 
       </PageBase>
 

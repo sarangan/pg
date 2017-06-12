@@ -11,6 +11,9 @@ class LoginStore extends EventEmitter {
     this.isLogout = false;
     this.registererr  = '';
     this.registerAccountStatus = false;
+    this.users = [];
+    this.deleteUserStatus = false;
+    this.addUserStatus = false;
   }
 
   getLoginStatus() {
@@ -35,6 +38,18 @@ class LoginStore extends EventEmitter {
 
   getRegisterError(){
     return this.registererr;
+  }
+
+  getUsers(){
+    return this.users;
+  }
+
+  getDeleteUserStatus(){
+    return this.deleteUserStatus;
+  }
+
+  getAddUserStatus(){
+    return this.addUserStatus;
   }
 
   handleActions(action) {
@@ -87,6 +102,9 @@ class LoginStore extends EventEmitter {
           this.isLogout = false;
           this.registererr  = '';
           this.registerAccountStatus =  false;
+          this.users  = [];
+          this.deleteUserStatus = false;
+          this.addUserStatus = false;
           this.emit("change");
           break;
 
@@ -94,6 +112,7 @@ class LoginStore extends EventEmitter {
       case "LOGOUT": {
         if(action.data.status){
           this.userDetails = {};
+          this.users  = [];
           this.isLogin = false;
           this.loginerr  = '';
           this.isLogout = true;
@@ -101,7 +120,9 @@ class LoginStore extends EventEmitter {
           loginauth["ISLOGIN"] =  false;
           loginauth["USER"] =  {};
           this.registererr  = '';
+          this.deleteUserStatus = false;
           this.registerAccountStatus =  false;
+          this.addUserStatus = false;
           sessionStorage.removeItem('pgauth');
         }
         this.emit("change");
@@ -119,17 +140,90 @@ class LoginStore extends EventEmitter {
           this.registerAccountStatus =  false;
 
           this.userDetails = {};
+          this.users  = [];
           this.isLogin = false;
           this.loginerr  = '';
+          this.deleteUserStatus = false;
           this.isLogout = true;
           loginauth["AUTHTOKEN"] = "";
           loginauth["ISLOGIN"] =  false;
           loginauth["USER"] =  {};
+          this.addUserStatus = false;
           sessionStorage.removeItem('pgauth');
         }
         this.emit('change');
         break;
       }
+
+      case "GET_USERS": {
+          this.users = action.data.users;
+          this.userDetails = {};
+          this.isLogin = false;
+          this.loginerr  = '';
+          this.isLogout = false;
+          loginauth["AUTHTOKEN"] = "";
+          loginauth["ISLOGIN"] =  false;
+          loginauth["USER"] =  {};
+          this.deleteUserStatus = false;
+          this.registererr  = '';
+          this.registerAccountStatus =  false;
+          this.addUserStatus = false;
+
+        this.emit("change");
+        break;
+      }
+
+      case "DELETE_USER": {
+
+        if(action.data.status == 1){
+          this.deleteUserStatus = true;
+        }
+        else{
+            this.deleteUserStatus = false;
+        }
+
+          this.users = [];
+          this.userDetails = {};
+          this.isLogin = false;
+          this.loginerr  = '';
+          this.isLogout = false;
+          loginauth["AUTHTOKEN"] = "";
+          loginauth["ISLOGIN"] =  false;
+          loginauth["USER"] =  {};
+          this.registererr  = '';
+          this.registerAccountStatus =  false;
+          this.addUserStatus = false;
+
+        this.emit("change");
+        break;
+      }
+
+      case "ADD_USER": {
+
+        if(action.data.status == 1){
+          this.addUserStatus = true;
+        }
+        else{
+          this.addUserStatus = false;
+        }
+          this.deleteUserStatus = false;
+          this.users = [];
+          this.userDetails = {};
+          this.isLogin = false;
+          this.loginerr  = '';
+          this.isLogout = false;
+          loginauth["AUTHTOKEN"] = "";
+          loginauth["ISLOGIN"] =  false;
+          loginauth["USER"] =  {};
+          this.registererr  = '';
+          this.registerAccountStatus =  false;
+
+        this.emit("change");
+        break;
+      }
+
+
+
 
     }
 
