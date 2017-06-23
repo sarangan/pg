@@ -59,6 +59,7 @@ class PhotosStore extends EventEmitter {
         this.deletePhotoStatus = null;
         this.updateDnDStatus = null;
         this.emit("change");
+        
         break;
       }
 

@@ -124,7 +124,7 @@ export default class SubItemsList extends React.Component {
     let generalItem = null;
     for(let i =0, l = this.props.list.length; i < l; i++){
       let item = this.props.list[i];
-      console.log(item);
+      //console.log(item);
       let data = {
         reading_value: '',
         option: item.option?item.option:'',

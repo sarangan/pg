@@ -27,7 +27,7 @@ export default class Users extends React.Component{
     super(props);
     this.state ={
       showSuccessSnack: false,
-      startSending: false,
+      startSending: true,
       showErrorSnack: false,
       users: [],
       first_name: '',
@@ -82,6 +82,7 @@ export default class Users extends React.Component{
         showSuccessSnack: true,
         startSending: false
       });
+      LoginAuthActions.fetchUsers();
     }
   }
 
@@ -152,16 +153,18 @@ export default class Users extends React.Component{
   getRegisterStatus(){
     let status = LoginStore.getAddUserStatus();
     console.log(status);
-    if(status){
+    if(status == true){
       this.setState({
         showSuccessSnack: true,
         showErrorSnack: false,
         startSending: false,
       });
       console.log('registration success');
-      //browserHistory.push('/login')
+      LoginAuthActions.fetchUsers();
+      this.handleToggleAddNewUser();
+
     }
-    else{
+    else if( status == false){
         this.setState({
           startSending: false,
           showSuccessSnack: false,
@@ -208,6 +211,7 @@ export default class Users extends React.Component{
   handleSignup(event){
     event.preventDefault();
     event.stopPropagation();
+    console.log("register submit");
 
     let passvalid = this.checkPwd(this.state.password);
 
@@ -407,9 +411,11 @@ export default class Users extends React.Component{
                     <TableRowColumn>{row.email}</TableRowColumn>
                     <TableRowColumn>{row.contact}</TableRowColumn>
                     <TableRowColumn>
-                      <IconButton onTouchTap={this.handleMasterDelDlgOpen.bind(this, row.id, row.first_name)}>
-                        <DeleteIcon />
-                      </IconButton>
+                      { row.type != 'ADMIN' &&
+                        <IconButton onTouchTap={this.handleMasterDelDlgOpen.bind(this, row.id, row.first_name)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      }
                     </TableRowColumn>
                   </TableRow>
                 ))

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from "react";
 import IconButton from 'material-ui/IconButton';
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle';
 import ZoomIcon from 'material-ui/svg-icons/image/loupe';
+import RefreshIcon from 'material-ui/svg-icons/navigation/refresh';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -14,6 +15,8 @@ export default class PhotoItem extends React.Component {
       show: false,
       deldialog: false,
       del_photo_id: '',
+      checktime: 0,
+      isImgFaill: false
     };
 
   }
@@ -60,6 +63,29 @@ export default class PhotoItem extends React.Component {
     }
   }
 
+  handleImageLoaded() {
+    this.setState({isImgFaill: false});
+
+ }
+
+ handleImageErrored() {
+
+   this.setState({isImgFaill: true});
+
+    if(this.state.checktime == 0){
+
+      this.image.src = this.props.image_url;
+      this.setState({
+        checktime: 1
+      });
+    }
+
+ }
+
+ handleRefreshImage(){
+     this.image.src = this.props.image_url;
+ }
+
 
   render() {
 
@@ -95,6 +121,17 @@ export default class PhotoItem extends React.Component {
       dialog: {
         width: 350
       },
+      refreshBtn: {
+        position: 'absolute',
+        left: '45%',
+        transform: 'translate(-50%, -50%)',
+        top: '50%',
+
+      },
+      refreshBtnIcon: {
+        width: 96,
+        height: 96,
+      }
     };
 
     const del_actions = [
@@ -118,14 +155,21 @@ export default class PhotoItem extends React.Component {
       }}  draggable="true" onDrag={this.props.on_drag} onDragStart={this.handleDragStart.bind(this)}>
               <div className="photo-items" >
                 <IconButton style={styles.removeBtn} onClick={()=>this.handleDelDialogOpen(this.props.photo_id)}><RemoveIcon color="rgb(255, 9, 9)" /></IconButton>
-                <img src={this.props.image_url} style={styles.img} />
+                { this.state.isImgFaill &&
+                  <IconButton style={styles.refreshBtn} onClick={this.handleRefreshImage.bind(this)}><RefreshIcon color="rgb(216, 255, 0)" style={styles.refreshBtnIcon} /></IconButton>
+                }
+                <img src={this.props.image_url} style={styles.img}
+                  onLoad={this.handleImageLoaded.bind(this)}
+                  onError={this.handleImageErrored.bind(this)}
+                  ref={(image) => { this.image = image; }}
+                />
                 <IconButton style={styles.zoomBtn} onClick={this.toggleImg.bind(this)}><ZoomIcon color="rgb(42, 220, 80)" /></IconButton>
               </div>
 
               <div ref="myModal" style={styles.modal} className="modal">
                 <span className="close" onClick={this.toggleImg.bind(this)}>&times;</span>
                 <div>
-                     <img src={this.props.image_url} style={styles.zoomImg} />
+                     <img src={this.props.image_link_url} style={styles.zoomImg} />
                 </div>
               </div>
 
