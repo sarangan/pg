@@ -49,7 +49,22 @@ export function generateReport(property_id) {
         .then(function (response) {
           console.log(response);
 
-          let data = response;
+          var blob = response.data;
+          let type = 'application/octet-stream';
+          let d = document.createElement("a");
+          d.className = "download";
+          d.download = "report.pdf";
+          d.href = URL.createObjectURL(blob);
+          document.body.appendChild(d);
+          d.click();
+          d.parentElement.removeChild(d);
+
+          dispatcher.dispatch({
+            type: "REPORT_READY",
+            data: true
+          });
+
+          /*let data = response;
           let filename = "report.pdf";
           let mime = 'application/octet-stream';
 
@@ -67,7 +82,9 @@ export function generateReport(property_id) {
               tempLink.click();
               document.body.removeChild(tempLink);
 
-        	}
+
+
+        	}*/
 
             /*
             var blob = new Blob([data], {type: mime || 'application/octet-stream'});

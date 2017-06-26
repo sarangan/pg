@@ -7,6 +7,7 @@ class PropertyListStore extends EventEmitter {
     super();
     this.propertyList = [];
     this.propertyRecent = [];
+    this.isReportReady = null;
   }
 
   getList() {
@@ -17,19 +18,31 @@ class PropertyListStore extends EventEmitter {
     return this.propertyRecent;
   }
 
+  getIsReportReady(){
+    return this.isReportReady;
+  }
+
   handleActions(action) {
 
     switch(action.type) {
 
       case "GET_PROPERTYLIST": {
         this.propertyList = action.data;
+        this.isReportReady = null;
         this.emit("change");
         break;
       }
       case "GET_PROPERTYRECENT": {
         this.propertyRecent = action.data;
+        this.isReportReady = null;
         this.emit("change");
         break;
+      }
+      case "REPORT_READY": {
+        this.isReportReady = true;
+        this.emit("change");
+        break;
+
       }
 
     }

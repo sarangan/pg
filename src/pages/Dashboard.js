@@ -12,6 +12,7 @@ import Divider from 'material-ui/Divider';
 import {pink500, grey200, grey500, amber100, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
+import LinearProgress from 'material-ui/LinearProgress';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import BackIcon from 'material-ui/svg-icons/image/navigate-before';
@@ -31,19 +32,25 @@ export default class Dashboard extends React.Component {
     super(props);
       console.log(props);
       this.getList = this.getList.bind(this);
+      this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
+
       PropertyListActions.fetchRecent();
 
       this.state={
-        list: []
+        list: [],
+        startProcess: false
       };
   }
 
   componentWillMount() {
     PropertyListStore.on("change", this.getList);
+    PropertyListStore.on("change", this.getIsReportReadyStatus);
+
   }
 
   componentWillUnmount() {
     PropertyListStore.removeListener("change", this.getList);
+    PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
   }
 
   getList() {
@@ -57,6 +64,17 @@ export default class Dashboard extends React.Component {
     else{
       this.setState({
         list: []
+      });
+    }
+
+  }
+
+  getIsReportReadyStatus(){
+    let status = PropertyListStore.getIsReportReady();
+
+    if(status){
+      this.setState({
+        startProcess: false
       });
     }
 
@@ -77,6 +95,9 @@ export default class Dashboard extends React.Component {
   //generate report
   generateReport(property_id){
     console.log(property_id);
+    this.setState({
+      startProcess: true
+    });
     PropertyListActions.generateReport(property_id);
   };
 
@@ -178,6 +199,11 @@ export default class Dashboard extends React.Component {
           </Link>
 
           {isShowLoading}
+          
+          {this.state.startProcess &&
+             <LinearProgress mode="indeterminate" />
+          }
+
           <div style={{marginTop: 40}}>
             <h3>Recent Properties</h3>
             <Divider style={{width: '20%'}}/>
@@ -213,6 +239,8 @@ export default class Dashboard extends React.Component {
                   }
 
                   <FlatButton label="Report" onTouchTap={()=>this.generateReport(item.property_id)}/>
+
+
                 </CardActions>
               </Card>
 
