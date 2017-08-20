@@ -1,5 +1,5 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -29,6 +29,10 @@ export default class Header extends React.Component {
 
   signout(){
     LoginAuthActions.logout();
+  }
+
+  changepassword(){
+
   }
 
   getLogoutStatus(){
@@ -84,6 +88,9 @@ export default class Header extends React.Component {
       case 'dashboard':
         nav = "Home ";
         break;
+      case 'changepassword':
+        nav = "Home / user / change password";
+        break;
       default:
         nav =  "Home";
         break;
@@ -124,6 +131,9 @@ export default class Header extends React.Component {
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
+                    <Link to="/changepassword">
+                    <MenuItem primaryText="Change password" />
+                    </Link>
                     <MenuItem primaryText="Sign out" onTouchTap={this.signout.bind(this)} />
                   </IconMenu>
                 </div>

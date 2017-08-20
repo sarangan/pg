@@ -139,3 +139,28 @@ export function registerUser(data) {
         });
 
 }
+
+export function changepassword(data) {
+
+  var url = config.ENDPOINT_URL + 'changepassword';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': loginauth.AUTHTOKEN
+           },
+          data: data
+        })
+        .then(function (response) {
+          console.log(response);
+          dispatcher.dispatch({
+            type: "CHANGE_PASSWORD",
+            data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}
