@@ -15,7 +15,7 @@ import LinearProgress from 'material-ui/LinearProgress';
 import * as LoginAuthActions from "../../actions/auth/LoginAuthActions";
 import LoginStore from "../../stores/auth/LoginStore";
 
-export default class LoginForm extends React.Component{
+export default class ForgetPassword extends Component{
 
   constructor(props){
     super(props);
@@ -23,20 +23,19 @@ export default class LoginForm extends React.Component{
       showSuccessSnack: false,
       startSending: false,
       showErrorSnack: false,
-      username: '',
-      password:'',
+      email: '',
       errMessage: ''
     };
 
-    this.getLoginStatus = this.getLoginStatus.bind(this);
+    this.getForgetPasswordStatus = this.getForgetPasswordStatus.bind(this);
   }
 
   componentWillMount(){
-    LoginStore.on("change", this.getLoginStatus);
+    LoginStore.on("change", this.getForgetPasswordStatus);
   }
 
   componentWillUnmount(){
-    LoginStore.removeListener("change", this.getLoginStatus);
+    LoginStore.removeListener("change", this.getForgetPasswordStatus);
   }
 
   //error snack close
@@ -59,57 +58,44 @@ export default class LoginForm extends React.Component{
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
     this.setState({
-        username: value
-    });
-  }
-
-  hanldePassTxtChange(event){
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-    this.setState({
-        password: value
+        email: value
     });
   }
 
 
-  getLoginStatus(){
-    let status = LoginStore.getLoginStatus();
+  getForgetPasswordStatus(){
+    let status = LoginStore.getForgetPasswordStatus();
     if(status){
       this.setState({
         showSuccessSnack: true,
         showErrorSnack: false,
         startSending: false,
-        isLogin: true
       });
-      console.log('login success');
-      browserHistory.push('/dashboard')
+      console.log('reset success');
     }
     else{
-      let lgerr = LoginStore.getLoginError();
-      if(lgerr){
+
         this.setState({
           startSending: false,
-          isLogin: false,
           showSuccessSnack: false,
           showErrorSnack: true,
-          errMessage: lgerr
-        })
-      }
+          errMessage: 'Someting went wrong with reset password'
+        });
+
     }
   }
 
-  handleLogin(event){
+  handleSendEmail(event){
     event.preventDefault();
     event.stopPropagation();
 
-    if(this.state.username && this.state.password){
+    if(this.state.email){
 
       this.setState({
         startSending: true,
       });
 
-      LoginAuthActions.authenticate(this.state.username, this.state.password);
+      LoginAuthActions.forgetPassword(this.state.email);
 
     }
     else{
@@ -117,7 +103,7 @@ export default class LoginForm extends React.Component{
         showErrorSnack: true,
         showSuccessSnack: false,
         startSending: false,
-        errMessage: 'Please fill fields...'
+        errMessage: 'Please provide email...'
       });
     }
 
@@ -346,32 +332,25 @@ export default class LoginForm extends React.Component{
                           {isShowSaving}
                       </div>
 
-                          <form name="loginForm" onSubmit={this.handleLogin.bind(this)}>
+                          <form name="fogetpassForm" onSubmit={this.handleSendEmail.bind(this)}>
                             <div style={styles.title}>
-                              Sign in
+                              Forget password
                             </div>
 
                             <TextField
-                                hintText="Enter your Username or Email"
-                                floatingLabelText="Username / Email"
-                                name="username"
-                                value={this.state.username}
+                                hintText="Enter your Email"
+                                floatingLabelText="Email"
+                                name="email"
+                                value={this.state.email}
                                 onChange={this.hanldeUserTxtChange.bind(this)}
                               />
-                              <TextField
-                                hintText="Enter your password"
-                                floatingLabelText="Password"
-                                type="password"
-                                name="password"
-                                value={this.state.password}
-                                onChange={this.hanldePassTxtChange.bind(this)}
-                              />
+
                               <br/><br/>
                               <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
                               <br/>
-                              <RaisedButton type="submit" label="Login" primary={true}/>
+                              <RaisedButton type="submit" label="Ok" primary={true}/>
                               <br/><br/>
-                              <div style={styles.loginsubtxt}><Link to="forgetpassword" style={styles.loginsubtxt}>Forgot password?</Link></div>
+                              <div style={styles.loginsubtxt}><Link to="login" style={styles.loginsubtxt}>Already have an account?</Link></div>
                               <div><Link to="signup" style={styles.loginsubtxt}>Don't have an account yet?</Link></div>
 
                           </form>
@@ -416,7 +395,7 @@ export default class LoginForm extends React.Component{
 
           <Snackbar
             open={this.state.showSuccessSnack}
-            message="Welcome to PropertyGround!"
+            message="Your password has been reset successfully, password has been email to you."
             autoHideDuration={3000}
             onRequestClose={this.successhandleRequestClose.bind(this)} />
 

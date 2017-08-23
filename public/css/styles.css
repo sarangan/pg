@@ -2,6 +2,11 @@
 * this is where the all the styles take place for this app
 *
 */
+h1,h2,h3,h4,h5 {
+  /*margin: 10px, 0;*/
+  -webkit-margin-before: 10px;
+  -webkit-margin-after: 10px;
+}
 
 .menu-item{
   text-decoration: none;

@@ -15,6 +15,7 @@ class LoginStore extends EventEmitter {
     this.deleteUserStatus = false;
     this.addUserStatus = false;
     this.changedPasswordStatus = false;
+    this.forgetPasswordStatus = false;
   }
 
   getLoginStatus() {
@@ -55,6 +56,10 @@ class LoginStore extends EventEmitter {
 
   getChangePasswordStatus(){
     return this.changedPasswordStatus;
+  }
+
+  getForgetPasswordStatus(){
+    return this.forgetPasswordStatus;
   }
 
   handleActions(action) {
@@ -108,6 +113,7 @@ class LoginStore extends EventEmitter {
           this.registererr  = '';
           this.registerAccountStatus =  false;
           this.changedPasswordStatus = false;
+          this.forgetPasswordStatus = false;
           this.users  = [];
           this.deleteUserStatus = false;
           this.addUserStatus = null;
@@ -129,6 +135,7 @@ class LoginStore extends EventEmitter {
           this.deleteUserStatus = false;
           this.registerAccountStatus =  false;
           this.changedPasswordStatus = false;
+          this.forgetPasswordStatus = false;
           this.addUserStatus = null;
           sessionStorage.removeItem('pgauth');
         }
@@ -146,6 +153,7 @@ class LoginStore extends EventEmitter {
           this.registererr  = action.data.text;
           this.registerAccountStatus =  false;
           this.changedPasswordStatus = false;
+          this.forgetPasswordStatus = false;
 
           this.userDetails = {};
           this.users  = [];
@@ -177,6 +185,7 @@ class LoginStore extends EventEmitter {
           this.registerAccountStatus =  false;
           this.addUserStatus = null;
           this.changedPasswordStatus = false;
+          this.forgetPasswordStatus = false;
 
         this.emit("change");
         break;
@@ -203,6 +212,7 @@ class LoginStore extends EventEmitter {
           this.registerAccountStatus =  false;
           this.addUserStatus = null;
           this.changedPasswordStatus = false;
+          this.forgetPasswordStatus = false;
 
         this.emit("change");
         break;
@@ -218,6 +228,7 @@ class LoginStore extends EventEmitter {
         }
           this.deleteUserStatus = false;
           this.changedPasswordStatus = false;
+          this.forgetPasswordStatus = false;
           // this.users = [];
           // this.userDetails = {};
           // this.isLogin = false;
@@ -247,8 +258,8 @@ class LoginStore extends EventEmitter {
 
             let pgauth = {
               token: 'Bearer ' + action.data.token,
-              isLogin: true,
-              user: userDetails
+              isLogin: loginauth.ISLOGIN,
+              user: loginauth.USER
             };
             sessionStorage.removeItem('pgauth');
             sessionStorage.setItem('pgauth', JSON.stringify(pgauth) ); // store to session store
@@ -273,6 +284,34 @@ class LoginStore extends EventEmitter {
         // loginauth["USER"] =  {};
         this.registererr  = '';
         this.registerAccountStatus =  false;
+        this.forgetPasswordStatus = false;
+
+        this.emit("change");
+        break;
+
+      }
+      case 'FORGET_PASSWORD' : {
+
+        if(action.data.status == 1){
+          this.forgetPasswordStatus = true;
+        }
+        else{
+          this.forgetPasswordStatus = false;
+        }
+
+        this.deleteUserStatus = false;
+        this.addUserStatus = false;
+        // this.users = [];
+        // this.userDetails = {};
+        // this.isLogin = false;
+        // this.loginerr  = '';
+        // this.isLogout = false;
+        // loginauth["AUTHTOKEN"] = "";
+        // loginauth["ISLOGIN"] =  false;
+        // loginauth["USER"] =  {};
+        this.registererr  = '';
+        this.registerAccountStatus =  false;
+        this.changedPasswordStatus = false;
 
         this.emit("change");
         break;

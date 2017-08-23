@@ -6,6 +6,26 @@ const {width, height, scale} = Dimensions.get("window"),
     vmax = Math.max(vw, vh);
 
 export default StyleSheet.create({
+    "h1": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h2": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h3": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h4": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h5": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
     "menu-item": {
         "textDecoration": "none"
     },

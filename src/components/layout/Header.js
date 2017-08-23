@@ -131,8 +131,8 @@ export default class Header extends React.Component {
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
-                    <Link to="/changepassword">
-                    <MenuItem primaryText="Change password" />
+                    <Link to="/changepassword" style={{textDecoration: 'none' }}>
+                      <MenuItem primaryText="Change password" />
                     </Link>
                     <MenuItem primaryText="Sign out" onTouchTap={this.signout.bind(this)} />
                   </IconMenu>

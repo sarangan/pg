@@ -13,6 +13,7 @@ import Login from "./pages/auth/LoginForm";
 import Signup from "./pages/auth/Signup";
 import Users from "./pages/auth/Users";
 import ChangePassword from "./pages/auth/ChangePassword";
+import ForgetPassword from "./pages/auth/ForgetPassword";
 import loginauth from './auth/loginauth';
 import MyPath from './utils/settings';
 
@@ -34,6 +35,7 @@ export default (
       <IndexRoute component={Dashboard} onEnter={ authenticate }></IndexRoute>
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/forgetpassword" component={ForgetPassword} />
       <Route path="/dashboard" component={Dashboard} onEnter={ authenticate }/>
       <Route path="/propertylist" component={PropertyList} onEnter={ authenticate }/>
       <Route path="/addnewproperty" component={AddNewProperty} onEnter={ authenticate }/>

@@ -164,3 +164,27 @@ export function changepassword(data) {
         });
 
 }
+
+export function forgetPassword(email) {
+
+  var url = config.SERVER_ENDPOINT_URL + 'auth/forgetpassword';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+           },
+          data:  {email: email}
+        })
+        .then(function (response) {
+          console.log(response);
+          dispatcher.dispatch({
+            type: "FORGET_PASSWORD",
+            data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}

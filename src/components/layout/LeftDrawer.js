@@ -16,17 +16,23 @@ import UsersIcon from 'material-ui/svg-icons/social/people';
 
 export default class LeftDrawer extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.props = props;
 
     this.menus = [ {text: 'Home', icon: <HomeIcon/>,  link: '/'  },
                   {text: 'Property List', icon: <PropertyListIcon/>,  link: 'propertylist'  },
                   {text: 'Add new property', icon: <PropertyAddIcon/>,  link: 'addnewproperty'  },
                   {text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  },
                   {text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings'  },
-                  {text: 'Users', icon: <UsersIcon/>,  link: 'users'  },
                   {text: 'Settings', icon: <SettingsIcon/>,  link: '/'  }
               ];
+
+    if(this.props.isAdmin=== true){
+      this.menus.push(
+        {text: 'Users', icon: <UsersIcon/>,  link: 'users'  },
+      );
+    }
 
   }
 

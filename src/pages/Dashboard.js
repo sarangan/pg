@@ -199,7 +199,7 @@ export default class Dashboard extends React.Component {
           </Link>
 
           {isShowLoading}
-          
+
           {this.state.startProcess &&
              <LinearProgress mode="indeterminate" />
           }

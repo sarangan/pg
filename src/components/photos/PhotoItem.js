@@ -96,10 +96,10 @@ export default class PhotoItem extends React.Component {
 
     const styles = {
       img: {
-        width: 150,
+        width: 120,
         height: 'auto',
         background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)',
-        minHeight: 130
+        minHeight: 100
       },
       removeBtn: {
         position: 'absolute',

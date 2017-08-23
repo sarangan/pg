@@ -42,7 +42,7 @@ class Layout extends React.Component {
             paddingLeft: navDrawerOpen ? paddingLeftDrawerOpen : 0
           },
           container: {
-            margin: '80px 20px 20px 30px',
+            margin: '60px 20px 20px 30px',
             paddingLeft: navDrawerOpen && this.props.width !== SMALL ? paddingLeftDrawerOpen : 0
           }
 
@@ -62,7 +62,7 @@ class Layout extends React.Component {
                               handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)} com_path={MyPath.PATH}/>
 
                         <LeftDrawer navDrawerOpen={navDrawerOpen}
-                                    username={loginauth.USER.first_name + ' ' + loginauth.USER.last_name }/>
+                                    username={loginauth.USER.first_name + ' ' + loginauth.USER.last_name } isAdmin={loginauth.USER.type == 'ADMIN' ? true: false }/>
 
                         <div style={styles.container}>
                           {this.props.children}

@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import {Link, browserHistory} from 'react-router';
+//import {Link, browserHistory} from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
-import PageBase from '../components/layout/PageBase';
+import PageBase from '../../components/layout/PageBase';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
-import uitl from '../utils/utils.js'
-import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import {orange500} from 'material-ui/styles/colors';
 
 import * as LoginAuthActions from "../../actions/auth/LoginAuthActions";
 import LoginStore from "../../stores/auth/LoginStore";
@@ -41,6 +40,16 @@ export default class ChangePassword extends Component {
 
   componentWillUnmount() {
     LoginStore.removeListener("change", this.getChangePasswordStatus);
+  }
+
+  hanldeTxtChange(event){
+     const target = event.target;
+     const value = target.type === 'checkbox' ? target.checked : target.value;
+     const name = target.name;
+
+     this.setState({
+       [name]: value
+     });
   }
 
   getChangePasswordStatus(){
@@ -226,6 +235,7 @@ export default class ChangePassword extends Component {
             <TextField
               hintText="Enter your current password"
               floatingLabelText="Current password"
+              type="password"
               name="oldpassword"
               value={this.state.oldpassword}
               fullWidth={true}
@@ -260,7 +270,7 @@ export default class ChangePassword extends Component {
 
         <Snackbar
           open={this.state.showErrorSnack}
-          message= "Something went wrong..."
+          message= "Please check your passwords!"
           autoHideDuration={3000}
           onRequestClose={this.errhandleRequestClose.bind(this)} />
 
@@ -275,7 +285,6 @@ export default class ChangePassword extends Component {
           <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
           <br/>
             <div style={styles.buttons}>
-              <RaisedButton type="button" style={styles.saveButton} label="Cancel" primary={false} onTouchTap={this.handleCancelPassword.bind(this)}/>
               <RaisedButton type="submit" style={styles.saveButton} label="Save" primary={true}/>
             </div>
         </form>

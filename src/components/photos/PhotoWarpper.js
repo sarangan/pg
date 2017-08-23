@@ -102,9 +102,9 @@ export default class PhotoWarpper extends React.Component {
         position: 'relative'
       },
       root: {
-        minHeight: 150,
+        minHeight: 120,
         width: '80%',
-        marginBottom: 10,
+        marginBottom: 5,
         textAlign: 'left',
         whiteSpace: 'nowrap',
         overflowY: 'hidden',
@@ -119,10 +119,10 @@ export default class PhotoWarpper extends React.Component {
         position: 'absolute',
         right: 0,
         top: 0,
-        height: 150,
+        height: 120,
       },
       dropzoneItem:{
-        minHeight: 125,
+        minHeight: 120,
         minWidth: 80,
         background: '#ffffff',
         padding: 5,

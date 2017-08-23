@@ -58,7 +58,7 @@ export default class GeneralItemElement extends React.Component {
 
           <div className={gen_comment_cls}>
             <h3>{this.props.title}</h3>
-            <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.data.item_id +';'+ 'comment' + ';GENERAL'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
+            <TextField hintText="Enter your message" multiLine={true} rows={1} rowsMax={2}  name={this.props.data.item_id +';'+ 'comment' + ';GENERAL'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
 
           </div>
 
