@@ -79,7 +79,7 @@ export default class ForgetPassword extends Component{
           startSending: false,
           showSuccessSnack: false,
           showErrorSnack: true,
-          errMessage: 'Someting went wrong with reset password'
+          errMessage: 'Someting went wrong when resetting your password'
         });
 
     }
@@ -154,7 +154,7 @@ export default class ForgetPassword extends Component{
         backgroundColor: '#ffffff',
         flexBasis: '50%',
         marginRight: 60,
-        minWidth: 300
+        // minWidth: 300
       },
       loginForm: {
         display: 'flex',
@@ -395,7 +395,7 @@ export default class ForgetPassword extends Component{
 
           <Snackbar
             open={this.state.showSuccessSnack}
-            message="Your password has been reset successfully, password has been email to you."
+            message="Your password has been reset successfully, new password will be sent your email shortly."
             autoHideDuration={3000}
             onRequestClose={this.successhandleRequestClose.bind(this)} />
 

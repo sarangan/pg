@@ -6,6 +6,12 @@ const {width, height, scale} = Dimensions.get("window"),
     vmax = Math.max(vw, vh);
 
 export default StyleSheet.create({
+    "html": {
+        "fontSize": 14
+    },
+    "body": {
+        "fontSize": 14
+    },
     "h1": {
         "WebkitMarginBefore": 10,
         "WebkitMarginAfter": 10

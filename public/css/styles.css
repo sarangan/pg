@@ -2,6 +2,10 @@
 * this is where the all the styles take place for this app
 *
 */
+html, body {
+  font-size: 14px;
+}
+
 h1,h2,h3,h4,h5 {
   /*margin: 10px, 0;*/
   -webkit-margin-before: 10px;

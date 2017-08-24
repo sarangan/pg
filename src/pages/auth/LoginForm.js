@@ -168,7 +168,7 @@ export default class LoginForm extends React.Component{
         backgroundColor: '#ffffff',
         flexBasis: '50%',
         marginRight: 60,
-        minWidth: 300
+        // minWidth: 300
       },
       loginForm: {
         display: 'flex',
