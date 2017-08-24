@@ -119,10 +119,10 @@ export default class PhotoWarpper extends React.Component {
         position: 'absolute',
         right: 0,
         top: 0,
-        height: 120,
+        height: 110,
       },
       dropzoneItem:{
-        minHeight: 120,
+        minHeight: 110,
         minWidth: 80,
         background: '#ffffff',
         padding: 5,
