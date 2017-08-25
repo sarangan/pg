@@ -23,15 +23,14 @@ export default class LeftDrawer extends React.Component {
     this.menus = [ {text: 'Home', icon: <HomeIcon/>,  link: '/'  },
                   {text: 'Property List', icon: <PropertyListIcon/>,  link: 'propertylist'  },
                   {text: 'Add new property', icon: <PropertyAddIcon/>,  link: 'addnewproperty'  },
-                  {text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  },
-                  {text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings'  },
-                  {text: 'Settings', icon: <SettingsIcon/>,  link: '/'  }
+
+                  //{text: 'Settings', icon: <SettingsIcon/>,  link: '/'  }
               ];
 
     if(this.props.isAdmin=== true){
-      this.menus.push(
-        {text: 'Users', icon: <UsersIcon/>,  link: 'users'  },
-      );
+      this.menus.push({text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  });
+      this.menus.push({text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings' });
+      this.menus.push({text: 'Users', icon: <UsersIcon/>,  link: 'users' });
     }
 
   }

@@ -72,6 +72,10 @@ h1,h2,h3,h4,h5 {
   overflow: auto;
 }
 
+.roomlist-right-div-no-height{
+  padding: 10px;
+}
+
 .roomlist-right-wrapper{
   height: auto;
   padding: 10px;

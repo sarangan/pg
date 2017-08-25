@@ -494,7 +494,7 @@ export default class Users extends React.Component{
                 fullWidth={true}
             />
 
-            <Divider style={styles.divider} />
+          {/*<Divider style={styles.divider} />*/}
             <div style={styles.loginerrtxt}>{this.state.errMessage}</div>
             <br/>
               <div style={styles.buttons}>

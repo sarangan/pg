@@ -23,7 +23,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
-
+import loginauth from '../auth/loginauth';
 
 
 export default class Dashboard extends React.Component {
@@ -237,6 +237,10 @@ export default class Dashboard extends React.Component {
                       <FlatButton label="View" />
                     </Link>
                   }
+
+                  <a href={'http://propertyground.co.uk/pay?email=' + encodeURIComponent(loginauth.USER.email) } target="_blank" >
+                    <FlatButton label="Pay" />
+                  </a>
 
                   <FlatButton label="Report" onTouchTap={()=>this.generateReport(item.property_id)}/>
 

@@ -91,6 +91,12 @@ export default StyleSheet.create({
         "maxHeight": 700,
         "overflow": "auto"
     },
+    "roomlist-right-div-no-height": {
+        "paddingTop": 10,
+        "paddingRight": 10,
+        "paddingBottom": 10,
+        "paddingLeft": 10
+    },
     "roomlist-right-wrapper": {
         "height": "auto",
         "paddingTop": 10,

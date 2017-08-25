@@ -1519,6 +1519,12 @@ export default class PropertyRoomList extends React.Component {
       roomlist_right_wrapper = '';
     }
 
+    if(this.state.sidebarState == 'PROP' || this.state.sidebarState == 'SIG' || this.state.sidebarState == 'METER' ||  this.state.sidebarState == 'ITEM' ||  this.state.sidebarState == 'GEN' ){
+      roomlist_right_div_cls = 'roomlist-right-div-no-height';
+      roomlist_right_wrapper = '';
+    }
+
+
     let roomlist_right_div = `control-wrapper-flex-2 ${roomlist_right_div_cls} scroll-style`;
 
     let room_list_view = <div className="room-list">
