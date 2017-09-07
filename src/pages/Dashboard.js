@@ -38,6 +38,7 @@ export default class Dashboard extends React.Component {
 
       this.state={
         list: [],
+        subscription: {},
         startProcess: false
       };
   }
@@ -58,7 +59,8 @@ export default class Dashboard extends React.Component {
     let list = PropertyListStore.getRecent();
     if(list){
       this.setState({
-        list: list
+        list: list.properties,
+        subscription: list.plans
       });
     }
     else{
@@ -173,6 +175,15 @@ export default class Dashboard extends React.Component {
           whiteSpace: 'nowrap',
           fontSize: 12,
           color: '#4A5D75'
+        },
+        subTxtnoplan: {
+          paddingLeft: 16,
+          paddingRight: 16,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          fontSize: 12,
+          color: '#00796B'
         }
     };
 
@@ -185,7 +196,42 @@ export default class Dashboard extends React.Component {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;
        }
 
+       let today = new Date();
+       let mm = today.getMonth()+1; //January is 0!
+       let yyyy = today.getFullYear();
 
+       //check if last plan is for current month
+       let plan_date = new Date(this.state.subscription.created_date);
+       let get_last_sub_month = plan_date.getMonth() + 1;
+       let get_last_sub_year = plan_date.getFullYear();
+
+       let payment_status = [];
+       if(get_last_sub_month == mm && get_last_sub_year == yyyy){
+
+         if(this.state.subscription.splan_id == 1000){
+            payment_status.push(<CardText>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</CardText>);
+         }
+
+         if(this.state.subscription.splan_id == 2000){
+           payment_status.push(<CardText>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</CardText>);
+         }
+
+         if(this.state.subscription.splan_id == 3000){
+           payment_status.push(<CardText>You can generate unlimited number of reports</CardText>);
+         }
+
+
+       }
+       else{
+         payment_status.push(<CardText style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+           Your subscription plan has been expired
+         </CardText>);
+         payment_status.push(<CardActions>
+         <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+           <FlatButton label="Pay" />
+         </a>
+       </CardActions>);
+       }
 
 
     return (
@@ -204,7 +250,40 @@ export default class Dashboard extends React.Component {
              <LinearProgress mode="indeterminate" />
           }
 
-          <div style={{marginTop: 40}}>
+          <div style={{marginTop: 20}}>
+            <h3 style={{color: '#8E24AA'}}>Subscription details</h3>
+          </div>
+
+          {this.state.subscription && this.state.subscription.subs_id &&
+            <Card>
+              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
+                <div style={styles.subTxtnoplan}>You recent subscription plan</div>
+                <CardText>Payment date: {this.state.subscription.alt_created_date}</CardText>
+                <CardText>Price: {this.state.subscription.price}</CardText>
+                {payment_status}
+
+            </Card>
+          }
+          {this.state.subscription && !this.state.subscription.subs_id &&
+            <Card>
+              <CardText style={{color: '#D32F2F', fontWeight: '700', fontSize: 17}}>
+                You don't have any subscription plan yet
+              </CardText>
+              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
+              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
+
+              <CardActions>
+
+                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+                  <FlatButton label="Buy Subscription plan" />
+                </a>
+
+              </CardActions>
+            </Card>
+          }
+
+
+          <div style={{marginTop: 20}}>
             <h3>Recent Properties</h3>
             <Divider style={{width: '20%'}}/>
           </div>
@@ -238,7 +317,7 @@ export default class Dashboard extends React.Component {
                     </Link>
                   }
 
-                  <a href={'http://propertyground.co.uk/pay?email=' + encodeURIComponent(loginauth.USER.email) } target="_blank" >
+                  <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                     <FlatButton label="Pay" />
                   </a>
 

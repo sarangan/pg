@@ -305,7 +305,7 @@ export default class LoginForm extends React.Component{
             </a>
             <div>
               <a href="http://propertyground.com/" target="_blank" style={styles.menulink}>HOME</a>
-              <a href="http://www.propertyground.com/services/" target="_blank" style={styles.menulink}>PRICING</a>
+              <a href="http://propertyground.co.uk/pay" target="_blank" style={styles.menulink}>PRICING</a>
               <a href="http://www.propertyground.com/member/" target="_blank" style={styles.menulink}>MEMBER</a>
             </div>
           </div>
@@ -326,7 +326,7 @@ export default class LoginForm extends React.Component{
 
               </div>
 
-              </div>
+            </div>
           </div>
 
 
