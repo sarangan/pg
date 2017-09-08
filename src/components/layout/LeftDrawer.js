@@ -12,6 +12,7 @@ import PropertyAddIcon from 'material-ui/svg-icons/action/account-balance';
 import TemplateIcon from 'material-ui/svg-icons/av/web';
 import ReportIcon from 'material-ui/svg-icons/editor/insert-drive-file';
 import UsersIcon from 'material-ui/svg-icons/social/people';
+import MoneyIcon from 'material-ui/svg-icons/editor/attach-money';
 
 
 export default class LeftDrawer extends React.Component {
@@ -31,6 +32,7 @@ export default class LeftDrawer extends React.Component {
       this.menus.push({text: 'Template settings', icon: <TemplateIcon/>,  link: 'template'  });
       this.menus.push({text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings' });
       this.menus.push({text: 'Users', icon: <UsersIcon/>,  link: 'users' });
+      this.menus.push({text: 'Payment history', icon: <MoneyIcon/>,  link: 'payments' });
     }
 
   }

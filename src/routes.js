@@ -16,7 +16,7 @@ import ChangePassword from "./pages/auth/ChangePassword";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import loginauth from './auth/loginauth';
 import MyPath from './utils/settings';
-
+import Payments from "./pages/Payments";
 
 const authenticate = (nextState, replace) => {
   const login = loginauth.ISLOGIN;
@@ -45,6 +45,7 @@ export default (
       <Route path="/users" component={Users} onEnter={ authenticate }/>
       <Route path="/changepassword" component={ChangePassword} onEnter={ authenticate }/>
       <Route path="/reportsettings" component={ReportSettings} onEnter={ authenticate }/>
+      <Route path="/payments" component={Payments} onEnter={ authenticate }/>
       <Route path="*" component={Dashboard} onEnter={ authenticate }/>
     </Route>
 

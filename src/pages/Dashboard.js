@@ -229,10 +229,35 @@ export default class Dashboard extends React.Component {
 
          if(this.state.subscription.splan_id == 1000){
             payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
+
+            if(this.state.subscription.total_sliver_reports != 0){
+              payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+                Your subscription plan has been expired
+              </CardText>);
+
+              payment_status.push(<CardActions key={5}>
+              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+                <RaisedButton secondary={true} label="Buy Subscription plan" />
+              </a>
+            </CardActions>);
+            }
          }
 
          if(this.state.subscription.splan_id == 2000){
            payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
+
+           if(this.state.subscription.total_gold_reports >= this.state.subscription.reports){
+             payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+               Your subscription plan has been expired
+             </CardText>);
+
+             payment_status.push(<CardActions key={5}>
+             <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+               <RaisedButton secondary={true} label="Buy Subscription plan" />
+             </a>
+           </CardActions>);
+           }
+
          }
 
          if(this.state.subscription.splan_id == 3000){
@@ -247,7 +272,7 @@ export default class Dashboard extends React.Component {
          </CardText>);
          payment_status.push(<CardActions key={5}>
          <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-           <FlatButton label="Pay" />
+           <RaisedButton secondary={true} label="Buy Subscription plan" />
          </a>
        </CardActions>);
        }
@@ -294,7 +319,7 @@ export default class Dashboard extends React.Component {
               <CardActions>
 
                 <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                  <FlatButton label="Buy Subscription plan" />
+                  <RaisedButton secondary={true} label="Buy Subscription plan" />
                 </a>
 
               </CardActions>
