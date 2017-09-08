@@ -8,6 +8,7 @@ class PropertyListStore extends EventEmitter {
     this.propertyList = [];
     this.propertyRecent = [];
     this.isReportReady = null;
+    this.susbcription = {};
   }
 
   getList() {
@@ -22,6 +23,10 @@ class PropertyListStore extends EventEmitter {
     return this.isReportReady;
   }
 
+  getSusbcription(){
+    return this.susbcription;
+  }
+
   handleActions(action) {
 
     switch(action.type) {
@@ -29,11 +34,17 @@ class PropertyListStore extends EventEmitter {
       case "GET_PROPERTYLIST": {
         this.propertyList = action.data;
         this.isReportReady = null;
+        // if(action.data.hasOwnProperty("plans")){
+        //   this.susbcription =  action.data.plans[0];
+        // }
         this.emit("change");
         break;
       }
       case "GET_PROPERTYRECENT": {
         this.propertyRecent = action.data;
+        if(action.data.hasOwnProperty("plans")){
+          this.susbcription =  action.data.plans[0];
+        }
         this.isReportReady = null;
         this.emit("change");
         break;
@@ -42,7 +53,17 @@ class PropertyListStore extends EventEmitter {
         this.isReportReady = true;
         this.emit("change");
         break;
-
+      }
+      case "GET_SUBSCRIPTION" :{
+        if(action.data){
+          this.susbcription = action.data.plans[0];
+        }
+        else{
+          this.susbcription = {};
+        }
+        this.isReportReady = null;
+        this.emit("change");
+        break;
       }
 
     }

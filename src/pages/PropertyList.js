@@ -12,6 +12,7 @@ import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 import {pink500, grey200, grey500, amber100, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
+import LinearProgress from 'material-ui/LinearProgress';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import BackIcon from 'material-ui/svg-icons/image/navigate-before';
@@ -19,6 +20,10 @@ import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
+import loginauth from '../auth/loginauth';
+
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class PropertyList extends React.Component {
 
@@ -26,7 +31,10 @@ export default class PropertyList extends React.Component {
     super(props);
       console.log(props);
       this.getList = this.getList.bind(this);
+      this.getSusbcription = this.getSusbcription.bind(this);
+      this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
       PropertyListActions.fetchPropList();
+      PropertyListActions.fetchSubscriptions();
 
       this.state={
         list: PropertyListStore.getList(),
@@ -41,16 +49,21 @@ export default class PropertyList extends React.Component {
         showCheckboxes: false,
         page : 1,
         templist: [],
-        showProgress: true
+        showProgress: true,
+        subscription:  PropertyListStore.getSusbcription(),
       };
   }
 
   componentWillMount() {
     PropertyListStore.on("change", this.getList);
+    PropertyListStore.on("change", this.getSusbcription);
+      PropertyListStore.on("change", this.getIsReportReadyStatus);
   }
 
   componentWillUnmount() {
     PropertyListStore.removeListener("change", this.getList);
+    PropertyListStore.removeListener("change", this.getSusbcription);
+    PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
   }
 
   getList() {
@@ -69,6 +82,30 @@ export default class PropertyList extends React.Component {
         list: [],
         templist: [],
         showProgress: false
+      });
+    }
+
+  }
+
+  getIsReportReadyStatus(){
+    let status = PropertyListStore.getIsReportReady();
+
+    if(status){
+      this.setState({
+        startProcess: false
+      }, ()=>{
+        PropertyListActions.fetchSubscriptions();
+      });
+    }
+
+  }
+
+  getSusbcription() {
+
+    let list = PropertyListStore.getSusbcription();
+    if(list){
+      this.setState({
+        subscription: list,
       });
     }
 
@@ -154,10 +191,10 @@ export default class PropertyList extends React.Component {
               },
               city: {
                 column:{
-                  width: '10%',
+                  width: '20%',
                 },
                 header:{
-                  width: '10%',
+                  width: '20%',
                   fontSize: '14px',
                   fontWeight: 600,
                   backgroundColor: '#e1e1e1',
@@ -188,18 +225,18 @@ export default class PropertyList extends React.Component {
                   color: '#546E7A'
                 }
               },
-              status: {
-                column:{
-                  width: '10%',
-                },
-                header:{
-                  width: '10%',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  backgroundColor: '#e1e1e1',
-                  color: '#546E7A'
-                }
-              },
+              // status: {
+              //   column:{
+              //     width: '10%',
+              //   },
+              //   header:{
+              //     width: '10%',
+              //     fontSize: '14px',
+              //     fontWeight: 600,
+              //     backgroundColor: '#e1e1e1',
+              //     color: '#546E7A'
+              //   }
+              // },
               edit: {
                 column:{
                   width: '10%',
@@ -232,6 +269,36 @@ export default class PropertyList extends React.Component {
         navbtn: {
           width: 30,
           marginRight: 10
+        },
+        cardContainer: {
+          display: 'flex',
+          flexWrap: 'wrap'
+        },
+        cardWrapper:{
+          width: 300,
+          marginLeft: 30,
+          marginTop: 20
+        },
+        subTxt: {
+          paddingLeft: 16,
+          paddingRight: 16,
+          maxWidth: 300,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          fontSize: 12,
+          color: '#4A5D75'
+        },
+        subTxtnoplan: {
+          paddingLeft: 16,
+          paddingRight: 16,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          fontSize: 12,
+          color: '#00796B',
+          paddingTop: 3,
+          paddingBottom: 3
         }
     };
 
@@ -244,6 +311,43 @@ export default class PropertyList extends React.Component {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;
        }
 
+       let today = new Date();
+       let mm = today.getMonth()+1; //January is 0!
+       let yyyy = today.getFullYear();
+
+       //check if last plan is for current month
+       let plan_date = new Date(this.state.subscription.createdAt);
+       let get_last_sub_month = plan_date.getMonth() + 1;
+       let get_last_sub_year = plan_date.getFullYear();
+
+       let payment_status = [];
+       if(get_last_sub_month == mm && get_last_sub_year == yyyy){
+
+         if(this.state.subscription.splan_id == 1000){
+            payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
+         }
+
+         if(this.state.subscription.splan_id == 2000){
+           payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
+         }
+
+         if(this.state.subscription.splan_id == 3000){
+           payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
+         }
+
+
+       }
+       else{
+         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+           Your subscription plan has been expired
+         </CardText>);
+         payment_status.push(<CardActions key={5}>
+         <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+           <FlatButton label="Pay" />
+         </a>
+       </CardActions>);
+       }
+
 
     return (
 
@@ -254,6 +358,46 @@ export default class PropertyList extends React.Component {
               <ContentAdd />
             </FloatingActionButton>
           </Link>
+
+          {this.state.startProcess &&
+             <LinearProgress mode="indeterminate" />
+          }
+
+          <div style={{marginTop: 20}}>
+            <h3 style={{color: '#8E24AA'}}>Subscription details</h3>
+          </div>
+
+          {this.state.subscription && this.state.subscription.subs_id &&
+            <Card>
+              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
+                <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
+                <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
+                <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
+                {payment_status}
+
+            </Card>
+          }
+          {this.state.subscription && !this.state.subscription.subs_id &&
+            <Card>
+              <CardText style={{color: '#D32F2F', fontWeight: '700', fontSize: 17}}>
+                You don't have any subscription plan yet
+              </CardText>
+              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
+              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
+
+              <CardActions>
+
+                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+                  <FlatButton label="Buy Subscription plan" />
+                </a>
+
+              </CardActions>
+            </Card>
+          }
+
+          <div style={{marginTop: 20}}>
+            <h3>Properties</h3>
+          </div>
 
           <Table fixedHeader={this.state.fixedHeader}
                 fixedFooter={this.state.fixedFooter}
@@ -270,7 +414,7 @@ export default class PropertyList extends React.Component {
                 <TableHeaderColumn style={styles.columns.city.header}>City</TableHeaderColumn>
                 <TableHeaderColumn style={styles.columns.postalcode.header}>Postalcode</TableHeaderColumn>
                 <TableHeaderColumn style={styles.columns.created_date.header}>Created date</TableHeaderColumn>
-                <TableHeaderColumn style={styles.columns.status.header}>Status</TableHeaderColumn>
+                {/* <TableHeaderColumn style={styles.columns.status.header}>Status</TableHeaderColumn> */}
                 <TableHeaderColumn style={styles.columns.edit.header}>Report</TableHeaderColumn>
                 <TableHeaderColumn style={styles.columns.view.header}>View</TableHeaderColumn>
               </TableRow>
@@ -289,7 +433,7 @@ export default class PropertyList extends React.Component {
                   <TableRowColumn style={styles.columns.city.column}>{item.city}</TableRowColumn>
                   <TableRowColumn style={styles.columns.postalcode.column}>{item.postalcode}</TableRowColumn>
                   <TableRowColumn style={styles.columns.created_date.column}>{item.created_date}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.status.column}>
+                  {/*<TableRowColumn style={styles.columns.status.column}>
                     <FloatingActionButton zDepth={0}
                                           mini={true}
                                           backgroundColor={amber100}
@@ -297,7 +441,7 @@ export default class PropertyList extends React.Component {
                     { this.getStatusIcon(item.locked) }
                     </FloatingActionButton>
 
-                  </TableRowColumn>
+                  </TableRowColumn> */ }
                   <TableRowColumn style={styles.columns.edit.column}>
                       <FloatingActionButton zDepth={0}
                                             mini={true}

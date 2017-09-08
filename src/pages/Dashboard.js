@@ -33,6 +33,7 @@ export default class Dashboard extends React.Component {
       console.log(props);
       this.getList = this.getList.bind(this);
       this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
+      this.getSusbcription = this.getSusbcription.bind(this);
 
       PropertyListActions.fetchRecent();
 
@@ -46,12 +47,14 @@ export default class Dashboard extends React.Component {
   componentWillMount() {
     PropertyListStore.on("change", this.getList);
     PropertyListStore.on("change", this.getIsReportReadyStatus);
+    PropertyListStore.on("change", this.getSusbcription);
 
   }
 
   componentWillUnmount() {
     PropertyListStore.removeListener("change", this.getList);
     PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
+    PropertyListStore.removeListener("change", this.getSusbcription);
   }
 
   getList() {
@@ -60,12 +63,13 @@ export default class Dashboard extends React.Component {
     if(list){
       this.setState({
         list: list.properties,
-        subscription: list.plans
+        subscription: list.plans[0]
       });
     }
     else{
       this.setState({
-        list: []
+        list: [],
+        subscription: {}
       });
     }
 
@@ -77,6 +81,19 @@ export default class Dashboard extends React.Component {
     if(status){
       this.setState({
         startProcess: false
+      }, ()=>{
+        PropertyListActions.fetchSubscriptions();
+      });
+    }
+
+  }
+
+  getSusbcription() {
+
+    let list = PropertyListStore.getSusbcription();
+    if(list){
+      this.setState({
+        subscription: list
       });
     }
 
@@ -183,7 +200,9 @@ export default class Dashboard extends React.Component {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           fontSize: 12,
-          color: '#00796B'
+          color: '#00796B',
+          paddingTop: 3,
+          paddingBottom: 3
         }
     };
 
@@ -201,7 +220,7 @@ export default class Dashboard extends React.Component {
        let yyyy = today.getFullYear();
 
        //check if last plan is for current month
-       let plan_date = new Date(this.state.subscription.created_date);
+       let plan_date = new Date(this.state.subscription.createdAt);
        let get_last_sub_month = plan_date.getMonth() + 1;
        let get_last_sub_year = plan_date.getFullYear();
 
@@ -209,24 +228,24 @@ export default class Dashboard extends React.Component {
        if(get_last_sub_month == mm && get_last_sub_year == yyyy){
 
          if(this.state.subscription.splan_id == 1000){
-            payment_status.push(<CardText>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</CardText>);
+            payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
          }
 
          if(this.state.subscription.splan_id == 2000){
-           payment_status.push(<CardText>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</CardText>);
+           payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
          }
 
          if(this.state.subscription.splan_id == 3000){
-           payment_status.push(<CardText>You can generate unlimited number of reports</CardText>);
+           payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
          }
 
 
        }
        else{
-         payment_status.push(<CardText style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
            Your subscription plan has been expired
          </CardText>);
-         payment_status.push(<CardActions>
+         payment_status.push(<CardActions key={5}>
          <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
            <FlatButton label="Pay" />
          </a>
@@ -257,9 +276,9 @@ export default class Dashboard extends React.Component {
           {this.state.subscription && this.state.subscription.subs_id &&
             <Card>
               <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
-                <div style={styles.subTxtnoplan}>You recent subscription plan</div>
-                <CardText>Payment date: {this.state.subscription.alt_created_date}</CardText>
-                <CardText>Price: {this.state.subscription.price}</CardText>
+                <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
+                <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
+                <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
                 {payment_status}
 
             </Card>
@@ -317,9 +336,6 @@ export default class Dashboard extends React.Component {
                     </Link>
                   }
 
-                  <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                    <FlatButton label="Pay" />
-                  </a>
 
                   <FlatButton label="Report" onTouchTap={()=>this.generateReport(item.property_id)}/>
 

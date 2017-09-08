@@ -148,3 +148,30 @@ export function fetchRecent() {
         });
 
 }
+
+export function fetchSubscriptions() {
+
+  var url = config.ENDPOINT_URL + 'susbcriptions';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': loginauth.AUTHTOKEN
+           },
+          data: {
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+
+          dispatcher.dispatch({
+            type: "GET_SUBSCRIPTION",
+            data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}
