@@ -48,7 +48,7 @@ export default class LeftDrawer extends React.Component {
            color: typography.textFullWhite,
            lineHeight: `${spacing.desktopKeylineIncrement}px`,
            fontWeight: typography.fontWeightLight,
-           backgroundColor: blue600,
+           backgroundColor: '#00BDDB',
            paddingLeft: 40,
            height: 56,
            fontWeight: 700
@@ -73,7 +73,7 @@ export default class LeftDrawer extends React.Component {
            span: {
              paddingTop: 12,
              display: 'block',
-             color: 'white',
+             color: 'rgb(50, 50, 50)',
              fontWeight: 500,
              textShadow: '1px 1px #444',
              maxWidth: 150,

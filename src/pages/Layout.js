@@ -50,7 +50,8 @@ class Layout extends React.Component {
 
     const muiTheme = getMuiTheme({
       palette: {
-        primary1Color: blue500,
+        //primary1Color: blue500,
+        primary1Color: '#00BDDB'
       }
     });
 

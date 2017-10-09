@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import PhotoWarpper from '../photos/PhotoWarpper';
+import Checkbox from 'material-ui/Checkbox';
 
 
 export default class SingleItemElement extends React.Component {
@@ -121,9 +122,15 @@ export default class SingleItemElement extends React.Component {
             <Divider style={styles.bottomDivider}/>
             }
 
-            <h4>Description:</h4>
-            <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' } value={this.props.data.description?this.props.data.description: '' } onChange={this.props.handleInputChange}/>
+            <h4>Need maintenance?:</h4>
+            {/* <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' } value={this.props.data.description?this.props.data.description: '' } onChange={this.props.handleInputChange}/> */}
 
+             <Checkbox
+                label="Need maintenance"
+                name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' }
+               checked={this.props.data.description == '1' || this.props.data.description ?true: false }
+               onCheck={this.props.handleInputChange}
+             />
             { this.props.type == 'ITEM' &&
             <Divider style={styles.bottomDivider}/>
             }
