@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from "react";
-import {blue100, lightGreen500, blue500, pink400, yellow400} from 'material-ui/styles/colors';
+import {blue100, lightGreen500, blue500, pink400, yellow400, blueGrey500, orange300, teal800} from 'material-ui/styles/colors';
 import TextField from 'material-ui/TextField';
 import ContentDelete from 'material-ui/svg-icons/action/delete';
 import ContentDone from 'material-ui/svg-icons/action/done';
@@ -84,7 +84,7 @@ export default class SingleItemElementTemplate extends React.Component {
 
      const styles = {
       deletebtn:{
-        color: yellow400
+        color: yellow400,
       },
       floatingLabelStyle: {
         color: lightGreen500,
@@ -119,16 +119,16 @@ export default class SingleItemElementTemplate extends React.Component {
         <TextField hintText="Item name" disabled={this.state.disable} value={this.state.item_name} name="subitem" onChange={this.handleInputChange.bind(this)} floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFocusStyle={styles.floatingLabelFocusStyle}/>
           {!this.state.save &&
             <IconButton tooltip="Edit" style={styles.deletebtn} onClick={this.enabletext.bind(this)}>
-              <ContentCreate />
+              <ContentCreate color={blueGrey500}/>
             </IconButton>
           }
           {this.state.save &&
             <IconButton tooltip="Save" style={styles.deletebtn} onClick={this.handleSave.bind(this)}>
-              <ContentDone />
+              <ContentDone color={teal800}/>
             </IconButton>
           }
         <IconButton tooltip="Delete" style={styles.deletebtn} onClick={this.handleDelDialogOpen.bind(this)}>
-          <ContentDelete />
+          <ContentDelete color={orange300}/>
         </IconButton>
 
         <Dialog

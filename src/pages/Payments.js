@@ -189,7 +189,7 @@ export default class Payments extends React.Component{
             </TableBody>
         </Table>
 
-        <h6>Sometimes there might be dupicated values but no worries we just try to capture everything and only grab the lasted payment history from paypal</h6>
+        <p style={{color:'#9E9E9E', fontSize: 12}}>* Sometimes there might be dupicated values but no worries we just try to capture everything and only grab the lasted payment history from paypal</p>
 
         </div>
 

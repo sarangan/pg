@@ -95,7 +95,7 @@ export default class SubItemsList extends React.Component {
         marginRight: 10
       },
       header: {
-        color: '#6483b3',
+        color: '#00ACC1',
         fontSize: 24,
         fontWeight: 700
       }

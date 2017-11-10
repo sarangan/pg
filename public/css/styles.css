@@ -68,7 +68,7 @@ h1,h2,h3,h4,h5 {
 
 .roomlist-right-div{
   padding: 10px;
-  max-height: 700px;
+  max-height: 750px;
   overflow: auto;
 }
 
@@ -102,10 +102,19 @@ h1,h2,h3,h4,h5 {
 }
 
 .gen-condition-title{
-  float: left;
+  color: #616161;
+  font-weight: bold;
+  font-size: 16px;
 }
 
-.gen-condition-title::after {
+.actual-gen-condition-title{
+  float: left;
+  color: #616161;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.actual-gen-condition-title::after {
   content: '';
   display: table;
   clear: both;

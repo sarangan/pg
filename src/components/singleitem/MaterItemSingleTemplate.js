@@ -70,7 +70,7 @@ export default class MaterItemSingleTemplate extends React.Component {
 
     return(
       <div>
-        <h2>{this.props.title}</h2>
+        <h3 style={{color: '#0097A7', fontSize: 20}}>{this.props.title}</h3>
 
         <div className="master-template-edit">
           <SingleItemElementTemplate key={this.props.masterid} item_name={this.props.title} sub_id={this.props.masterid} delete={this.props.deleteMasterItem} update={this.props.updateMasterItem}/>

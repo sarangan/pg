@@ -99,7 +99,14 @@ export default class AddProperty extends React.Component {
          width: 150,
          height: 'auto',
          marginLeft: 50
-       }
+       },
+       heading:{
+         color: 'rgb(79, 189, 160)',
+         marginBottom: 0,
+         color: 'rgb(0, 151, 167)',
+         fontSize: 20,
+         marginBottom: 10,
+       },
     };
 
 
@@ -108,7 +115,8 @@ export default class AddProperty extends React.Component {
     return(
 
       <form>
-        <h3>{this.props.title}</h3>
+
+        <h3 style={styles.heading}>{this.props.title}</h3>
 
         <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} name="address_1" value={this.props.address_1} onChange={this.props.handleInputChange}/>
         <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} name="address_2" value={this.props.address_2} onChange={this.props.handleInputChange}/>
@@ -116,7 +124,7 @@ export default class AddProperty extends React.Component {
         <TextField  hintText="Postalcode" floatingLabelText="Postalcode" fullWidth={false} name="postalcode" value={this.props.postalcode} onChange={this.props.handleInputChange}/>
 
         <Divider style={styles.bottomDivider}/>
-        <h4>Report Details:</h4>
+        <h4 style={{color: '#616161', fontWeight: 'bold', fontSize: 16}} >Report Details:</h4>
 
         <SelectField floatingLabelText="Report type" value={this.props.report_type} onChange={this.props.handleSelectChange}  name="report_type">
           <MenuItem value={null} primaryText=""/>

@@ -680,16 +680,19 @@ export default class ReportSettings extends React.Component {
         height: 20
       },
       wrapper:{
-        boxShadow:' rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px',
-        borderRadius: 2,
+        // boxShadow:' rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px',
+        // borderRadius: 2,
         padding: 10,
         marginBottom: 30,
         marginTop: 20,
-        position: 'relative'
+        position: 'relative',
+        borderTop: '1px solid #E1E1E1',
       },
       heading:{
-        color: 'rgb(79, 189, 160)',
-        marginBottom: 0
+        marginBottom: 0,
+        color: 'rgb(0, 151, 167)',
+        fontSize: 20,
+        marginBottom: 10
       },
       headinghr:{
         backgroundColor: 'rgb(79, 189, 160)',
@@ -965,7 +968,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Logo settings</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
 
@@ -998,7 +1001,7 @@ export default class ReportSettings extends React.Component {
 
           <div style={styles.wrapper}>
               <h3 style={styles.heading}>Base color settings</h3>
-              <Divider style={styles.headinghr}/>
+              <div style={styles.headinghr}/>
 
               <h4>Select your base color:</h4>
               <ColorPicker changeColor={this.changeColor.bind(this)} type="BASECOLOR" defaultColor={this.state.formValues.base_color}/>
@@ -1007,7 +1010,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Page header</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
@@ -1057,7 +1060,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Table section header</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
@@ -1094,7 +1097,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Front page</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
 
@@ -1143,7 +1146,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Item style</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
 
@@ -1203,7 +1206,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Photos layout at the end of report</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
 
@@ -1251,7 +1254,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Cover page</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
 
 
@@ -1276,7 +1279,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
                 <h3 style={styles.heading}>Photo</h3>
-                <Divider style={styles.headinghr}/>
+                <div style={styles.headinghr}/>
 
                 <div style={styles.divInlineWrapper}>
                   <div style={styles.divFlexItem}>
@@ -1358,7 +1361,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
               <h3 style={styles.heading}>General notes and guidance</h3>
-              <Divider style={styles.headinghr}/>
+              <div style={styles.headinghr}/>
 
               <div style={styles.divInlineWrapper}>
 
@@ -1447,7 +1450,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
             <h3 style={styles.heading}>Footer settings</h3>
-            <Divider style={styles.headinghr}/>
+            <div style={styles.headinghr}/>
 
             <Checkbox
                label="Include in footer"
@@ -1479,7 +1482,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
             <h3 style={styles.heading}>Mail settings</h3>
-            <Divider style={styles.headinghr}/>
+            <div style={styles.headinghr}/>
 
             <div style={styles.divInlineWrapper}>
 
@@ -1521,7 +1524,7 @@ export default class ReportSettings extends React.Component {
           <div style={styles.wrapper}>
 
             <h3 style={styles.heading}>Additional settings</h3>
-            <Divider style={styles.headinghr}/>
+            <div style={styles.headinghr}/>
 
             <Checkbox
                label="Condition summary"

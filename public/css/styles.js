@@ -88,7 +88,7 @@ export default StyleSheet.create({
         "paddingRight": 10,
         "paddingBottom": 10,
         "paddingLeft": 10,
-        "maxHeight": 700,
+        "maxHeight": 750,
         "overflow": "auto"
     },
     "roomlist-right-div-no-height": {
@@ -121,9 +121,17 @@ export default StyleSheet.create({
         "maxWidth": 275
     },
     "gen-condition-title": {
-        "float": "left"
+        "color": "#616161",
+        "fontWeight": "bold",
+        "fontSize": 16
     },
-    "gen-condition-title::after": {
+    "actual-gen-condition-title": {
+        "float": "left",
+        "color": "#616161",
+        "fontWeight": "bold",
+        "fontSize": 16
+    },
+    "actual-gen-condition-title::after": {
         "content": "''",
         "display": "table",
         "clear": "both"

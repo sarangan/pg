@@ -5,11 +5,10 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionInfo from 'material-ui/svg-icons/action/info';
-import {blue500, yellow600} from 'material-ui/styles/colors';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import {blue500, yellow600, teal200, grey400, darkBlack, lightBlack, blueGrey300} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import FileFolder from 'material-ui/svg-icons/file/folder';
+import FileFolder from 'material-ui/svg-icons/file/folder-open';
 import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ActionSort from 'material-ui/svg-icons/content/sort';
@@ -1376,6 +1375,12 @@ export default class PropertyRoomList extends React.Component {
       },
       dialog: {
         width: 350
+      },
+      prop_des: {
+        color: '#006064',
+        fontWeight: '600',
+        fontSize: 13,
+        lineHeight: '.6'
       }
     };
 
@@ -1500,7 +1505,7 @@ export default class PropertyRoomList extends React.Component {
 
       sidebaritems.push(
         <ListItem key={item.prop_master_id}
-          leftAvatar={<Avatar icon={<FileFolder />} />}
+          leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={teal200} />}
           rightIconButton={rightIconMenu}
           primaryText={item.name}
           secondaryText=""
@@ -1529,6 +1534,10 @@ export default class PropertyRoomList extends React.Component {
 
     let room_list_view = <div className="room-list">
                             <List>
+                              <div style={{ padding: 5, backgroundColor: '#E0F7FA', margin: 3}}>
+                                <p style={styles.prop_des}>{this.state.property_info.report_type}</p>
+                                <p style={styles.prop_des}>{this.state.property_info.report_date}</p>
+                              </div>
                               <Subheader inset={true}>Room list</Subheader>
 
                                 <div style={styles.buttonsrtl}>
@@ -1543,19 +1552,19 @@ export default class PropertyRoomList extends React.Component {
                                 </div>
 
                                 <ListItem
-                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blueGrey300} />}
                                   primaryText="Property Info"
                                   secondaryText="" onClick={this.sidebarClick.bind(this, 'PROP', 'Update Property info', '')}/>
 
                                 <ListItem
-                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blueGrey300} />}
                                   primaryText="General Condition"
                                   secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')}/>
 
                                 {sidebaritems}
 
                                 <ListItem
-                                  leftAvatar={<Avatar icon={<SignIcon />} backgroundColor={blue500} />}
+                                  leftAvatar={<Avatar icon={<SignIcon />} backgroundColor={blueGrey300} />}
                                   primaryText="Signatures"
                                   secondaryText="" onClick={this.sidebarClick.bind(this, 'SIG', 'Signatures list', '')}/>
 
@@ -1579,7 +1588,8 @@ export default class PropertyRoomList extends React.Component {
 
 
     return(
-      <PageBase title="Room List" navigation="">
+
+      <PageBase title="Room List" navigation={ 'Address:- ' +  this.state.property_info.address_1 + ' ' + this.state.property_info.city + ' ' + this.state.property_info.postalcode  }>
 
         <div className="control-wrapper-container">
 

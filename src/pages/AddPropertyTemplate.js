@@ -320,7 +320,7 @@ export default class AddPropertyTemplate extends React.Component {
                 onRequestClose={this.handleDialogClose}
                 contentStyle ={styles.dialog}
               >
-                Successfully updated
+                Successfully updated!
               </Dialog>
 
 

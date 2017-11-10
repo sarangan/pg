@@ -191,7 +191,8 @@ export default class Dashboard extends React.Component {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           fontSize: 12,
-          color: '#4A5D75'
+          fontWeight: '600',
+          color: '#333333'
         },
         subTxtnoplan: {
           paddingLeft: 16,
@@ -200,9 +201,10 @@ export default class Dashboard extends React.Component {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           fontSize: 12,
-          color: '#00796B',
+          color: '#333333',
           paddingTop: 3,
-          paddingBottom: 3
+          paddingBottom: 3,
+          fontWeight: '600'
         }
     };
 
@@ -295,11 +297,11 @@ export default class Dashboard extends React.Component {
           }
 
           <div style={{marginTop: 20}}>
-            <h3 style={{color: '#8E24AA'}}>Subscription details</h3>
+            <h3 style={{color: '#0097A7', fontSize: 20}}>Subscription details</h3>
           </div>
 
           {this.state.subscription && this.state.subscription.subs_id &&
-            <Card>
+            <Card style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
               <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
                 <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
                 <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
@@ -328,7 +330,7 @@ export default class Dashboard extends React.Component {
 
 
           <div style={{marginTop: 20}}>
-            <h3>Recent Properties</h3>
+            <h3>Recent properties</h3>
             <Divider style={{width: '20%'}}/>
           </div>
           <div style={styles.cardContainer}>

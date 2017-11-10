@@ -48,8 +48,8 @@ export default class SingleItemElement extends React.Component {
         marginRight: 30
       },
       bottomDivider: {
-         marginTop: 40,
-         marginBottom: 40
+         marginTop: 20,
+         marginBottom: 20
       },
       buttons: {
         marginTop: 30,
@@ -60,15 +60,18 @@ export default class SingleItemElement extends React.Component {
         marginRight: 10
       },
       wrapper:{
-        boxShadow:' rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px',
-        borderRadius: 2,
+        //boxShadow:' rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px',
+        //borderRadius: 2,
+        borderTop: '1px solid #E1E1E1',
         padding: 10,
         marginBottom: 30,
-        marginTop: 20
+        marginTop: 10
       },
       heading:{
-        color: 'rgb(79, 189, 160)',
-        marginBottom: 0
+        marginBottom: 0,
+        color: 'rgb(0, 151, 167)',
+        fontSize: 20,
+        marginBottom: 10
       },
       headinghr:{
         backgroundColor: 'rgb(79, 189, 160)'
@@ -80,7 +83,7 @@ export default class SingleItemElement extends React.Component {
     let meterorItem = null;
     if(this.props.type == 'METER' ){
       meterorItem = <div>
-        <h4>Meter Reading:</h4>
+        <h4 style={styles.subheader} className="gen-condition-title">Meter Reading:</h4>
         <TextField  fullWidth={true} name={this.props.data.item_id +';'+ 'reading_value'} value={this.props.data.reading_value? this.props.data.reading_value : ''} onChange={this.props.handleInputChange}/>
       </div>
     }
@@ -96,7 +99,7 @@ export default class SingleItemElement extends React.Component {
 
 
       meterorItem= <div>
-                      <h4>Condition:</h4>
+                      <h4 style={styles.subheader} className="gen-condition-title">Condition:</h4>
                       <RadioButtonGroup name={ this.props.type == 'ITEM'? 'option' : this.props.data.item_id +';'+ 'option'} defaultSelected={this.props.data.option} valueSelected={String(this.props.data.option).toUpperCase()} className="clear-float" onChange={this.props.handleInputChange}>
                         {this.props.optlist.map( (item, index) =>
                           <RadioButton key={index}
@@ -114,15 +117,15 @@ export default class SingleItemElement extends React.Component {
       <div style={styles.wrapper}>
         <div>
             <h3 style={styles.heading}>{this.props.title}</h3>
-            <Divider style={styles.headinghr}/>
+
+            <div style={styles.bottomDivider}/>
 
             {meterorItem}
 
-            { this.props.type == 'ITEM' &&
-            <Divider style={styles.bottomDivider}/>
-            }
+            <div style={styles.bottomDivider}/>
 
-            <h4>Need maintenance?:</h4>
+
+            <h4 className="gen-condition-title">Need maintenance?:</h4>
             {/* <TextField  hintText="Description" floatingLabelText="Description" fullWidth={true} name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' } value={this.props.data.description?this.props.data.description: '' } onChange={this.props.handleInputChange}/> */}
 
              <Checkbox
@@ -131,27 +134,23 @@ export default class SingleItemElement extends React.Component {
                checked={this.props.data.description == '1' || this.props.data.description ?true: false }
                onCheck={this.props.handleInputChange}
              />
-            { this.props.type == 'ITEM' &&
-            <Divider style={styles.bottomDivider}/>
-            }
 
-            <h4>Comment:</h4>
+            <div style={styles.bottomDivider}/>
+
+            <h4 className="gen-condition-title">Comment:</h4>
+
             <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.type == 'ITEM'?'comment':this.props.data.item_id +';'+ 'comment'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
 
-
-            { this.props.type == 'ITEM' &&
-            <Divider style={styles.bottomDivider}/>
-            }
+            <div style={styles.bottomDivider}/>
 
         </div>
 
-        <h4>Photos:</h4>
+        <h4 className="gen-condition-title">Photos:</h4>
 
         <PhotoWarpper item_id={this.props.item_id} photos={this.props.photos} on_drop={this.props.on_drop} dragging={this.props.dragging}
           on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete}
           photoUpload={this.props.photoUpload} type={this.props.type} releaseDragging={this.props.releaseDragging} disableDrag={true} showprogress={this.props.showprogress}/>
 
-        <Divider />
 
       </div>
     );

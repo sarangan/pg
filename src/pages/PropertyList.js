@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentCreate from 'material-ui/svg-icons/content/create';
+import ContentCreate from 'material-ui/svg-icons/file/folder';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ReportDownload from 'material-ui/svg-icons/file/file-download';
 import Playbtn from 'material-ui/svg-icons/av/play-arrow';
@@ -126,7 +126,14 @@ export default class PropertyList extends React.Component {
   //generate report
   generateReport(property_id){
     console.log(property_id);
-    PropertyListActions.generateReport(property_id);
+
+    this.setState({
+      startProcess: true
+    }, ()=>{
+      PropertyListActions.generateReport(property_id);
+    });
+
+
   };
 
   navigate = (nextpage) => {
@@ -296,9 +303,10 @@ export default class PropertyList extends React.Component {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           fontSize: 12,
-          color: '#00796B',
+          color: '#333333',
           paddingTop: 3,
-          paddingBottom: 3
+          paddingBottom: 3,
+          fontWeight: '600'
         }
     };
 
@@ -389,11 +397,11 @@ export default class PropertyList extends React.Component {
           }
 
           <div style={{marginTop: 20}}>
-            <h3 style={{color: '#8E24AA'}}>Subscription details</h3>
+            <h3 style={{color: '#0097A7',  fontSize: 20}}>Subscription details</h3>
           </div>
 
           {this.state.subscription && this.state.subscription.subs_id &&
-            <Card>
+            <Card  style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
               <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
                 <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
                 <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
@@ -421,7 +429,7 @@ export default class PropertyList extends React.Component {
           }
 
           <div style={{marginTop: 20}}>
-            <h3>Properties</h3>
+            <h3>List of properties</h3>
           </div>
 
           <Table fixedHeader={this.state.fixedHeader}
@@ -512,8 +520,8 @@ export default class PropertyList extends React.Component {
                </ToolbarGroup>
                <ToolbarGroup lastChild={true}>
 
-                <RaisedButton icon={<BackIcon />} primary={true} onTouchTap={()=>this.navigate(-1) }/>
-                <RaisedButton icon={<ForwardIcon />} primary={true} style={styles.navbtn} onTouchTap={()=>this.navigate(1) }/>
+                <RaisedButton icon={<BackIcon />} onTouchTap={()=>this.navigate(-1) }/>
+                <RaisedButton icon={<ForwardIcon />} style={styles.navbtn} onTouchTap={()=>this.navigate(1) }/>
              </ToolbarGroup>
            </Toolbar>
 

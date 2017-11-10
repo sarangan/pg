@@ -89,7 +89,14 @@ export default class Generalconditionlist extends React.Component {
          marginRight: 10,
          position: 'relative',
          marginTop: 5
-       }
+       },
+       heading:{
+         color: 'rgb(79, 189, 160)',
+         marginBottom: 0,
+         color: 'rgb(0, 151, 167)',
+         fontSize: 20,
+         marginBottom: 10
+       },
     };
 
     let genItems = [];
@@ -177,8 +184,7 @@ export default class Generalconditionlist extends React.Component {
 
     return(
       <form>
-        <h3>{this.props.title}</h3>
-
+        <h3 style={styles.heading}>{this.props.title}</h3>
 
         {this.state.enableSort== false &&
           generalContent
