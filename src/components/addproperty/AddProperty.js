@@ -18,8 +18,10 @@ export default class AddProperty extends React.Component {
     this.props = props;
     let url = 'http://placehold.it/150x150?text=PropertyGround';
     if(this.props.property_id && this.props.image_url){
-      url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
+        url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
     }
+
+
 
     this.state = {
       prop_logo: url,
@@ -29,15 +31,18 @@ export default class AddProperty extends React.Component {
 
   componentWillReceiveProps(nextProps){
 
-    if(nextProps.image_url != this.props.image_url && nextProps.image_url.length > 0 && this.props.property_id){
-      let url = 'http://placehold.it/150x150?text=PropertyGround';
-      if(this.props.property_id){
-        url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (nextProps.image_url.substr(0, nextProps.image_url.lastIndexOf('.')) || nextProps.image_url) + '.jpg';
+    if(this.props.image_url && nextProps.image_url){
+      if(nextProps.image_url != this.props.image_url && nextProps.image_url.length > 0 && this.props.property_id){
+        let url = 'http://placehold.it/150x150?text=PropertyGround';
+        if(this.props.property_id){
+          url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (nextProps.image_url.substr(0, nextProps.image_url.lastIndexOf('.')) || nextProps.image_url) + '.jpg';
+        }
+        this.setState({
+          prop_logo: url
+        });
       }
-      this.setState({
-        prop_logo: url
-      });
     }
+
 
   }
 
