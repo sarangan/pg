@@ -3,7 +3,8 @@ import { EventEmitter } from "events";
 import dispatcher from "../dispatcher";
 
 class PropertyListStore extends EventEmitter {
-  constructor() {
+
+  constructor(){
     super();
     this.propertyList = [];
     this.propertyRecent = [];

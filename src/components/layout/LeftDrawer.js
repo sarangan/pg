@@ -33,6 +33,7 @@ export default class LeftDrawer extends React.Component {
       this.menus.push({text: 'Report settings', icon: <ReportIcon />,  link: 'reportsettings' });
       this.menus.push({text: 'Users', icon: <UsersIcon/>,  link: 'users' });
       this.menus.push({text: 'Payment history', icon: <MoneyIcon/>,  link: 'payments' });
+      //this.menus.push({text: 'Settings', icon: <SettingsIcon/>,  link: 'settings' });
     }
 
   }
@@ -44,14 +45,15 @@ export default class LeftDrawer extends React.Component {
        const styles = {
          logo: {
            cursor: 'pointer',
-           fontSize: 22,
+           fontSize: 18,
            color: typography.textFullWhite,
            lineHeight: `${spacing.desktopKeylineIncrement}px`,
-           fontWeight: typography.fontWeightLight,
+           //fontWeight: typography.fontWeightLight,
            backgroundColor: '#00BDDB',
            paddingLeft: 40,
            height: 56,
-           fontWeight: 700
+           fontWeight: 600,
+           letterSpacing: 1.1
          },
          menuItem: {
            color: '#757575',

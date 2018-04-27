@@ -364,8 +364,8 @@ export default class ForgetPassword extends Component{
                     <img src="images/login_img.png" style={styles.login_des_img}/>
                       <div className="ovrly"></div>
                       <div className="buttons">
-                          <a href="#" className="fa link-android"><img src="images/android_icon.png" className="fa-icon"/></a>
-                          <a href="#" className="fa link-apple"><img src="images/apple_icon.png"  className="fa-icon"/></a>
+                          <a href="#" className="fa link-android"><img src="images/android_icon.png" target="_blank" className="fa-icon"/></a>
+                          <a href="https://itunes.apple.com/us/app/property-ground-inventory/id1293723295?mt=8&ign-mpt=uo%3D2" target="_blank" className="fa link-apple"><img src="images/apple_icon.png"  className="fa-icon"/></a>
                       </div>
                   </div>
                   <div style={styles.subtitle}>

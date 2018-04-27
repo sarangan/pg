@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import {Link, browserHistory} from 'react-router';
-import RaisedButton from 'material-ui/RaisedButton';
-import MenuItem from 'material-ui/MenuItem';
-import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import DatePicker from 'material-ui/DatePicker';
+import { browserHistory} from 'react-router';
+//import RaisedButton from 'material-ui/RaisedButton';
+//import MenuItem from 'material-ui/MenuItem';
+//import TextField from 'material-ui/TextField';
+//import SelectField from 'material-ui/SelectField';
+//import DatePicker from 'material-ui/DatePicker';
 // import {grey400} from 'material-ui/styles/colors';
-import Divider from 'material-ui/Divider';
+//import Divider from 'material-ui/Divider';
 import PageBase from '../components/layout/PageBase';
-import uitl from '../utils/utils.js'
+//import uitl from '../utils/utils.js'
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
 import Dialog from 'material-ui/Dialog';
@@ -20,7 +20,7 @@ import * as PropertyActions from "../actions/PropertyActions"; //TODO
 import PropertyStore from "../stores/PropertyStore";
 
 
-export default class AddNewProperty extends React.Component {
+export default class AddNewProperty extends Component {
 
   constructor(){
     super();

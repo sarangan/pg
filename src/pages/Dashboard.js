@@ -1,24 +1,24 @@
-import React from "react";
+import React, {Component} from "react";
 import { Link } from "react-router";
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentCreate from 'material-ui/svg-icons/content/create';
+//import ContentCreate from 'material-ui/svg-icons/content/create';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import ReportDownload from 'material-ui/svg-icons/file/file-download';
-import Playbtn from 'material-ui/svg-icons/av/play-arrow';
+//import ReportDownload from 'material-ui/svg-icons/file/file-download';
+//import Playbtn from 'material-ui/svg-icons/av/play-arrow';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 import Divider from 'material-ui/Divider';
 
-import {pink500, grey200, grey500, amber100, amber500} from 'material-ui/styles/colors';
+import {pink500, grey500, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
 import LinearProgress from 'material-ui/LinearProgress';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+//import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import RaisedButton from 'material-ui/RaisedButton';
-import BackIcon from 'material-ui/svg-icons/image/navigate-before';
-import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
+//import BackIcon from 'material-ui/svg-icons/image/navigate-before';
+//import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
 
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
@@ -26,7 +26,7 @@ import PropertyListStore from "../stores/PropertyListStore";
 import loginauth from '../auth/loginauth';
 
 
-export default class Dashboard extends React.Component {
+export default class Dashboard extends Component {
 
   constructor(props){
     super(props);
@@ -73,6 +73,10 @@ export default class Dashboard extends React.Component {
       });
     }
 
+  }
+
+  fetchSubs(){
+    PropertyListActions.fetchSubscriptions();
   }
 
   getIsReportReadyStatus(){
@@ -208,7 +212,6 @@ export default class Dashboard extends React.Component {
         }
     };
 
-    console.log(this.state.list);
 
       let isShowLoading = null;
        if (this.state.list.length >= 0 || this.state.list ) {
@@ -222,11 +225,13 @@ export default class Dashboard extends React.Component {
        let yyyy = today.getFullYear();
 
        //check if last plan is for current month
-       let plan_date = new Date(this.state.subscription.createdAt);
-       let get_last_sub_month = plan_date.getMonth() + 1;
-       let get_last_sub_year = plan_date.getFullYear();
-
        let payment_status = [];
+      if(this.state.subscription && this.state.subscription.hasOwnProperty('createdAt')){
+         let plan_date = new Date(this.state.subscription.createdAt);
+         let get_last_sub_month = plan_date.getMonth() + 1;
+         let get_last_sub_year = plan_date.getFullYear();
+
+
        if(get_last_sub_month == mm && get_last_sub_year == yyyy){
 
          if(this.state.subscription.splan_id == 1000){
@@ -241,6 +246,7 @@ export default class Dashboard extends React.Component {
               <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                 <RaisedButton secondary={true} label="Buy Subscription plan" />
               </a>
+              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
             </CardActions>);
             }
          }
@@ -257,6 +263,7 @@ export default class Dashboard extends React.Component {
              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                <RaisedButton secondary={true} label="Buy Subscription plan" />
              </a>
+             <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
            </CardActions>);
            }
 
@@ -269,15 +276,18 @@ export default class Dashboard extends React.Component {
 
        }
        else{
-         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 14}}>
            Your subscription plan has been expired
          </CardText>);
          payment_status.push(<CardActions key={5}>
          <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
            <RaisedButton secondary={true} label="Buy Subscription plan" />
          </a>
+         <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
        </CardActions>);
        }
+
+     }
 
 
     return (
@@ -297,12 +307,12 @@ export default class Dashboard extends React.Component {
           }
 
           <div style={{marginTop: 20}}>
-            <h3 style={{color: '#0097A7', fontSize: 20}}>Subscription details</h3>
+            <h3 style={{color: '#0097A7', fontSize: 16}}>Subscription details</h3>
           </div>
 
           {this.state.subscription && this.state.subscription.subs_id &&
             <Card style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
-              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
+              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '600', fontSize: 14}} />
                 <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
                 <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
                 <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
@@ -312,7 +322,7 @@ export default class Dashboard extends React.Component {
           }
           {this.state.subscription && !this.state.subscription.subs_id &&
             <Card>
-              <CardText style={{color: '#D32F2F', fontWeight: '700', fontSize: 17}}>
+              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
                 You don't have any subscription plan yet
               </CardText>
               <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
@@ -323,7 +333,26 @@ export default class Dashboard extends React.Component {
                 <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                   <RaisedButton secondary={true} label="Buy Subscription plan" />
                 </a>
+                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
+              </CardActions>
+            </Card>
+          }
 
+
+          {!this.state.subscription &&
+            <Card>
+              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
+                You don't have any subscription plan yet
+              </CardText>
+              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
+              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
+
+              <CardActions>
+
+                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+                  <RaisedButton secondary={true} label="Buy Subscription plan" />
+                </a>
+                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
               </CardActions>
             </Card>
           }

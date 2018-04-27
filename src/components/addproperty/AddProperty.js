@@ -143,7 +143,10 @@ export default class AddProperty extends React.Component {
           <MenuItem value={"Condition Report"} primaryText="Condition Report"/>
         </SelectField>
 
-        <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" defaultDate={this.props.report_date} value={this.props.report_date} onChange={this.props.handleDateChange}/>
+        <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date"
+        defaultDate={this.props.report_date}
+        value={this.props.report_date}
+        onChange={this.props.handleDateChange}/>
 
         <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  name="description" fullWidth={true} value={this.props.description} onChange={this.props.handleInputChange}/>
 

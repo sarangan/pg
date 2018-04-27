@@ -46,6 +46,7 @@ export default (
       <Route path="/changepassword" component={ChangePassword} onEnter={ authenticate }/>
       <Route path="/reportsettings" component={ReportSettings} onEnter={ authenticate }/>
       <Route path="/payments" component={Payments} onEnter={ authenticate }/>
+      <Route path="/settings" component={Settings} onEnter={ authenticate }/>
       <Route path="*" component={Dashboard} onEnter={ authenticate }/>
     </Route>
 

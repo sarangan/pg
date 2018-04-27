@@ -7,7 +7,7 @@ import Header from '../components/layout/Header';
 import LeftDrawer from '../components/layout/LeftDrawer';
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 
-import {blue500} from 'material-ui/styles/colors';
+//import {blue500} from 'material-ui/styles/colors';
 import loginauth from '../auth/loginauth';
 import MyPath from '../utils/settings';
 

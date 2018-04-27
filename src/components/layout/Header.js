@@ -84,10 +84,10 @@ export default class Header extends React.Component {
         //nav = "Home / Property / Room list";
         nav = "Room list";
         break;
-      case 'template':
-        //nav = "Home / Template / Room list template";
-        nav = "Room list template";
-        break;
+      // case 'template':
+      //   //nav = "Home / Template / Room list template";
+      //   nav = "Room list template";
+      //   break;
       case 'reportsettings':
         //nav = "Home / Report settings";
         nav = "Report settings";

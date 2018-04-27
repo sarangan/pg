@@ -7,14 +7,14 @@ import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
 import Snackbar from 'material-ui/Snackbar';
-import uitl from '../utils/utils.js'
+//import uitl from '../utils/utils.js'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import * as PropertyTemplateActions from "../actions/PropertyTemplateActions";
 import PropertyTemplateStore from "../stores/PropertyTemplateStore";
 
-export default class AddPropertyTemplate extends React.Component {
+export default class AddPropertyTemplate extends Component {
 
       constructor(props){
         super(props);

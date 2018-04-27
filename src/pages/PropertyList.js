@@ -5,11 +5,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentCreate from 'material-ui/svg-icons/file/folder';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ReportDownload from 'material-ui/svg-icons/file/file-download';
-import Playbtn from 'material-ui/svg-icons/av/play-arrow';
+//import Playbtn from 'material-ui/svg-icons/av/play-arrow';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 
-import {pink500, grey200, grey500, amber100, amber500} from 'material-ui/styles/colors';
+import {pink500, grey200, grey500, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -22,8 +22,8 @@ import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
 import loginauth from '../auth/loginauth';
 
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import {Card, CardActions, CardTitle, CardText} from 'material-ui/Card';
+//import FlatButton from 'material-ui/FlatButton';
 
 export default class PropertyList extends React.Component {
 
@@ -57,13 +57,17 @@ export default class PropertyList extends React.Component {
   componentWillMount() {
     PropertyListStore.on("change", this.getList);
     PropertyListStore.on("change", this.getSusbcription);
-      PropertyListStore.on("change", this.getIsReportReadyStatus);
+    PropertyListStore.on("change", this.getIsReportReadyStatus);
   }
 
   componentWillUnmount() {
     PropertyListStore.removeListener("change", this.getList);
     PropertyListStore.removeListener("change", this.getSusbcription);
     PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
+  }
+
+  fetchSubs(){
+    PropertyListActions.fetchSubscriptions();
   }
 
   getList() {
@@ -323,19 +327,23 @@ export default class PropertyList extends React.Component {
        let mm = today.getMonth()+1; //January is 0!
        let yyyy = today.getFullYear();
 
+       let payment_status = [];
+
+    if(this.state.subscription && this.state.subscription.hasOwnProperty('createdAt')){
+
        //check if last plan is for current month
        let plan_date = new Date(this.state.subscription.createdAt);
        let get_last_sub_month = plan_date.getMonth() + 1;
        let get_last_sub_year = plan_date.getFullYear();
 
-       let payment_status = [];
+
        if(get_last_sub_month == mm && get_last_sub_year == yyyy){
 
          if(this.state.subscription.splan_id == 1000){
             payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
 
             if(this.state.subscription.total_sliver_reports != 0){
-              payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+              payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
                 Your subscription plan has been expired
               </CardText>);
 
@@ -343,6 +351,7 @@ export default class PropertyList extends React.Component {
               <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                 <RaisedButton secondary={true} label="Buy Subscription plan" />
               </a>
+              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
             </CardActions>);
             }
          }
@@ -351,7 +360,7 @@ export default class PropertyList extends React.Component {
            payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
 
            if(this.state.subscription.total_gold_reports >= this.state.subscription.reports){
-             payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+             payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
                Your subscription plan has been expired
              </CardText>);
 
@@ -359,6 +368,7 @@ export default class PropertyList extends React.Component {
              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                <RaisedButton secondary={true} label="Buy Subscription plan" />
              </a>
+             <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
            </CardActions>);
            }
 
@@ -371,15 +381,18 @@ export default class PropertyList extends React.Component {
 
        }
        else{
-         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
+         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
            Your subscription plan has been expired
          </CardText>);
          payment_status.push(<CardActions key={5}>
          <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
            <RaisedButton secondary={true} label="Buy Subscription plan" />
          </a>
+         <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
        </CardActions>);
        }
+
+     }
 
 
     return (
@@ -402,7 +415,7 @@ export default class PropertyList extends React.Component {
 
           {this.state.subscription && this.state.subscription.subs_id &&
             <Card  style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
-              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '700', fontSize: 17}} />
+              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '600', fontSize: 14}} />
                 <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
                 <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
                 <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
@@ -412,7 +425,7 @@ export default class PropertyList extends React.Component {
           }
           {this.state.subscription && !this.state.subscription.subs_id &&
             <Card>
-              <CardText style={{color: '#D32F2F', fontWeight: '700', fontSize: 17}}>
+              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
                 You don't have any subscription plan yet
               </CardText>
               <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
@@ -423,6 +436,26 @@ export default class PropertyList extends React.Component {
                 <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
                   <RaisedButton secondary={true} label="Buy Subscription plan" />
                 </a>
+                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
+
+              </CardActions>
+            </Card>
+          }
+
+          {!this.state.subscription &&
+            <Card>
+              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
+                You don't have any subscription plan yet
+              </CardText>
+              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
+              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
+
+              <CardActions>
+
+                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
+                  <RaisedButton secondary={true} label="Buy Subscription plan" />
+                </a>
+                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
 
               </CardActions>
             </Card>
