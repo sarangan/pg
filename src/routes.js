@@ -17,6 +17,9 @@ import ForgetPassword from "./pages/auth/ForgetPassword";
 import loginauth from './auth/loginauth';
 import MyPath from './utils/settings';
 import Payments from "./pages/Payments";
+import createBrowserHistory from 'history/createBrowserHistory';
+const history = createBrowserHistory();
+
 
 const authenticate = (nextState, replace) => {
   const login = loginauth.ISLOGIN;
@@ -30,7 +33,7 @@ const authenticate = (nextState, replace) => {
 };
 
 export default (
-  <Route>
+  <Route history={history}>
     <Route path="/" component={Layout}>
       <IndexRoute component={Dashboard} onEnter={ authenticate }></IndexRoute>
       <Route path="/login" component={Login} />
@@ -51,4 +54,5 @@ export default (
     </Route>
 
   </Route>
+
 );
