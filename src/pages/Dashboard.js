@@ -68,7 +68,7 @@ export default class Dashboard extends Component {
   getList() {
 
     let list = PropertyListStore.getRecent();
-    if(list){
+    if(list && list.hasOwnProperty("plans")){
       this.setState({
         list: list.properties,
         subscription: list.plans[0]
