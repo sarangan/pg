@@ -8,6 +8,8 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 
 import {pink500, grey500, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
@@ -34,13 +36,17 @@ export default class Dashboard extends Component {
       this.getList = this.getList.bind(this);
       this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
       this.getSusbcription = this.getSusbcription.bind(this);
+      this.getCouponStatus = this.getCouponStatus.bind(this);
 
       PropertyListActions.fetchRecent();
 
       this.state={
         list: [],
         subscription: {},
-        startProcess: false
+        startProcess: false,
+        coupon_code: '',
+        showdialog: false,
+        coupon_err_text: '',
       };
   }
 
@@ -48,6 +54,7 @@ export default class Dashboard extends Component {
     PropertyListStore.on("change", this.getList);
     PropertyListStore.on("change", this.getIsReportReadyStatus);
     PropertyListStore.on("change", this.getSusbcription);
+    PropertyListStore.on("change", this.getCouponStatus);
 
   }
 
@@ -55,6 +62,7 @@ export default class Dashboard extends Component {
     PropertyListStore.removeListener("change", this.getList);
     PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
     PropertyListStore.removeListener("change", this.getSusbcription);
+    PropertyListStore.removeListener("change", this.getCouponStatus);
   }
 
   getList() {
@@ -101,6 +109,29 @@ export default class Dashboard extends Component {
       });
     }
 
+  }
+
+  getCouponStatus(){
+    let status = PropertyListStore.getCouponStatus();
+    if(status == 1){
+
+      this.setState({
+        coupon_err_text: "Coupon updated!"
+      }, ()=>{
+        this.handleDialogOpen();
+        this.fetchSubs();
+      });
+
+    }
+    else if(status == 2){
+
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      })
+
+    }
   }
 
 
@@ -150,7 +181,58 @@ export default class Dashboard extends Component {
     return adds;
   }
 
+  //coupon input change
+  handleInputChange = (event) =>{
+       const target = event.target;
+       const value = target.type === 'checkbox' ? target.checked : target.value;
+       const name = target.name;
+       this.setState({
+           coupon_code: value
+       });
+
+  }
+
+  //apply coupon code
+  applyCoupon = () =>{
+    if(this.state.coupon_code.length > 0){
+      console.log('ok');
+      PropertyListActions.applyCoupon(this.state.coupon_code);
+    }
+    else{
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      });
+
+    }
+
+  }
+
+
+  handleDialogOpen = () => {
+    this.setState({showdialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({showdialog: false});
+  };
+
+  handleDialogOk =() => {
+    this.setState({showdialog: false});
+  }
+
+
   render() {
+
+    const modal_actions = [
+
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDialogOk}
+      />,
+    ];
 
     const styles = {
         floatingActionButton: {
@@ -209,6 +291,9 @@ export default class Dashboard extends Component {
           paddingTop: 3,
           paddingBottom: 3,
           fontWeight: '600'
+        },
+        dialog: {
+          width: 300
         }
     };
 
@@ -248,6 +333,15 @@ export default class Dashboard extends Component {
               </a>
               <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
             </CardActions>);
+
+
+            payment_status.push(
+              <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
+                 <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
+                 <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
+              </div>
+            );
+
             }
          }
 
@@ -265,6 +359,14 @@ export default class Dashboard extends Component {
              </a>
              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
            </CardActions>);
+
+           payment_status.push(
+             <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
+                <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
+                <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
+             </div>
+           );
+
            }
 
          }
@@ -272,6 +374,7 @@ export default class Dashboard extends Component {
          if(this.state.subscription.splan_id == 3000){
            payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
          }
+
 
 
        }
@@ -285,6 +388,14 @@ export default class Dashboard extends Component {
          </a>
          <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
        </CardActions>);
+
+       payment_status.push(
+         <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
+            <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
+            <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
+         </div>
+       );
+
        }
 
      }
@@ -405,6 +516,16 @@ export default class Dashboard extends Component {
 
 
           </div>
+
+          <Dialog
+            actions={modal_actions}
+            modal={false}
+            open={this.state.showdialog}
+            onRequestClose={this.handleDialogClose}
+            contentStyle ={styles.dialog}
+          >
+            {this.state.coupon_err_text}
+          </Dialog>
 
       </PageBase>
 

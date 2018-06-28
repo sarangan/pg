@@ -175,3 +175,31 @@ export function fetchSubscriptions() {
         });
 
 }
+
+export function applyCoupon(coupon_code) {
+
+  var url = config.ENDPOINT_URL + 'updatecoupon';
+  axios({
+          method: 'post',
+          url: url,
+          headers: {
+             'Authorization': loginauth.AUTHTOKEN
+           },
+          data: {
+            coupon_code
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+
+          dispatcher.dispatch({
+            type: "APPLY_COUPON",
+            data: response.data,
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+}

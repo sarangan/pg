@@ -37,10 +37,14 @@ export default class Payments extends React.Component{
       showErrorSnack: false,
       payments: [],
       subscription:  PropertyListStore.getSusbcription(),
+      coupon_code: '',
+      showdialog: false,
+      coupon_err_text: '',
     };
 
     this.getPayments = this.getPayments.bind(this);
     this.getSusbcription = this.getSusbcription.bind(this);
+    this.getCouponStatus = this.getCouponStatus.bind(this);
     PropertyListActions.fetchSubscriptions();
     PaymentActions.fetchHistory();
   }
@@ -48,11 +52,13 @@ export default class Payments extends React.Component{
   componentWillMount(){
       PaymentStore.on("change", this.getPayments);
       PropertyListStore.on("change", this.getSusbcription);
+      PropertyListStore.on("change", this.getCouponStatus);
   }
 
   componentWillUnmount(){
       PaymentStore.removeListener("change", this.getPayments);
       PropertyListStore.removeListener("change", this.getSusbcription);
+      PropertyListStore.removeListener("change", this.getCouponStatus);
   }
 
   fetchSubs(){
@@ -83,9 +89,82 @@ export default class Payments extends React.Component{
 
   }
 
+  getCouponStatus(){
+    let status = PropertyListStore.getCouponStatus();
+    if(status == 1){
+
+      this.setState({
+        coupon_err_text: "Coupon updated!"
+      }, ()=>{
+        this.handleDialogOpen();
+        this.fetchSubs();
+      });
+
+    }
+    else if(status == 2){
+
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      })
+
+    }
+  }
+
+  //coupon input change
+  handleInputChange = (event) =>{
+       const target = event.target;
+       const value = target.type === 'checkbox' ? target.checked : target.value;
+       const name = target.name;
+       this.setState({
+           coupon_code: value
+       });
+
+  }
+
+  //apply coupon code
+  applyCoupon = () =>{
+    if(this.state.coupon_code.length > 0){
+      console.log('ok');
+      PropertyListActions.applyCoupon(this.state.coupon_code);
+    }
+    else{
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      });
+
+    }
+
+  }
+
+
+  handleDialogOpen = () => {
+    this.setState({showdialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({showdialog: false});
+  };
+
+  handleDialogOk =() => {
+    this.setState({showdialog: false});
+  }
+
 
 
   render(){
+    const modal_actions = [
+
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDialogOk}
+      />,
+    ];
+
 
     const styles = {
         tblProgress: {
@@ -212,6 +291,14 @@ export default class Payments extends React.Component{
            </a>
            <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
          </CardActions>);
+
+         payment_status.push(
+           <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
+              <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
+              <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
+           </div>
+         );
+
          }
       }
 
@@ -229,6 +316,14 @@ export default class Payments extends React.Component{
           </a>
           <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
         </CardActions>);
+
+        payment_status.push(
+          <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
+             <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
+             <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
+          </div>
+        );
+
         }
 
       }
@@ -236,6 +331,8 @@ export default class Payments extends React.Component{
       if(this.state.subscription.splan_id == 3000){
         payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
       }
+
+
 
 
     }
@@ -249,6 +346,14 @@ export default class Payments extends React.Component{
       </a>
         <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
     </CardActions>);
+
+    payment_status.push(
+      <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
+         <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
+         <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
+      </div>
+    );
+    
     }
 
   }
@@ -361,7 +466,15 @@ export default class Payments extends React.Component{
 
         </div>
 
-
+        <Dialog
+          actions={modal_actions}
+          modal={false}
+          open={this.state.showdialog}
+          onRequestClose={this.handleDialogClose}
+          contentStyle ={styles.dialog}
+        >
+          {this.state.coupon_err_text}
+        </Dialog>
 
 
       </PageBase>

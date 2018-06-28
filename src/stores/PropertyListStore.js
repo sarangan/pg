@@ -10,6 +10,7 @@ class PropertyListStore extends EventEmitter {
     this.propertyRecent = [];
     this.isReportReady = null;
     this.susbcription = {};
+    this.couponStatus = 0;
   }
 
   getList() {
@@ -28,6 +29,10 @@ class PropertyListStore extends EventEmitter {
     return this.susbcription;
   }
 
+  getCouponStatus(){
+    return this.couponStatus;
+  }
+
   handleActions(action) {
 
     switch(action.type) {
@@ -38,6 +43,7 @@ class PropertyListStore extends EventEmitter {
         // if(action.data.hasOwnProperty("plans")){
         //   this.susbcription =  action.data.plans[0];
         // }
+        this.couponStatus = 0;
         this.emit("change");
         break;
       }
@@ -47,11 +53,13 @@ class PropertyListStore extends EventEmitter {
           this.susbcription =  action.data.plans[0];
         }
         this.isReportReady = null;
+        this.couponStatus = 0;
         this.emit("change");
         break;
       }
       case "REPORT_READY": {
         this.isReportReady = true;
+        this.couponStatus = 0;
         this.emit("change");
         break;
       }
@@ -62,6 +70,13 @@ class PropertyListStore extends EventEmitter {
         else{
           this.susbcription = {};
         }
+        this.couponStatus = 0;
+        this.isReportReady = null;
+        this.emit("change");
+        break;
+      }
+      case "APPLY_COUPON":{
+        this.couponStatus = action.data.status;
         this.isReportReady = null;
         this.emit("change");
         break;
