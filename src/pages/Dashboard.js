@@ -1,27 +1,23 @@
 import React, {Component} from "react";
 import { Link } from "react-router";
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-//import ContentCreate from 'material-ui/svg-icons/content/create';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-//import ReportDownload from 'material-ui/svg-icons/file/file-download';
-//import Playbtn from 'material-ui/svg-icons/av/play-arrow';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
-
 import {pink500, grey500, amber500} from 'material-ui/styles/colors';
+
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
 import LinearProgress from 'material-ui/LinearProgress';
-//import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import RaisedButton from 'material-ui/RaisedButton';
-//import BackIcon from 'material-ui/svg-icons/image/navigate-before';
-//import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
 
 import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+
+import SubscriptionElement from '../components/subscription/SubscriptionElement';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
@@ -267,7 +263,7 @@ export default class Dashboard extends Component {
         cardWrapper:{
           width: 300,
           marginLeft: 30,
-          marginTop: 20
+          marginTop: 20,
         },
         subTxt: {
           paddingLeft: 16,
@@ -279,18 +275,6 @@ export default class Dashboard extends Component {
           fontSize: 12,
           fontWeight: '600',
           color: '#333333'
-        },
-        subTxtnoplan: {
-          paddingLeft: 16,
-          paddingRight: 16,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          fontSize: 12,
-          color: '#333333',
-          paddingTop: 3,
-          paddingBottom: 3,
-          fontWeight: '600'
         },
         dialog: {
           width: 300
@@ -305,100 +289,6 @@ export default class Dashboard extends Component {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;
        }
 
-       let today = new Date();
-       let mm = today.getMonth()+1; //January is 0!
-       let yyyy = today.getFullYear();
-
-       //check if last plan is for current month
-       let payment_status = [];
-      if(this.state.subscription && this.state.subscription.hasOwnProperty('createdAt')){
-         let plan_date = new Date(this.state.subscription.createdAt);
-         let get_last_sub_month = plan_date.getMonth() + 1;
-         let get_last_sub_year = plan_date.getFullYear();
-
-
-       if(get_last_sub_month == mm && get_last_sub_year == yyyy){
-
-         if(this.state.subscription.splan_id == 1000){
-            payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
-
-            if(this.state.subscription.total_sliver_reports != 0){
-              payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
-                Your subscription plan has been expired
-              </CardText>);
-
-              payment_status.push(<CardActions key={5}>
-              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                <RaisedButton secondary={true} label="Buy Subscription plan" />
-              </a>
-              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-            </CardActions>);
-
-
-            payment_status.push(
-              <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
-                 <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
-                 <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
-              </div>
-            );
-
-            }
-         }
-
-         if(this.state.subscription.splan_id == 2000){
-           payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
-
-           if(this.state.subscription.total_gold_reports >= this.state.subscription.reports){
-             payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 17}}>
-               Your subscription plan has been expired
-             </CardText>);
-
-             payment_status.push(<CardActions key={5}>
-             <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-               <RaisedButton secondary={true} label="Buy Subscription plan" />
-             </a>
-             <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-           </CardActions>);
-
-           payment_status.push(
-             <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
-                <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
-                <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
-             </div>
-           );
-
-           }
-
-         }
-
-         if(this.state.subscription.splan_id == 3000){
-           payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
-         }
-
-
-
-       }
-       else{
-         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: '700', fontSize: 14}}>
-           Your subscription plan has been expired
-         </CardText>);
-         payment_status.push(<CardActions key={5}>
-         <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-           <RaisedButton secondary={true} label="Buy Subscription plan" />
-         </a>
-         <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-       </CardActions>);
-
-       payment_status.push(
-         <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
-            <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
-            <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
-         </div>
-       );
-
-       }
-
-     }
 
 
     return (
@@ -417,75 +307,31 @@ export default class Dashboard extends Component {
              <LinearProgress mode="indeterminate" />
           }
 
-          <div style={{marginTop: 20}}>
-            <h3 style={{color: '#0097A7', fontSize: 16}}>Subscription details</h3>
-          </div>
-
-          {this.state.subscription && this.state.subscription.subs_id &&
-            <Card style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
-              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '600', fontSize: 14}} />
-                <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
-                <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
-                <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
-                {payment_status}
-
-            </Card>
-          }
-          {this.state.subscription && !this.state.subscription.subs_id &&
-            <Card>
-              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
-                You don't have any subscription plan yet
-              </CardText>
-              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
-              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
-
-              <CardActions>
-
-                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                  <RaisedButton secondary={true} label="Buy Subscription plan" />
-                </a>
-                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-              </CardActions>
-            </Card>
-          }
-
-
-          {!this.state.subscription &&
-            <Card>
-              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
-                You don't have any subscription plan yet
-              </CardText>
-              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
-              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
-
-              <CardActions>
-
-                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                  <RaisedButton secondary={true} label="Buy Subscription plan" />
-                </a>
-                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-              </CardActions>
-            </Card>
-          }
-
+          <SubscriptionElement subscription={this.state.subscription} fetchSubs={this.fetchSubs} applyCoupon={this.applyCoupon} handleInputChange={this.handleInputChange}/>
 
           <div style={{marginTop: 20}}>
             <h3>Recent properties</h3>
             <Divider style={{width: '20%'}}/>
+            {this.state.list.length == 0 &&
+              <CardText  key={4} style={{color: '#17bebb', fontWeight: '500', fontSize: 14}}>You don't have any property, please add new property by clicking the plus button bellow.</CardText>
+            }
           </div>
           <div style={styles.cardContainer}>
 
 
           {
             this.state.list.map( item =>
-              <Card style={styles.cardWrapper} key={item.property_id}>
+              <Card style={styles.cardWrapper} key={item.property_id} className="box-shadow">
                 <CardMedia
                   overlay={<CardTitle title={item.address_1 } subtitle={item.address_2} />} >
 
                   <img src={this.getAddress(item.address_1 , item.address_2, item.city, item.postalcode)} alt="" />
 
                 </CardMedia>
-                <CardTitle title={item.city + ' ' +  item.postalcode} subtitle={"Rooms: " + item.total_rooms + ", Photos: " + item.total_photos} />
+                <CardTitle title={item.city + ' ' +  item.postalcode} />
+                <div className="photos-count">
+                <span className="photos-count-text">{"Rooms: " + item.total_rooms + ", Photos: " + item.total_photos}</span>
+                </div>
                 <div style={styles.subTxt}>{item.report_type}</div>
                 <div style={styles.subTxt}>{item.created_date}</div>
                 <CardText>

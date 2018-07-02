@@ -26,6 +26,8 @@ import PaymentStore from "../stores/PaymentStore";
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
 
+import SubscriptionElement from '../components/subscription/SubscriptionElement';
+
 
 export default class Payments extends React.Component{
 
@@ -198,7 +200,8 @@ export default class Payments extends React.Component{
           float: 'right'
         },
         tablewrapper:{
-          position: 'relateive'
+          position: 'relateive',
+          marginTop: 20,
         },
         floatingActionButton: {
           margin: 0,
@@ -261,103 +264,6 @@ export default class Payments extends React.Component{
       isShowSaving = '';
     }
 
-    let today = new Date();
-    let mm = today.getMonth()+1; //January is 0!
-    let yyyy = today.getFullYear();
-
-    let payment_status = [];
-
- if(this.state.subscription && this.state.subscription.hasOwnProperty('createdAt')){
-
-    //check if last plan is for current month
-    let plan_date = new Date(this.state.subscription.createdAt);
-    let get_last_sub_month = plan_date.getMonth() + 1;
-    let get_last_sub_year = plan_date.getFullYear();
-
-
-    if(get_last_sub_month == mm && get_last_sub_year == yyyy){
-
-      if(this.state.subscription.splan_id == 1000){
-         payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
-
-         if(this.state.subscription.total_sliver_reports != 0){
-           payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
-             Your subscription plan has been expired
-           </CardText>);
-
-           payment_status.push(<CardActions key={5}>
-           <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-             <RaisedButton secondary={true} label="Buy Subscription plan" />
-           </a>
-           <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-         </CardActions>);
-
-         payment_status.push(
-           <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
-              <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
-              <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
-           </div>
-         );
-
-         }
-      }
-
-      if(this.state.subscription.splan_id == 2000){
-        payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
-
-        if(this.state.subscription.total_gold_reports >= this.state.subscription.reports){
-          payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
-            Your subscription plan has been expired
-          </CardText>);
-
-          payment_status.push(<CardActions key={5}>
-          <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-            <RaisedButton secondary={true} label="Buy Subscription plan" />
-          </a>
-          <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-        </CardActions>);
-
-        payment_status.push(
-          <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
-             <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
-             <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
-          </div>
-        );
-
-        }
-
-      }
-
-      if(this.state.subscription.splan_id == 3000){
-        payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
-      }
-
-
-
-
-    }
-    else{
-      payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
-        Your subscription plan has been expired
-      </CardText>);
-      payment_status.push(<CardActions key={5}>
-      <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-        <RaisedButton secondary={true} label="Buy Subscription plan" />
-      </a>
-        <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-    </CardActions>);
-
-    payment_status.push(
-      <div style={{paddingTop: 5, paddingBottom: 5}} key={6}>
-         <TextField  hintText="Coupon code" floatingLabelText="Coupon code" fullWidth={false} name="coupon_code" onChange={this.handleInputChange}/>
-         <RaisedButton secondary={false} label="Apply coupon" onClick={()=>this.applyCoupon()}/>
-      </div>
-    );
-    
-    }
-
-  }
-
 
 
     return(
@@ -366,58 +272,7 @@ export default class Payments extends React.Component{
 
         {isShowSaving}
 
-        <div style={{marginTop: 20}}>
-          <h3 style={{color: '#0097A7',  fontSize: 20}}>Subscription details</h3>
-        </div>
-
-        {this.state.subscription && this.state.subscription.subs_id &&
-          <Card  style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
-            <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '600', fontSize: 14}} />
-              <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
-              <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
-              <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
-              {payment_status}
-
-          </Card>
-        }
-        {this.state.subscription && !this.state.subscription.subs_id &&
-          <Card>
-            <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
-              You don't have any subscription plan yet
-            </CardText>
-            <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
-            <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
-
-            <CardActions>
-
-              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                <RaisedButton secondary={true} label="Buy Subscription plan" />
-              </a>
-              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-
-            </CardActions>
-          </Card>
-        }
-
-        {!this.state.subscription &&
-          <Card>
-            <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
-              You don't have any subscription plan yet
-            </CardText>
-            <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
-            <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
-
-            <CardActions>
-
-              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                <RaisedButton secondary={true} label="Buy Subscription plan" />
-              </a>
-              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-
-            </CardActions>
-          </Card>
-        }
-
+        <SubscriptionElement subscription={this.state.subscription} fetchSubs={this.fetchSubs} applyCoupon={this.applyCoupon} handleInputChange={this.handleInputChange}/>
 
       <div style={styles.tablewrapper}>
       <Table

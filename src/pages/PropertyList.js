@@ -5,18 +5,22 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentCreate from 'material-ui/svg-icons/file/folder';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ReportDownload from 'material-ui/svg-icons/file/file-download';
-//import Playbtn from 'material-ui/svg-icons/av/play-arrow';
+import Divider from 'material-ui/Divider';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 
-import {pink500, grey200, grey500, amber500} from 'material-ui/styles/colors';
+import {pink500, grey200, grey500, amber500, amber300, lightGreen300} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
 import LinearProgress from 'material-ui/LinearProgress';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import BackIcon from 'material-ui/svg-icons/image/navigate-before';
 import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
+import Dialog from 'material-ui/Dialog';
+
+import SubscriptionElement from '../components/subscription/SubscriptionElement';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
@@ -35,6 +39,7 @@ export default class PropertyList extends React.Component {
       this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
       PropertyListActions.fetchPropList();
       PropertyListActions.fetchSubscriptions();
+      this.getCouponStatus = this.getCouponStatus.bind(this);
 
       this.state={
         list: PropertyListStore.getList(),
@@ -51,6 +56,9 @@ export default class PropertyList extends React.Component {
         templist: [],
         showProgress: true,
         subscription:  PropertyListStore.getSusbcription(),
+        coupon_code: '',
+        showdialog: false,
+        coupon_err_text: '',
       };
   }
 
@@ -58,12 +66,14 @@ export default class PropertyList extends React.Component {
     PropertyListStore.on("change", this.getList);
     PropertyListStore.on("change", this.getSusbcription);
     PropertyListStore.on("change", this.getIsReportReadyStatus);
+    PropertyListStore.on("change", this.getCouponStatus);
   }
 
   componentWillUnmount() {
     PropertyListStore.removeListener("change", this.getList);
     PropertyListStore.removeListener("change", this.getSusbcription);
     PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
+    PropertyListStore.removeListener("change", this.getCouponStatus);
   }
 
   fetchSubs(){
@@ -167,7 +177,80 @@ export default class PropertyList extends React.Component {
 
   };
 
+  getCouponStatus(){
+    let status = PropertyListStore.getCouponStatus();
+    if(status == 1){
+
+      this.setState({
+        coupon_err_text: "Coupon updated!"
+      }, ()=>{
+        this.handleDialogOpen();
+        this.fetchSubs();
+      });
+
+    }
+    else if(status == 2){
+
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      })
+
+    }
+  }
+
+  //coupon input change
+  handleInputChange = (event) =>{
+       const target = event.target;
+       const value = target.type === 'checkbox' ? target.checked : target.value;
+       const name = target.name;
+       this.setState({
+           coupon_code: value
+       });
+
+  }
+
+  //apply coupon code
+  applyCoupon = () =>{
+    if(this.state.coupon_code.length > 0){
+      console.log('ok');
+      PropertyListActions.applyCoupon(this.state.coupon_code);
+    }
+    else{
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      });
+
+    }
+
+  }
+
+
+  handleDialogOpen = () => {
+    this.setState({showdialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({showdialog: false});
+  };
+
+  handleDialogOk =() => {
+    this.setState({showdialog: false});
+  }
+
   render() {
+
+    const modal_actions = [
+
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDialogOk}
+      />,
+    ];
 
     const styles = {
         floatingActionButton: {
@@ -300,17 +383,8 @@ export default class PropertyList extends React.Component {
           fontSize: 12,
           color: '#4A5D75'
         },
-        subTxtnoplan: {
-          paddingLeft: 16,
-          paddingRight: 16,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          fontSize: 12,
-          color: '#333333',
-          paddingTop: 3,
-          paddingBottom: 3,
-          fontWeight: '600'
+        dialog: {
+          width: 300
         }
     };
 
@@ -322,77 +396,6 @@ export default class PropertyList extends React.Component {
        } else {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;
        }
-
-       let today = new Date();
-       let mm = today.getMonth()+1; //January is 0!
-       let yyyy = today.getFullYear();
-
-       let payment_status = [];
-
-    if(this.state.subscription && this.state.subscription.hasOwnProperty('createdAt')){
-
-       //check if last plan is for current month
-       let plan_date = new Date(this.state.subscription.createdAt);
-       let get_last_sub_month = plan_date.getMonth() + 1;
-       let get_last_sub_year = plan_date.getFullYear();
-
-
-       if(get_last_sub_month == mm && get_last_sub_year == yyyy){
-
-         if(this.state.subscription.splan_id == 1000){
-            payment_status.push(<div key={1} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_sliver_reports == 0 ? ' You have enough credit to generate one report' : 'You may need to purchase subscription plan to generate report'  }</div>);
-
-            if(this.state.subscription.total_sliver_reports != 0){
-              payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
-                Your subscription plan has been expired
-              </CardText>);
-
-              payment_status.push(<CardActions key={5}>
-              <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                <RaisedButton secondary={true} label="Buy Subscription plan" />
-              </a>
-              <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-            </CardActions>);
-            }
-         }
-
-         if(this.state.subscription.splan_id == 2000){
-           payment_status.push(<div key={2} style={styles.subTxtnoplan}>Status: {this.state.subscription.total_gold_reports < this.state.subscription.reports ? 'You can generate ' + (this.state.subscription.reports - this.state.subscription.total_gold_reports) + ' more reports' : 'You may need to purchase subscription plan to generate report'  }</div>);
-
-           if(this.state.subscription.total_gold_reports >= this.state.subscription.reports){
-             payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
-               Your subscription plan has been expired
-             </CardText>);
-
-             payment_status.push(<CardActions key={5}>
-             <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-               <RaisedButton secondary={true} label="Buy Subscription plan" />
-             </a>
-             <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-           </CardActions>);
-           }
-
-         }
-
-         if(this.state.subscription.splan_id == 3000){
-           payment_status.push(<div key={3} style={styles.subTxtnoplan}>You can generate unlimited number of reports</div>);
-         }
-
-
-       }
-       else{
-         payment_status.push(<CardText  key={4} style={{color: '#D84315', fontWeight: 'normal', fontSize: 14}}>
-           Your subscription plan has been expired
-         </CardText>);
-         payment_status.push(<CardActions key={5}>
-         <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-           <RaisedButton secondary={true} label="Buy Subscription plan" />
-         </a>
-         <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-       </CardActions>);
-       }
-
-     }
 
 
     return (
@@ -409,60 +412,12 @@ export default class PropertyList extends React.Component {
              <LinearProgress mode="indeterminate" />
           }
 
-          <div style={{marginTop: 20}}>
-            <h3 style={{color: '#0097A7',  fontSize: 20}}>Subscription details</h3>
-          </div>
+          <SubscriptionElement subscription={this.state.subscription} fetchSubs={this.fetchSubs} applyCoupon={this.applyCoupon} handleInputChange={this.handleInputChange}/>
 
-          {this.state.subscription && this.state.subscription.subs_id &&
-            <Card  style={{boxShadow: 'none', backgroundColor: '#E0F7FA'}}>
-              <CardTitle title={this.state.subscription.title } style={{color: '#00695C', fontWeight: '600', fontSize: 14}} />
-                <div style={styles.subTxtnoplan}>You recent subscription plan - {this.state.subscription.title } </div>
-                <div style={styles.subTxtnoplan}>Last payment date: {this.state.subscription.alt_created_date}</div>
-                <div style={styles.subTxtnoplan}>Price: {this.state.subscription.price}</div>
-                {payment_status}
-
-            </Card>
-          }
-          {this.state.subscription && !this.state.subscription.subs_id &&
-            <Card>
-              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
-                You don't have any subscription plan yet
-              </CardText>
-              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
-              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
-
-              <CardActions>
-
-                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                  <RaisedButton secondary={true} label="Buy Subscription plan" />
-                </a>
-                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-
-              </CardActions>
-            </Card>
-          }
-
-          {!this.state.subscription &&
-            <Card>
-              <CardText style={{color: '#D32F2F', fontWeight: 'normal', fontSize: 14}}>
-                You don't have any subscription plan yet
-              </CardText>
-              <div style={styles.subTxtnoplan}>Please purchase a subcription plan before generate reports.</div>
-              <div style={styles.subTxtnoplan}>You cannot download reports if you have zero credit</div>
-
-              <CardActions>
-
-                <a href={'http://propertyground.co.uk/pay?userid=' + encodeURIComponent(loginauth.USER.user_id) } target="_blank" >
-                  <RaisedButton secondary={true} label="Buy Subscription plan" />
-                </a>
-                <RaisedButton secondary={false} label="Refresh" onClick={()=>this.fetchSubs()}/>
-
-              </CardActions>
-            </Card>
-          }
 
           <div style={{marginTop: 20}}>
             <h3>List of properties</h3>
+            <Divider style={{width: '20%'}}/>
           </div>
 
           <Table fixedHeader={this.state.fixedHeader}
@@ -495,7 +450,20 @@ export default class PropertyList extends React.Component {
 
               {this.state.templist.map(item =>
                 <TableRow key={item.property_id}>
-                  <TableRowColumn style={styles.columns.address.column}>{item.address_1 +  ' ' +  item.address_2}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.address.column}>
+
+                  { item.total_rooms > 0 &&
+                    <Link className="button" to={{ pathname: '/propertyroomlist', query: { property_id: item.property_id } }} >
+                      {item.address_1 +  ' ' +  item.address_2}
+                    </Link>
+                  }
+                  { item.total_rooms == 0 &&
+                    <Link className="button" to={{ pathname: '/addpropertytemplate', query: { property_id: item.property_id } }} >
+                      {item.address_1 +  ' ' +  item.address_2}
+                    </Link>
+                  }
+
+                  </TableRowColumn>
                   <TableRowColumn style={styles.columns.city.column}>{item.city}</TableRowColumn>
                   <TableRowColumn style={styles.columns.postalcode.column}>{item.postalcode}</TableRowColumn>
                   <TableRowColumn style={styles.columns.created_date.column}>{item.created_date}</TableRowColumn>
@@ -511,7 +479,7 @@ export default class PropertyList extends React.Component {
                   <TableRowColumn style={styles.columns.edit.column}>
                       <FloatingActionButton zDepth={0}
                                             mini={true}
-                                            backgroundColor={grey200}
+                                            backgroundColor={amber300}
                                             iconStyle={styles.editButton} onTouchTap={()=>this.generateReport(item.property_id)}>
                         <ReportDownload  />
                       </FloatingActionButton>
@@ -522,7 +490,7 @@ export default class PropertyList extends React.Component {
                       <Link className="button" to={{ pathname: '/propertyroomlist', query: { property_id: item.property_id } }} >
                         <FloatingActionButton zDepth={0}
                                               mini={true}
-                                              backgroundColor={grey200}
+                                              backgroundColor={lightGreen300}
                                               iconStyle={styles.viewButton}>
                           <ContentCreate />
                         </FloatingActionButton>
@@ -558,6 +526,15 @@ export default class PropertyList extends React.Component {
              </ToolbarGroup>
            </Toolbar>
 
+           <Dialog
+             actions={modal_actions}
+             modal={false}
+             open={this.state.showdialog}
+             onRequestClose={this.handleDialogClose}
+             contentStyle ={styles.dialog}
+           >
+             {this.state.coupon_err_text}
+           </Dialog>
 
 
       </PageBase>
