@@ -588,54 +588,77 @@ export default class ReportSettings extends React.Component {
     let itemslayoutS2Color = '#cccccc';
     let itemslayoutS3Color = '#cccccc';
     let itemslayoutS4Color = '#cccccc';
+    let itemslayoutS5Color = '#cccccc';
     let item_layout_S1_img_border = 'none';
     let item_layout_S2_img_border = 'none';
     let item_layout_S3_img_border = 'none';
     let item_layout_S4_img_border = 'none';
+    let item_layout_S5_img_border = 'none';
 
     if(this.state.formValues.items_details_layout == 'STYLE 1'){
       itemslayoutS1Color = '#417505';
       itemslayoutS2Color = '#cccccc';
       itemslayoutS3Color = '#cccccc';
       itemslayoutS4Color = '#cccccc';
+      itemslayoutS5Color = '#cccccc';
 
       item_layout_S1_img_border = '2px dashed #417505';
       item_layout_S2_img_border = 'none';
       item_layout_S3_img_border = 'none';
       item_layout_S4_img_border = 'none';
+      item_layout_S5_img_border = 'none';
     }
     else if(this.state.formValues.items_details_layout == 'STYLE 2'){
       itemslayoutS1Color = '#cccccc';
       itemslayoutS2Color = '#417505';
       itemslayoutS3Color = '#cccccc';
       itemslayoutS4Color = '#cccccc';
+      itemslayoutS5Color = '#cccccc';
 
       item_layout_S2_img_border = '2px dashed #417505';
       item_layout_S1_img_border = 'none';
       item_layout_S3_img_border = 'none';
       item_layout_S4_img_border = 'none';
+      item_layout_S5_img_border = 'none';
     }
     else if(this.state.formValues.items_details_layout == 'STYLE 3'){
       itemslayoutS1Color = '#cccccc';
       itemslayoutS2Color = '#cccccc';
       itemslayoutS3Color = '#417505';
       itemslayoutS4Color = '#cccccc';
+      itemslayoutS5Color = '#cccccc';
 
       item_layout_S3_img_border = '2px dashed #417505';
       item_layout_S1_img_border = 'none';
       item_layout_S2_img_border = 'none';
       item_layout_S4_img_border = 'none';
+      item_layout_S5_img_border = 'none';
     }
     else if(this.state.formValues.items_details_layout == 'STYLE 4'){
       itemslayoutS1Color = '#cccccc';
       itemslayoutS2Color = '#cccccc';
       itemslayoutS4Color = '#417505';
       itemslayoutS3Color = '#cccccc';
+      itemslayoutS5Color = '#cccccc';
 
       item_layout_S4_img_border = '2px dashed #417505';
       item_layout_S3_img_border = 'none';
       item_layout_S1_img_border = 'none';
       item_layout_S2_img_border = 'none';
+      item_layout_S5_img_border = 'none';
+    }
+    else if(this.state.formValues.items_details_layout == 'STYLE 5'){
+      itemslayoutS1Color = '#cccccc';
+      itemslayoutS2Color = '#cccccc';
+      itemslayoutS4Color = '#cccccc';
+      itemslayoutS3Color = '#cccccc';
+      itemslayoutS5Color = '#417505';
+
+      item_layout_S5_img_border = '2px dashed #417505';
+      item_layout_S3_img_border = 'none';
+      item_layout_S1_img_border = 'none';
+      item_layout_S2_img_border = 'none';
+      item_layout_S4_img_border = 'none';
     }
 
     let photocollection2cColor = '#cccccc';
@@ -855,6 +878,10 @@ export default class ReportSettings extends React.Component {
         color: `${itemslayoutS4Color}`,
         fontWeight: 700
       },
+      itemlayouttxtS5: {
+        color: `${itemslayoutS5Color}`,
+        fontWeight: 700
+      },
       itemlayoutimgS1: {
         width: 150,
         height: 'auto',
@@ -881,6 +908,13 @@ export default class ReportSettings extends React.Component {
         height: 'auto',
         cursor: 'pointer',
         border: `${item_layout_S4_img_border}`,
+        borderRadius: 5,
+      },
+      itemlayoutimgS5: {
+        width: 150,
+        height: 'auto',
+        cursor: 'pointer',
+        border: `${item_layout_S5_img_border}`,
         borderRadius: 5,
       },
       photocollectiontxt2c: {
@@ -1173,6 +1207,11 @@ export default class ReportSettings extends React.Component {
                           label="STYLE 4"
                           style={styles.radioButton}
                         />
+                        <RadioButton
+                          value="STYLE 5"
+                          label="STYLE 5"
+                          style={styles.radioButton}
+                        />
                       </RadioButtonGroup>
                     </div>
                   </div>
@@ -1196,6 +1235,11 @@ export default class ReportSettings extends React.Component {
                     <div style={styles.divFlexItem}>
                       <div style={styles.itemlayouttxtS4}>STYLE 4</div>
                       <img src="images/report-item-style-4.jpg" alt="style 4" style={styles.itemlayoutimgS4}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 4')}/>
+                    </div>
+
+                    <div style={styles.divFlexItem}>
+                      <div style={styles.itemlayouttxtS5}>STYLE 5</div>
+                      <img src="images/report-item-style-5.jpg" alt="style 5" style={styles.itemlayoutimgS5}  onClick={this.handleItemsLayoutImg.bind(this, 'STYLE 5')}/>
                     </div>
 
 

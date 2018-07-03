@@ -131,7 +131,7 @@ export default class SingleItemElement extends React.Component {
              <Checkbox
                 label="Need maintenance"
                 name={ this.props.type == 'ITEM'? 'description' : this.props.data.item_id +';'+ 'description' }
-               checked={this.props.data.description == '1' || this.props.data.description ?true: false }
+               checked={this.props.data.description && (this.props.data.description == true ||  this.props.data.description == 'true' ) ?true: false }
                onCheck={this.props.handleInputChange}
              />
 
