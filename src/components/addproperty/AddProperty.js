@@ -20,9 +20,6 @@ export default class AddProperty extends React.Component {
     if(this.props.property_id && this.props.image_url){
         url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
     }
-
-
-
     this.state = {
       prop_logo: url,
       logo_img: null
@@ -37,14 +34,14 @@ export default class AddProperty extends React.Component {
         if(this.props.property_id){
           url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (nextProps.image_url.substr(0, nextProps.image_url.lastIndexOf('.')) || nextProps.image_url) + '.jpg';
         }
+
         this.setState({
           prop_logo: url
         });
       }
     }
-
-
   }
+
 
   componentWillMount(){
   }
@@ -60,6 +57,17 @@ export default class AddProperty extends React.Component {
     });
 
     this.props.uploadfile(files[0]);
+  }
+
+  //get logo
+  getLogoImage  = () =>{
+
+    let url = 'http://placehold.it/150x150?text=PropertyGround';
+    if(this.props.property_id && this.props.image_url){
+        url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
+    }
+
+    return url;
   }
 
   render(){
@@ -106,16 +114,12 @@ export default class AddProperty extends React.Component {
          marginLeft: 50
        },
        heading:{
-         color: 'rgb(79, 189, 160)',
          marginBottom: 0,
          color: 'rgb(0, 151, 167)',
          fontSize: 20,
          marginBottom: 10,
        },
     };
-
-
-
 
     return(
 
@@ -157,7 +161,7 @@ export default class AddProperty extends React.Component {
             </Dropzone>
           </div>
           <div style={styles.dropzone}>
-            <img src={this.state.prop_logo}  alt="property image" style={styles.proplogo}/>
+            <img src={this.getLogoImage()}  alt="property image" style={styles.proplogo}/>
           </div>
         </div>
 

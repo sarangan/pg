@@ -12,6 +12,7 @@ import FileFolder from 'material-ui/svg-icons/file/folder-open';
 //import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ActionSort from 'material-ui/svg-icons/content/sort';
+import ActionReport from 'material-ui/svg-icons/action/description';
 import SignIcon from 'material-ui/svg-icons/editor/border-color';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -29,6 +30,9 @@ import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'rea
 
 import * as PropertyRoomListActions from "../actions/PropertyRoomListActions";
 import PropertyRoomListStore from "../stores/PropertyRoomListStore";
+
+import * as PropertyListActions from "../actions/PropertyListActions";
+import PropertyListStore from "../stores/PropertyListStore";
 
 //property info
 import AddProperty from '../components/addproperty/AddProperty';
@@ -129,6 +133,7 @@ export default class PropertyRoomList extends React.Component {
       startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
+      showReportSnack: false,
       formTitle: 'Update Property info',
       master_id: '',
       enableSort : false,
@@ -198,6 +203,9 @@ export default class PropertyRoomList extends React.Component {
     this.getSingatures = this.getSingatures.bind(this);
     this.getSingaturesUpdateStatus = this.getSingaturesUpdateStatus.bind(this);
     this.hanldeSignTxtChange = this.hanldeSignTxtChange.bind(this);
+
+    //report
+    this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
   }
 
   componentWillMount(){
@@ -229,6 +237,8 @@ export default class PropertyRoomList extends React.Component {
 
     SignatureStore.on("change", this.getSingatures);
     SignatureStore.on("change", this.getSingaturesUpdateStatus);
+
+    PropertyListStore.on("change", this.getIsReportReadyStatus);
   }
 
   componentWillUnmount(){
@@ -260,6 +270,8 @@ export default class PropertyRoomList extends React.Component {
 
     SignatureStore.removeListener("change", this.getSingatures);
     SignatureStore.removeListener("change", this.getSingaturesUpdateStatus);
+
+    PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
   }
 
   //error snack close
@@ -273,6 +285,14 @@ export default class PropertyRoomList extends React.Component {
   successhandleRequestClose = () => {
     this.setState({
       showSuccessSnack: false,
+      startSending: false
+    });
+  };
+
+  //report snack success
+  reporthandleRequestClose = () => {
+    this.setState({
+      showReportSnack: false,
       startSending: false
     });
   };
@@ -1342,6 +1362,30 @@ export default class PropertyRoomList extends React.Component {
 
   }
 
+  //----------------------report actions start ---------------------------------
+  getIsReportReadyStatus(){
+    let status = PropertyListStore.getIsReportReady();
+
+    if(status){
+      this.setState({
+        startSending: false
+      }, ()=>{
+        this.setState({
+          showReportSnack: true
+        });
+      });
+    }
+
+  }
+
+  //generate report
+  generateReport(){
+    this.setState({
+      startSending: true
+    });
+    PropertyListActions.generateReport(this.state.property_id);
+  };
+
 
   render() {
 
@@ -1437,6 +1481,7 @@ export default class PropertyRoomList extends React.Component {
     let right_div = null;
 
     if(this.state.sidebarState == 'PROP') {
+      
 
       right_div = <AddProperty address_1={this.state.property_info.address_1} address_2={this.state.property_info.address_2}
         city={this.state.property_info.city} postalcode={this.state.property_info.postalcode}
@@ -1543,11 +1588,20 @@ export default class PropertyRoomList extends React.Component {
                                 <div style={styles.buttonsrtl}>
 
                                     <FlatButton
+                                      onClick={()=>this.generateReport()}
+                                      label="View report"
+                                      primary={true}
+                                      icon={<ActionReport />}
+                                    />
+
+                                    <FlatButton
                                       onClick={this.handleEnableSort.bind(this)}
                                       label="Sort"
                                       primary={true}
                                       icon={<ActionSort />}
                                     />
+
+
 
                                 </div>
 
@@ -1665,6 +1719,12 @@ export default class PropertyRoomList extends React.Component {
           message="Successfully updated..."
           autoHideDuration={3000}
           onRequestClose={this.successhandleRequestClose.bind(this)} />
+
+        <Snackbar
+            open={this.state.showReportSnack}
+            message="If you are unable to view the report, then please check your credit balance"
+            autoHideDuration={3000}
+            onRequestClose={this.reporthandleRequestClose.bind(this)} />
 
       </PageBase>
     );
