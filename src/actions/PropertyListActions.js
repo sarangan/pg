@@ -38,6 +38,7 @@ export function generateReport(property_id) {
   axios({
           method: 'post',
           url: url,
+          timeout: 900000,
           headers: {
              'Authorization': loginauth.AUTHTOKEN
            },

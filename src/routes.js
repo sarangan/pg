@@ -17,8 +17,8 @@ import ForgetPassword from "./pages/auth/ForgetPassword";
 import loginauth from './auth/loginauth';
 import MyPath from './utils/settings';
 import Payments from "./pages/Payments";
-import createBrowserHistory from 'history/createBrowserHistory';
-const history = createBrowserHistory();
+// import createBrowserHistory from 'history/createBrowserHistory';
+// const history = createBrowserHistory();
 
 
 const authenticate = (nextState, replace) => {
