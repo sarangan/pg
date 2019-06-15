@@ -224,11 +224,12 @@ export default class GeneralconditionTemplate extends React.Component {
          marginRight: 10
        },
        genblock: {
-         boxShadow: 'rgba(0, 0, 0, 0.118) 0px 1px 6px, rgba(0, 0, 0, 0.118) 0px 1px 4px',
-         borderRadius: 2,
+        // boxShadow: 'rgba(0, 0, 0, 0.118) 0px 1px 6px, rgba(0, 0, 0, 0.118) 0px 1px 4px',
+         //borderRadius: 2,
          padding: 10,
-         marginBottom: 30,
+         marginBottom: 20,
          marginTop: 20,
+         borderTop: '1px solid #E1E1E1'
        }
 
 
@@ -316,7 +317,7 @@ export default class GeneralconditionTemplate extends React.Component {
 
     let gen_items_list_view =
         <div>
-        <h3>Options
+          <h3 style={{color: '#0097A7', fontSize: 20}}>Options
             <span className="addButtonWrapper">
               <RaisedButton
                  label="Add new option"
@@ -352,7 +353,7 @@ export default class GeneralconditionTemplate extends React.Component {
 
             {item_list}
             <Divider />
-            <h3>Comments</h3>
+            <h4 className="gen-condition-title">Comments</h4>
             {comment_list}
 
             <div style={styles.addTextContainer}>
@@ -387,11 +388,12 @@ export default class GeneralconditionTemplate extends React.Component {
           </div>;
 
       let general_items_sort_view = <div>
+        <h3 style={{color: '#0097A7', fontSize: 20}}>General conditions</h3>
         <Subheader inset={false}>sorting</Subheader>
         <div style={styles.buttonsrtl}>
              <FlatButton
                onClick={this.handleEnableSort.bind(this)}
-               label="Back"
+               label="Done"
                primary={true}
              />
 
@@ -402,7 +404,6 @@ export default class GeneralconditionTemplate extends React.Component {
 
     return(
       <form>
-
         <h2>{this.props.title}</h2>
 
           {this.state.enableSort== false &&

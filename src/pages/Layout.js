@@ -7,7 +7,7 @@ import Header from '../components/layout/Header';
 import LeftDrawer from '../components/layout/LeftDrawer';
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 
-import {blue500} from 'material-ui/styles/colors';
+//import {blue500} from 'material-ui/styles/colors';
 import loginauth from '../auth/loginauth';
 import MyPath from '../utils/settings';
 
@@ -42,7 +42,7 @@ class Layout extends React.Component {
             paddingLeft: navDrawerOpen ? paddingLeftDrawerOpen : 0
           },
           container: {
-            margin: '80px 20px 20px 30px',
+            margin: '60px 20px 20px 30px',
             paddingLeft: navDrawerOpen && this.props.width !== SMALL ? paddingLeftDrawerOpen : 0
           }
 
@@ -50,7 +50,8 @@ class Layout extends React.Component {
 
     const muiTheme = getMuiTheme({
       palette: {
-        primary1Color: blue500,
+        //primary1Color: blue500,
+        primary1Color: '#00BDDB'
       }
     });
 
@@ -62,7 +63,7 @@ class Layout extends React.Component {
                               handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)} com_path={MyPath.PATH}/>
 
                         <LeftDrawer navDrawerOpen={navDrawerOpen}
-                                    username={loginauth.USER.first_name + ' ' + loginauth.USER.last_name }/>
+                                    username={loginauth.USER.first_name + ' ' + loginauth.USER.last_name } isAdmin={loginauth.USER.type == 'ADMIN' ? true: false }/>
 
                         <div style={styles.container}>
                           {this.props.children}

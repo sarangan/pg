@@ -18,9 +18,8 @@ export default class AddProperty extends React.Component {
     this.props = props;
     let url = 'http://placehold.it/150x150?text=PropertyGround';
     if(this.props.property_id && this.props.image_url){
-      url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
+        url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
     }
-
     this.state = {
       prop_logo: url,
       logo_img: null
@@ -29,17 +28,20 @@ export default class AddProperty extends React.Component {
 
   componentWillReceiveProps(nextProps){
 
-    if(nextProps.image_url != this.props.image_url && nextProps.image_url.length > 0 && this.props.property_id){
-      let url = 'http://placehold.it/150x150?text=PropertyGround';
-      if(this.props.property_id){
-        url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (nextProps.image_url.substr(0, nextProps.image_url.lastIndexOf('.')) || nextProps.image_url) + '.jpg';
-      }
-      this.setState({
-        prop_logo: url
-      });
-    }
+    if(this.props.image_url && nextProps.image_url){
+      if(nextProps.image_url != this.props.image_url && nextProps.image_url.length > 0 && this.props.property_id){
+        let url = 'http://placehold.it/150x150?text=PropertyGround';
+        if(this.props.property_id){
+          url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (nextProps.image_url.substr(0, nextProps.image_url.lastIndexOf('.')) || nextProps.image_url) + '.jpg';
+        }
 
+        this.setState({
+          prop_logo: url
+        });
+      }
+    }
   }
+
 
   componentWillMount(){
   }
@@ -55,6 +57,17 @@ export default class AddProperty extends React.Component {
     });
 
     this.props.uploadfile(files[0]);
+  }
+
+  //get logo
+  getLogoImage  = () =>{
+
+    let url = 'http://placehold.it/150x150?text=PropertyGround';
+    if(this.props.property_id && this.props.image_url){
+        url = config.SERVER_IMAGE_PATH + this.props.property_id + '/' + '300_' + (this.props.image_url.substr(0, this.props.image_url.lastIndexOf('.')) || this.props.image_url) + '.jpg';
+    }
+
+    return url;
   }
 
   render(){
@@ -99,16 +112,20 @@ export default class AddProperty extends React.Component {
          width: 150,
          height: 'auto',
          marginLeft: 50
-       }
+       },
+       heading:{
+         marginBottom: 0,
+         color: 'rgb(0, 151, 167)',
+         fontSize: 20,
+         marginBottom: 10,
+       },
     };
-
-
-
 
     return(
 
       <form>
-        <h3>{this.props.title}</h3>
+
+        <h3 style={styles.heading}>{this.props.title}</h3>
 
         <TextField  hintText="Address 1" floatingLabelText="Address 1" fullWidth={true} name="address_1" value={this.props.address_1} onChange={this.props.handleInputChange}/>
         <TextField  hintText="Address 2" floatingLabelText="Address 2" fullWidth={true} name="address_2" value={this.props.address_2} onChange={this.props.handleInputChange}/>
@@ -116,7 +133,7 @@ export default class AddProperty extends React.Component {
         <TextField  hintText="Postalcode" floatingLabelText="Postalcode" fullWidth={false} name="postalcode" value={this.props.postalcode} onChange={this.props.handleInputChange}/>
 
         <Divider style={styles.bottomDivider}/>
-        <h4>Report Details:</h4>
+        <h4 style={{color: '#616161', fontWeight: 'bold', fontSize: 16}} >Report Details:</h4>
 
         <SelectField floatingLabelText="Report type" value={this.props.report_type} onChange={this.props.handleSelectChange}  name="report_type">
           <MenuItem value={null} primaryText=""/>
@@ -130,7 +147,10 @@ export default class AddProperty extends React.Component {
           <MenuItem value={"Condition Report"} primaryText="Condition Report"/>
         </SelectField>
 
-        <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date" defaultDate={this.props.report_date} value={this.props.report_date} onChange={this.props.handleDateChange}/>
+        <DatePicker hintText="Report Date" floatingLabelText="Report Date" fullWidth={false} name="report_date"
+        defaultDate={this.props.report_date}
+        value={this.props.report_date}
+        onChange={this.props.handleDateChange}/>
 
         <TextField hintText="Description" multiLine={true} rows={2} rowsMax={4}  name="description" fullWidth={true} value={this.props.description} onChange={this.props.handleInputChange}/>
 
@@ -141,7 +161,7 @@ export default class AddProperty extends React.Component {
             </Dropzone>
           </div>
           <div style={styles.dropzone}>
-            <img src={this.state.prop_logo}  alt="property image" style={styles.proplogo}/>
+            <img src={this.getLogoImage()}  alt="property image" style={styles.proplogo}/>
           </div>
         </div>
 

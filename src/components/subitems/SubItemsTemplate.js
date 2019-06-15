@@ -137,7 +137,7 @@ export default class SubItemsTemplate extends React.Component {
         updateStatusMasterItem ={this.props.updateStatusMasterItem}
         insertMasterItem = {this.props.insertMasterItem}/>
 
-      <h3>Sub items</h3>
+      <h3 style={{color: '#0097A7', fontSize: 20}}>{this.props.title} - Items</h3>
 
       <div style={styles.buttonsrtl}>
 
@@ -163,12 +163,12 @@ export default class SubItemsTemplate extends React.Component {
     </div>;
 
     let sub_items_sort = <div>
-      <h2>{this.props.title}</h2>
+      <h3 style={{color: '#0097A7', fontSize: 20}}>{this.props.title}</h3>
       <Subheader inset={false}>sorting</Subheader>
       <div style={styles.buttonsrtl}>
            <FlatButton
              onClick={this.handleEnableSort.bind(this)}
-             label="Back"
+             label="Done"
              primary={true}
            />
 

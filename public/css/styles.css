@@ -2,6 +2,15 @@
 * this is where the all the styles take place for this app
 *
 */
+html, body {
+  font-size: 14px;
+}
+
+h1,h2,h3,h4,h5 {
+  /*margin: 10px, 0;*/
+  -webkit-margin-before: 10px;
+  -webkit-margin-after: 10px;
+}
 
 .menu-item{
   text-decoration: none;
@@ -59,8 +68,12 @@
 
 .roomlist-right-div{
   padding: 10px;
-  max-height: 700px;
+  max-height: 750px;
   overflow: auto;
+}
+
+.roomlist-right-div-no-height{
+  padding: 10px;
 }
 
 .roomlist-right-wrapper{
@@ -89,10 +102,19 @@
 }
 
 .gen-condition-title{
-  float: left;
+  color: #616161;
+  font-weight: bold;
+  font-size: 16px;
 }
 
-.gen-condition-title::after {
+.actual-gen-condition-title{
+  float: left;
+  color: #616161;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.actual-gen-condition-title::after {
   content: '';
   display: table;
   clear: both;
@@ -432,4 +454,28 @@ div.filepicker {
 }
 .app-img-wrapper:hover .ovrly {
     opacity: 1;
+}
+
+.box-shadow{
+  box-shadow: 0 1px 15px 1px rgba(81,77,92,.08) !important;
+}
+
+.photos-count{
+  padding: 0px 16px 10px;
+}
+
+.photos-count-text{
+  color: #000000;
+  display: inline-block;
+  background-color: #f9e75e;
+  padding: 5px;
+}
+
+.photos-count-triangle{
+  width: 0;
+  height: 0;
+  background-color: #ffffff;
+  border-right: 18px solid transparent;
+  border-top: 18px solid #f9e75e;
+  display: inline-block;
 }

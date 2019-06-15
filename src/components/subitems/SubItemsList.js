@@ -95,7 +95,7 @@ export default class SubItemsList extends React.Component {
         marginRight: 10
       },
       header: {
-        color: '#6483b3',
+        color: '#00ACC1',
         fontSize: 24,
         fontWeight: 700
       }
@@ -138,7 +138,7 @@ export default class SubItemsList extends React.Component {
       if(!gotGeneralCondition){
         singleItem.push(
           <SingleItemElement optlist={this.state.optlist} type="SUB" title={item.item_name} data={data} handleInputChange={this.props.handleInputChange}
-            key={item.prop_subitem_id}
+            key={item.prop_subitem_id + '_' + i}
             photos={sub_photos[item.prop_subitem_id]} on_drop={this.handleDrop.bind(this)} on_drag={this.handleDrag.bind(this)} dragging={this.state.dragging}
             on_drag_start={this.handleDragStart.bind(this)} item_id={item.prop_subitem_id} photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}
             releaseDragging={this.handleReleaseDragging.bind(this)} showprogress={this.props.showprogress}/>

@@ -62,28 +62,35 @@ export default class Header extends React.Component {
     let nav = 'Home';
     switch (this.props.com_path) {
       case 'propertylist':
-        nav = "Home / Property list";
+        //nav = "Home / Property list";
+        nav = "Property list";
         break;
       case 'addnewproperty':
-        nav = "Home / Add new property";
+        //nav = "Home / Add new property";
+        nav  = "Add new property";
         break;
       case 'template':
-        nav = "Home / Property template";
+        //nav = "Home / Property template";
+        nav = "Property template";
         break;
       case 'addpropertytemplate':
-        nav = "Home / Add property template";
+        //nav = "Home / Add property template";
+        nav = "Add property template";
         break;
       case 'propertyroomlist':
-        nav = "Home / Property / Room list";
+        //nav = "Home / Property / Room list";
+        nav = "Room list";
         break;
-      case 'template':
-        nav = "Home / Template / Room list template";
-        break;
+      // case 'template':
+      //   //nav = "Home / Template / Room list template";
+      //   nav = "Room list template";
+      //   break;
       case 'reportsettings':
-        nav = "Home / Report settings";
+        //nav = "Home / Report settings";
+        nav = "Report settings";
         break;
       case 'dashboard':
-        nav = "Home ";
+        nav = "Home";
         break;
       case 'changepassword':
         nav = "Home / User / Change password";

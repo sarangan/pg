@@ -13,8 +13,12 @@ import Login from "./pages/auth/LoginForm";
 import Signup from "./pages/auth/Signup";
 import Users from "./pages/auth/Users";
 import ChangePassword from "./pages/auth/ChangePassword";
+import ForgetPassword from "./pages/auth/ForgetPassword";
 import loginauth from './auth/loginauth';
 import MyPath from './utils/settings';
+import Payments from "./pages/Payments";
+import createBrowserHistory from 'history/createBrowserHistory';
+const history = createBrowserHistory();
 
 
 const authenticate = (nextState, replace) => {
@@ -29,11 +33,12 @@ const authenticate = (nextState, replace) => {
 };
 
 export default (
-  <Route>
+  <Route history={history}>
     <Route path="/" component={Layout}>
       <IndexRoute component={Dashboard} onEnter={ authenticate }></IndexRoute>
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/forgetpassword" component={ForgetPassword} />
       <Route path="/dashboard" component={Dashboard} onEnter={ authenticate }/>
       <Route path="/propertylist" component={PropertyList} onEnter={ authenticate }/>
       <Route path="/addnewproperty" component={AddNewProperty} onEnter={ authenticate }/>
@@ -43,7 +48,11 @@ export default (
       <Route path="/users" component={Users} onEnter={ authenticate }/>
       <Route path="/changepassword" component={ChangePassword} onEnter={ authenticate }/>
       <Route path="/reportsettings" component={ReportSettings} onEnter={ authenticate }/>
+      <Route path="/payments" component={Payments} onEnter={ authenticate }/>
+      <Route path="/settings" component={Settings} onEnter={ authenticate }/>
+      <Route path="*" component={Dashboard} onEnter={ authenticate }/>
     </Route>
 
   </Route>
+
 );

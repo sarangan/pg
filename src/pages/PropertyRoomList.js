@@ -1,24 +1,24 @@
 import React from "react";
-import { Link } from "react-router";
+//import { Link } from "react-router";
 import PageBase from '../components/layout/PageBase';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import ActionInfo from 'material-ui/svg-icons/action/info';
-import {blue500, yellow600} from 'material-ui/styles/colors';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+//import ActionInfo from 'material-ui/svg-icons/action/info';
+import { teal200, grey400, blueGrey300} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import FileFolder from 'material-ui/svg-icons/file/folder';
-import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
+//import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import FileFolder from 'material-ui/svg-icons/file/folder-open';
+//import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ActionSort from 'material-ui/svg-icons/content/sort';
+import ActionReport from 'material-ui/svg-icons/action/description';
 import SignIcon from 'material-ui/svg-icons/editor/border-color';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
-import RaisedButton from 'material-ui/RaisedButton';
+//import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ActionDrag from 'material-ui/svg-icons/editor/format-line-spacing';
 import Delete from 'material-ui/svg-icons/action/delete';
@@ -30,6 +30,9 @@ import {SortableContainer, SortableElement, arrayMove, SortableHandle} from 'rea
 
 import * as PropertyRoomListActions from "../actions/PropertyRoomListActions";
 import PropertyRoomListStore from "../stores/PropertyRoomListStore";
+
+import * as PropertyListActions from "../actions/PropertyListActions";
+import PropertyListStore from "../stores/PropertyListStore";
 
 //property info
 import AddProperty from '../components/addproperty/AddProperty';
@@ -130,6 +133,7 @@ export default class PropertyRoomList extends React.Component {
       startSending: true,
       showErrorSnack: false,
       showSuccessSnack: false,
+      showReportSnack: false,
       formTitle: 'Update Property info',
       master_id: '',
       enableSort : false,
@@ -199,6 +203,9 @@ export default class PropertyRoomList extends React.Component {
     this.getSingatures = this.getSingatures.bind(this);
     this.getSingaturesUpdateStatus = this.getSingaturesUpdateStatus.bind(this);
     this.hanldeSignTxtChange = this.hanldeSignTxtChange.bind(this);
+
+    //report
+    this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
   }
 
   componentWillMount(){
@@ -230,6 +237,8 @@ export default class PropertyRoomList extends React.Component {
 
     SignatureStore.on("change", this.getSingatures);
     SignatureStore.on("change", this.getSingaturesUpdateStatus);
+
+    PropertyListStore.on("change", this.getIsReportReadyStatus);
   }
 
   componentWillUnmount(){
@@ -261,6 +270,8 @@ export default class PropertyRoomList extends React.Component {
 
     SignatureStore.removeListener("change", this.getSingatures);
     SignatureStore.removeListener("change", this.getSingaturesUpdateStatus);
+
+    PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
   }
 
   //error snack close
@@ -274,6 +285,14 @@ export default class PropertyRoomList extends React.Component {
   successhandleRequestClose = () => {
     this.setState({
       showSuccessSnack: false,
+      startSending: false
+    });
+  };
+
+  //report snack success
+  reporthandleRequestClose = () => {
+    this.setState({
+      showReportSnack: false,
       startSending: false
     });
   };
@@ -1343,6 +1362,30 @@ export default class PropertyRoomList extends React.Component {
 
   }
 
+  //----------------------report actions start ---------------------------------
+  getIsReportReadyStatus(){
+    let status = PropertyListStore.getIsReportReady();
+
+    if(status){
+      this.setState({
+        startSending: false
+      }, ()=>{
+        this.setState({
+          showReportSnack: true
+        });
+      });
+    }
+
+  }
+
+  //generate report
+  generateReport(){
+    this.setState({
+      startSending: true
+    });
+    PropertyListActions.generateReport(this.state.property_id);
+  };
+
 
   render() {
 
@@ -1376,6 +1419,12 @@ export default class PropertyRoomList extends React.Component {
       },
       dialog: {
         width: 350
+      },
+      prop_des: {
+        color: '#006064',
+        fontWeight: '600',
+        fontSize: 13,
+        lineHeight: '.6'
       }
     };
 
@@ -1432,6 +1481,7 @@ export default class PropertyRoomList extends React.Component {
     let right_div = null;
 
     if(this.state.sidebarState == 'PROP') {
+      
 
       right_div = <AddProperty address_1={this.state.property_info.address_1} address_2={this.state.property_info.address_2}
         city={this.state.property_info.city} postalcode={this.state.property_info.postalcode}
@@ -1500,7 +1550,7 @@ export default class PropertyRoomList extends React.Component {
 
       sidebaritems.push(
         <ListItem key={item.prop_master_id}
-          leftAvatar={<Avatar icon={<FileFolder />} />}
+          leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={teal200} />}
           rightIconButton={rightIconMenu}
           primaryText={item.name}
           secondaryText=""
@@ -1519,13 +1569,30 @@ export default class PropertyRoomList extends React.Component {
       roomlist_right_wrapper = '';
     }
 
+    if(this.state.sidebarState == 'PROP' || this.state.sidebarState == 'SIG' || this.state.sidebarState == 'METER' ||  this.state.sidebarState == 'ITEM' ||  this.state.sidebarState == 'GEN' ){
+      roomlist_right_div_cls = 'roomlist-right-div-no-height';
+      roomlist_right_wrapper = '';
+    }
+
+
     let roomlist_right_div = `control-wrapper-flex-2 ${roomlist_right_div_cls} scroll-style`;
 
     let room_list_view = <div className="room-list">
                             <List>
+                              <div style={{ padding: 5, backgroundColor: '#E0F7FA', margin: 3}}>
+                                <p style={styles.prop_des}>{this.state.property_info.report_type}</p>
+                                <p style={styles.prop_des}>{this.state.property_info.report_date}</p>
+                              </div>
                               <Subheader inset={true}>Room list</Subheader>
 
                                 <div style={styles.buttonsrtl}>
+
+                                    <FlatButton
+                                      onClick={()=>this.generateReport()}
+                                      label="View report"
+                                      primary={true}
+                                      icon={<ActionReport />}
+                                    />
 
                                     <FlatButton
                                       onClick={this.handleEnableSort.bind(this)}
@@ -1534,22 +1601,24 @@ export default class PropertyRoomList extends React.Component {
                                       icon={<ActionSort />}
                                     />
 
+
+
                                 </div>
 
                                 <ListItem
-                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blueGrey300} />}
                                   primaryText="Property Info"
                                   secondaryText="" onClick={this.sidebarClick.bind(this, 'PROP', 'Update Property info', '')}/>
 
                                 <ListItem
-                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blue500} />}
+                                  leftAvatar={<Avatar icon={<FileFolder />} backgroundColor={blueGrey300} />}
                                   primaryText="General Condition"
                                   secondaryText="" onClick={this.sidebarClick.bind(this, 'GEN', 'General condition', '')}/>
 
                                 {sidebaritems}
 
                                 <ListItem
-                                  leftAvatar={<Avatar icon={<SignIcon />} backgroundColor={blue500} />}
+                                  leftAvatar={<Avatar icon={<SignIcon />} backgroundColor={blueGrey300} />}
                                   primaryText="Signatures"
                                   secondaryText="" onClick={this.sidebarClick.bind(this, 'SIG', 'Signatures list', '')}/>
 
@@ -1561,7 +1630,7 @@ export default class PropertyRoomList extends React.Component {
         <div style={styles.buttons}>
           <FlatButton
             onClick={this.handleEnableSort.bind(this)}
-            label="Back"
+            label="Done"
             primary={true}
             style={styles.saveButton}
           />
@@ -1573,7 +1642,8 @@ export default class PropertyRoomList extends React.Component {
 
 
     return(
-      <PageBase title="Room List" navigation="">
+
+      <PageBase title="Room List" navigation={ 'Address:- ' +  this.state.property_info.address_1 + ' ' + this.state.property_info.city + ' ' + this.state.property_info.postalcode  }>
 
         <div className="control-wrapper-container">
 
@@ -1649,6 +1719,12 @@ export default class PropertyRoomList extends React.Component {
           message="Successfully updated..."
           autoHideDuration={3000}
           onRequestClose={this.successhandleRequestClose.bind(this)} />
+
+        <Snackbar
+            open={this.state.showReportSnack}
+            message="If you are unable to view the report, then please check your credit balance"
+            autoHideDuration={3000}
+            onRequestClose={this.reporthandleRequestClose.bind(this)} />
 
       </PageBase>
     );

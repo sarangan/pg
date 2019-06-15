@@ -43,6 +43,16 @@ export default class ChangePassword extends Component {
     LoginStore.removeListener("change", this.getChangePasswordStatus);
   }
 
+  hanldeTxtChange(event){
+     const target = event.target;
+     const value = target.type === 'checkbox' ? target.checked : target.value;
+     const name = target.name;
+
+     this.setState({
+       [name]: value
+     });
+  }
+
   getChangePasswordStatus(){
     let status = LoginStore.getChangePasswordStatus();
     console.log(status);
@@ -236,6 +246,7 @@ export default class ChangePassword extends Component {
             <TextField
               hintText="Enter your current password"
               floatingLabelText="Current password"
+              type="password"
               name="oldpassword"
               value={this.state.oldpassword}
               fullWidth={true}
@@ -270,7 +281,7 @@ export default class ChangePassword extends Component {
 
         <Snackbar
           open={this.state.showErrorSnack}
-          message= "Something went wrong..."
+          message= "Please check your passwords!"
           autoHideDuration={3000}
           onRequestClose={this.errhandleRequestClose.bind(this)} />
 

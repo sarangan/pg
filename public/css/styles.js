@@ -6,6 +6,32 @@ const {width, height, scale} = Dimensions.get("window"),
     vmax = Math.max(vw, vh);
 
 export default StyleSheet.create({
+    "html": {
+        "fontSize": 14
+    },
+    "body": {
+        "fontSize": 14
+    },
+    "h1": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h2": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h3": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h4": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
+    "h5": {
+        "WebkitMarginBefore": 10,
+        "WebkitMarginAfter": 10
+    },
     "menu-item": {
         "textDecoration": "none"
     },
@@ -62,8 +88,14 @@ export default StyleSheet.create({
         "paddingRight": 10,
         "paddingBottom": 10,
         "paddingLeft": 10,
-        "maxHeight": 700,
+        "maxHeight": 750,
         "overflow": "auto"
+    },
+    "roomlist-right-div-no-height": {
+        "paddingTop": 10,
+        "paddingRight": 10,
+        "paddingBottom": 10,
+        "paddingLeft": 10
     },
     "roomlist-right-wrapper": {
         "height": "auto",
@@ -89,9 +121,17 @@ export default StyleSheet.create({
         "maxWidth": 275
     },
     "gen-condition-title": {
-        "float": "left"
+        "color": "#616161",
+        "fontWeight": "bold",
+        "fontSize": 16
     },
-    "gen-condition-title::after": {
+    "actual-gen-condition-title": {
+        "float": "left",
+        "color": "#616161",
+        "fontWeight": "bold",
+        "fontSize": 16
+    },
+    "actual-gen-condition-title::after": {
         "content": "''",
         "display": "table",
         "clear": "both"

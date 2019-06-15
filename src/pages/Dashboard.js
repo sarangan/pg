@@ -1,72 +1,86 @@
-import React from "react";
+import React, {Component} from "react";
 import { Link } from "react-router";
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentCreate from 'material-ui/svg-icons/content/create';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import ReportDownload from 'material-ui/svg-icons/file/file-download';
-import Playbtn from 'material-ui/svg-icons/av/play-arrow';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockOutline from 'material-ui/svg-icons/action/lock-outline';
 import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
+import {pink500, grey500, amber500} from 'material-ui/styles/colors';
 
-import {pink500, grey200, grey500, amber100, amber500} from 'material-ui/styles/colors';
 import PageBase from '../components/layout/PageBase';
 import CircularProgress from 'material-ui/CircularProgress';
 import LinearProgress from 'material-ui/LinearProgress';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import RaisedButton from 'material-ui/RaisedButton';
-import BackIcon from 'material-ui/svg-icons/image/navigate-before';
-import ForwardIcon from 'material-ui/svg-icons/image/navigate-next';
 
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+
+import SubscriptionElement from '../components/subscription/SubscriptionElement';
 
 import * as PropertyListActions from "../actions/PropertyListActions";
 import PropertyListStore from "../stores/PropertyListStore";
+import loginauth from '../auth/loginauth';
 
 
-
-export default class Dashboard extends React.Component {
+export default class Dashboard extends Component {
 
   constructor(props){
     super(props);
       console.log(props);
       this.getList = this.getList.bind(this);
       this.getIsReportReadyStatus = this.getIsReportReadyStatus.bind(this);
+      this.getSusbcription = this.getSusbcription.bind(this);
+      this.getCouponStatus = this.getCouponStatus.bind(this);
 
       PropertyListActions.fetchRecent();
 
       this.state={
         list: [],
-        startProcess: false
+        subscription: {},
+        startProcess: false,
+        coupon_code: '',
+        showdialog: false,
+        coupon_err_text: '',
       };
   }
 
   componentWillMount() {
     PropertyListStore.on("change", this.getList);
     PropertyListStore.on("change", this.getIsReportReadyStatus);
+    PropertyListStore.on("change", this.getSusbcription);
+    PropertyListStore.on("change", this.getCouponStatus);
 
   }
 
   componentWillUnmount() {
     PropertyListStore.removeListener("change", this.getList);
     PropertyListStore.removeListener("change", this.getIsReportReadyStatus);
+    PropertyListStore.removeListener("change", this.getSusbcription);
+    PropertyListStore.removeListener("change", this.getCouponStatus);
   }
 
   getList() {
 
     let list = PropertyListStore.getRecent();
-    if(list){
+    if(list && list.hasOwnProperty("plans")){
       this.setState({
-        list: list
+        list: list.properties,
+        subscription: list.plans[0]
       });
     }
     else{
       this.setState({
-        list: []
+        list: [],
+        subscription: {}
       });
     }
 
+  }
+
+  fetchSubs(){
+    PropertyListActions.fetchSubscriptions();
   }
 
   getIsReportReadyStatus(){
@@ -75,9 +89,45 @@ export default class Dashboard extends React.Component {
     if(status){
       this.setState({
         startProcess: false
+      }, ()=>{
+        PropertyListActions.fetchSubscriptions();
       });
     }
 
+  }
+
+  getSusbcription() {
+
+    let list = PropertyListStore.getSusbcription();
+    if(list){
+      this.setState({
+        subscription: list
+      });
+    }
+
+  }
+
+  getCouponStatus(){
+    let status = PropertyListStore.getCouponStatus();
+    if(status == 1){
+
+      this.setState({
+        coupon_err_text: "Coupon updated!"
+      }, ()=>{
+        this.handleDialogOpen();
+        this.fetchSubs();
+      });
+
+    }
+    else if(status == 2){
+
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      })
+
+    }
   }
 
 
@@ -127,7 +177,58 @@ export default class Dashboard extends React.Component {
     return adds;
   }
 
+  //coupon input change
+  handleInputChange = (event) =>{
+       const target = event.target;
+       const value = target.type === 'checkbox' ? target.checked : target.value;
+       const name = target.name;
+       this.setState({
+           coupon_code: value
+       });
+
+  }
+
+  //apply coupon code
+  applyCoupon = () =>{
+    if(this.state.coupon_code.length > 0){
+      console.log('ok');
+      PropertyListActions.applyCoupon(this.state.coupon_code);
+    }
+    else{
+      this.setState({
+        coupon_err_text: "Invalid coupon!"
+      }, ()=>{
+        this.handleDialogOpen();
+      });
+
+    }
+
+  }
+
+
+  handleDialogOpen = () => {
+    this.setState({showdialog: true});
+  };
+
+  handleDialogClose = () => {
+    this.setState({showdialog: false});
+  };
+
+  handleDialogOk =() => {
+    this.setState({showdialog: false});
+  }
+
+
   render() {
+
+    const modal_actions = [
+
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleDialogOk}
+      />,
+    ];
 
     const styles = {
         floatingActionButton: {
@@ -162,7 +263,7 @@ export default class Dashboard extends React.Component {
         cardWrapper:{
           width: 300,
           marginLeft: 30,
-          marginTop: 20
+          marginTop: 20,
         },
         subTxt: {
           paddingLeft: 16,
@@ -172,11 +273,14 @@ export default class Dashboard extends React.Component {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           fontSize: 12,
-          color: '#4A5D75'
+          fontWeight: '600',
+          color: '#333333'
+        },
+        dialog: {
+          width: 300
         }
     };
 
-    console.log(this.state.list);
 
       let isShowLoading = null;
        if (this.state.list.length >= 0 || this.state.list ) {
@@ -184,7 +288,6 @@ export default class Dashboard extends React.Component {
        } else {
          isShowLoading = <div style={styles.tblProgress}><CircularProgress /></div>;
        }
-
 
 
 
@@ -199,28 +302,36 @@ export default class Dashboard extends React.Component {
           </Link>
 
           {isShowLoading}
-          
+
           {this.state.startProcess &&
              <LinearProgress mode="indeterminate" />
           }
 
-          <div style={{marginTop: 40}}>
-            <h3>Recent Properties</h3>
+          <SubscriptionElement subscription={this.state.subscription} fetchSubs={this.fetchSubs} applyCoupon={this.applyCoupon} handleInputChange={this.handleInputChange}/>
+
+          <div style={{marginTop: 20}}>
+            <h3>Recent properties</h3>
             <Divider style={{width: '20%'}}/>
+            {this.state.list.length == 0 &&
+              <CardText  key={4} style={{color: '#17bebb', fontWeight: '500', fontSize: 14}}>You don't have any property, please add new property by clicking the plus button bellow.</CardText>
+            }
           </div>
           <div style={styles.cardContainer}>
 
 
           {
             this.state.list.map( item =>
-              <Card style={styles.cardWrapper} key={item.property_id}>
+              <Card style={styles.cardWrapper} key={item.property_id} className="box-shadow">
                 <CardMedia
                   overlay={<CardTitle title={item.address_1 } subtitle={item.address_2} />} >
 
                   <img src={this.getAddress(item.address_1 , item.address_2, item.city, item.postalcode)} alt="" />
 
                 </CardMedia>
-                <CardTitle title={item.city + ' ' +  item.postalcode} subtitle={"Rooms: " + item.total_rooms + ", Photos: " + item.total_photos} />
+                <CardTitle title={item.city + ' ' +  item.postalcode} />
+                <div className="photos-count">
+                <span className="photos-count-text">{"Rooms: " + item.total_rooms + ", Photos: " + item.total_photos}</span>
+                </div>
                 <div style={styles.subTxt}>{item.report_type}</div>
                 <div style={styles.subTxt}>{item.created_date}</div>
                 <CardText>
@@ -238,6 +349,7 @@ export default class Dashboard extends React.Component {
                     </Link>
                   }
 
+
                   <FlatButton label="Report" onTouchTap={()=>this.generateReport(item.property_id)}/>
 
 
@@ -250,6 +362,16 @@ export default class Dashboard extends React.Component {
 
 
           </div>
+
+          <Dialog
+            actions={modal_actions}
+            modal={false}
+            open={this.state.showdialog}
+            onRequestClose={this.handleDialogClose}
+            contentStyle ={styles.dialog}
+          >
+            {this.state.coupon_err_text}
+          </Dialog>
 
       </PageBase>
 

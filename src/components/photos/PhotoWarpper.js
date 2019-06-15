@@ -102,9 +102,9 @@ export default class PhotoWarpper extends React.Component {
         position: 'relative'
       },
       root: {
-        minHeight: 150,
+        minHeight: 120,
         width: '80%',
-        marginBottom: 10,
+        marginBottom: 5,
         textAlign: 'left',
         whiteSpace: 'nowrap',
         overflowY: 'hidden',
@@ -119,12 +119,12 @@ export default class PhotoWarpper extends React.Component {
         position: 'absolute',
         right: 0,
         top: 0,
-        height: 150,
+        height: 110,
       },
       dropzoneItem:{
-        minHeight: 125,
+        minHeight: 110,
         minWidth: 80,
-        background: '#ffffff',
+        backgroundColor: '#ffffff',
         padding: 5,
         cursor: 'pointer',
         textAlign: 'center'
@@ -164,7 +164,7 @@ export default class PhotoWarpper extends React.Component {
 
           <div>
              <Dropzone onDrop={this.onDrop.bind(this)} style={styles.dropzoneItem} className="dropzoneItem" accept="image/jpeg, image/png, image/jpg" >
-              <div>Drop files here to upload.</div>
+              <div>Drop your files here to upload.</div>
                 { this.state.uploading &&
                     <MuiThemeProvider>
                     <CircularProgress />

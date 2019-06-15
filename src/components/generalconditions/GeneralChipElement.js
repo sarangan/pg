@@ -87,7 +87,7 @@ export default class GeneralChipElement extends React.Component {
     return(
 
       <div style={styles.chipwrapper}>
-          <h4 style={styles.subheader} className="gen-condition-title">{this.props.title}:</h4>
+          <h4 style={styles.subheader} className="actual-gen-condition-title">{this.props.title}:</h4>
           <div style={styles.wrapper}>
             { chipItem }
           </div>

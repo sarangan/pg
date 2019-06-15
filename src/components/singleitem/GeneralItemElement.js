@@ -57,8 +57,10 @@ export default class GeneralItemElement extends React.Component {
         <div className="comment-voice-wrapper">
 
           <div className={gen_comment_cls}>
-            <h3>{this.props.title}</h3>
-            <TextField hintText="Enter your message" multiLine={true} rows={2} rowsMax={4}  name={this.props.data.item_id +';'+ 'comment' + ';GENERAL'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
+
+            <h4 className="gen-condition-title">{this.props.title}:</h4>
+
+            <TextField hintText="Enter your message" multiLine={true} rows={1} rowsMax={2}  name={this.props.data.item_id +';'+ 'comment' + ';GENERAL'} fullWidth={true} value={this.props.data.comment?this.props.data.comment:'' } onChange={this.props.handleInputChange}/>
 
           </div>
 
@@ -68,7 +70,7 @@ export default class GeneralItemElement extends React.Component {
 
         </div>
 
-          <h4>Photos:</h4>
+          <h4 className="gen-condition-title">Photos:</h4>
 
           <PhotoWarpper photos={this.props.photos} on_drag={this.props.on_drag} on_drag_start={this.props.on_drag_start}  photoDelete={this.props.photoDelete} photoUpload={this.props.photoUpload}
             type="GENERAL" sub_id={this.props.data.item_id } on_drop={null} releaseDragging={this.props.releaseDragging} disableDrag={false} showprogress={this.props.showprogress}/>
