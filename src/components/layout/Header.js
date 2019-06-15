@@ -31,9 +31,6 @@ export default class Header extends React.Component {
     LoginAuthActions.logout();
   }
 
-  changepassword(){
-
-  }
 
   getLogoutStatus(){
     let logout = LoginStore.getLogoutStatus();
@@ -89,7 +86,7 @@ export default class Header extends React.Component {
         nav = "Home ";
         break;
       case 'changepassword':
-        nav = "Home / user / change password";
+        nav = "Home / User / Change password";
         break;
       default:
         nav =  "Home";
@@ -131,8 +128,8 @@ export default class Header extends React.Component {
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
-                    <Link to="/changepassword">
-                    <MenuItem primaryText="Change password" />
+                    <Link to="/changepassword" style={{ textDecoration: 'none' }}>
+                      <MenuItem primaryText="Change password"  />
                     </Link>
                     <MenuItem primaryText="Sign out" onTouchTap={this.signout.bind(this)} />
                   </IconMenu>

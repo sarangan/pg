@@ -247,8 +247,8 @@ class LoginStore extends EventEmitter {
 
             let pgauth = {
               token: 'Bearer ' + action.data.token,
-              isLogin: true,
-              user: userDetails
+              isLogin: loginauth.ISLOGIN,
+              user: loginauth.USER
             };
             sessionStorage.removeItem('pgauth');
             sessionStorage.setItem('pgauth', JSON.stringify(pgauth) ); // store to session store
